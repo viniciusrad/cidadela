@@ -65,6 +65,8 @@ docker compose -f docker-compose.local.yml --profile cpu --profile container-app
 
 ```bash
 docker compose -f docker-compose.local.yml --profile cpu --profile container-app up -d --build --force-recreate app
+docker compose -f docker-compose.local.yml --profile container-app up -d --build --force-recreate app
+
 
 ou
 

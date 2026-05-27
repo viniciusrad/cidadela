@@ -106,7 +106,8 @@ const GENERIC_TITLES = [
   "finalidade",
 ];
 
-function deriveTitle(fileName: string, rawTitle: unknown, bodyText: string) {
+function deriveTitle(fileName: string, rawTitle: unknown) {
+  // Titulo embutido no PDF (metadata) tem prioridade quando for genuino.
   const metadataTitle = sanitizeTitle(rawTitle);
   if (metadataTitle) {
     const cleanMetadata = metadataTitle.replace(/\*/g, "").toLowerCase();
@@ -119,20 +120,9 @@ function deriveTitle(fileName: string, rawTitle: unknown, bodyText: string) {
     }
   }
 
-  const lines = bodyText.split("\n").map((line) => line.trim());
-
-  for (const line of lines) {
-    if (!line) continue;
-    const cleanLine = line.replace(/\*/g, "").toLowerCase();
-    const isGeneric = GENERIC_TITLES.some(
-      (generic) => cleanLine === generic || cleanLine.startsWith(`${generic} `)
-    );
-
-    if (!isGeneric && line.length > 3) {
-      return line.slice(0, 120);
-    }
-  }
-
+  // O corpo de um PDF comeca com marcadores de pagina ("## Pagina 1") e texto
+  // solto que nao representam o tema do documento. Usar o nome do arquivo como
+  // titulo e a fonte mais confiavel e previsivel.
   return fileName.replace(/\.pdf$/i, "").trim() || "Documento";
 }
 
@@ -208,7 +198,7 @@ export async function convertPdfToMarkdown({
 
   const markdownBody = normalizeMarkdownBody(aggregatedBody);
   const headings = extractHeadings(markdownBody);
-  const title = deriveTitle(fileName, infoResult.info?.Title, markdownBody);
+  const title = deriveTitle(fileName, infoResult.info?.Title);
   const convertedAt = new Date().toISOString();
   const wordCount = countWords(markdownBody);
 

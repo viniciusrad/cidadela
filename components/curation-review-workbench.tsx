@@ -1352,7 +1352,11 @@ export function CurationReviewWorkbench({
                         </span>
                       </div>
                       <p className="mt-1 truncate text-xs text-[var(--foreground-soft)]">
-                        {document.fileName}
+                        Enviado para curadoria em{" "}
+                        {new Date(document.uploadedAt).toLocaleString("pt-BR", {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        })}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-2">
                         <span

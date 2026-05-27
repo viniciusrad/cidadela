@@ -97,6 +97,18 @@ const CHEVRON_SVG = (
   </svg>
 );
 
+const CHEVRON_LEFT_SVG = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+    <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+  </svg>
+);
+
+const CHEVRON_RIGHT_SVG = (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+  </svg>
+);
+
 const FEEDBACK_PROMPTS = [
   "Sua avaliação nos ajuda a mapear o conhecimento da companhia e facilitar o trabalho de todos. Como foi essa resposta?",
   "Ao classificar esta resposta, você contribui diretamente para a precisão da nossa inteligência. Vamos agregar valor juntos?",
@@ -381,6 +393,7 @@ export function SecureChatWorkbench({
   const [streamingTrace, setStreamingTrace] = useState<DelegationTrace[]>([]);
   const [streamingAutomation, setStreamingAutomation] =
     useState<AutomationResult | null>(null);
+  const [traceCollapsed, setTraceCollapsed] = useState(true);
   const [statusText, setStatusText] = useState("Ambiente pronto.");
   const [error, setError] = useState("");
   const [highlightedCitation, setHighlightedCitation] = useState<number | null>(null);
@@ -773,8 +786,14 @@ export function SecureChatWorkbench({
   }
 
   return (
-    <div className={`${sectorClass} grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)_360px]`}>
-      <aside className="premium-panel rounded-[2rem] p-5">
+    <div
+      className={`${sectorClass} grid gap-6 transition-[grid-template-columns] duration-300 ease-in-out ${
+        traceCollapsed
+          ? "xl:grid-cols-[320px_minmax(0,1fr)_64px]"
+          : "xl:grid-cols-[320px_minmax(0,1fr)_360px]"
+      }`}
+    >
+      <aside className="premium-panel flex flex-col rounded-[2rem] p-5">
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
@@ -793,7 +812,7 @@ export function SecureChatWorkbench({
           </button>
         </div>
 
-        <div className="mt-5 space-y-3 max-h-[420px] overflow-y-auto pr-1" style={{ scrollbarWidth: "thin" }}>
+        <div className="mt-5 flex-1 min-h-0 space-y-3 overflow-y-auto pr-1 max-h-[420px] xl:max-h-none" style={{ scrollbarWidth: "thin" }}>
           {conversations.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-[var(--border)] px-4 py-5 text-sm text-[var(--foreground-soft)]">
               Nenhuma conversa iniciada.
@@ -1093,7 +1112,38 @@ export function SecureChatWorkbench({
         </div>
       </section>
 
+      {traceCollapsed ? (
+        <aside className="flex self-start">
+          <button
+            type="button"
+            onClick={() => setTraceCollapsed(false)}
+            className="premium-panel flex h-full min-h-[260px] w-full flex-col items-center justify-center gap-4 rounded-[2rem] px-2 py-6 text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
+            title="Expandir trilha de delegações"
+          >
+            {CHEVRON_LEFT_SVG}
+            <span className="[writing-mode:vertical-rl] text-[11px] font-bold uppercase tracking-[0.28em]">
+              Trilha de delegações
+            </span>
+            {streamingTrace.length > 0 ? (
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[var(--accent)] text-[11px] font-black text-white">
+                {streamingTrace.length}
+              </span>
+            ) : null}
+          </button>
+        </aside>
+      ) : (
       <aside className="space-y-6">
+        <div className="flex justify-start">
+          <button
+            type="button"
+            onClick={() => setTraceCollapsed(true)}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-white/80 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            title="Recolher trilha de delegações"
+          >
+            Recolher
+            {CHEVRON_RIGHT_SVG}
+          </button>
+        </div>
         {streamingAutomation ? (
           <section className="premium-panel rounded-[2rem] p-5">
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
@@ -1173,6 +1223,7 @@ export function SecureChatWorkbench({
           </div>
         </section>
       </aside>
+      )}
 
       {editingChunk && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
