@@ -1,0 +1,30 @@
+[
+  {
+    "email": "sec@pfrm.local",
+    "password": "sec123",
+    "name": "Sentinela de Seguranca",
+    "sector": "seguranca",
+    "role": "user"
+  },
+  {
+    "email": "suporte@pfrm.local",
+    "password": "sup123",
+    "name": "Helpdesk de Suporte",
+    "sector": "suporte",
+    "role": "user"
+  },
+  {
+    "email": "dev@pfrm.local",
+    "password": "dev123",
+    "name": "Forja de Desenvolvimento",
+    "sector": "desenvolvimento",
+    "role": "user"
+  },
+  {
+    "email": "admin@pfrm.local",
+    "password": "admin123",
+    "name": "Administrador Profarma",
+    "sector": "desenvolvimento",
+    "role": "admin"
+  }
+]

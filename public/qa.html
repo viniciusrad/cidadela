@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFRM Secure Agents — Q&A do Apresentador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --brand-primary: #38bdf8;
+            --brand-secondary: #a78bfa;
+            --brand-accent: #f472b6;
+            --bg-dark: #030712;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { margin: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(56, 189, 248, 0.12), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(167, 139, 250, 0.10), transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 10%, #38bdf8 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-warm {
+            background: linear-gradient(135deg, #fbbf24 0%, #f472b6 60%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--brand-primary);
+            padding: 0.35rem 0.9rem;
+            border-radius: 99px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            align-self: start;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255,255,255,0.06);
+            padding: 1.5rem 1rem;
+            background: rgba(3, 7, 18, 0.7);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar h2 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255,255,255,0.45);
+            margin: 1rem 0 0.5rem;
+            padding: 0 0.75rem;
+        }
+
+        .persona-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.9rem;
+            border-radius: 0.6rem;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 0.25rem;
+        }
+
+        .persona-btn:hover {
+            background: rgba(56, 189, 248, 0.06);
+            color: #fff;
+        }
+
+        .persona-btn.active {
+            background: linear-gradient(135deg, rgba(56,189,248,0.12), rgba(167,139,250,0.08));
+            border-color: rgba(56,189,248,0.3);
+            color: #fff;
+        }
+
+        .persona-btn .ico {
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.4rem;
+            background: rgba(255,255,255,0.05);
+            font-size: 0.85rem;
+        }
+
+        .persona-btn .count {
+            margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .content {
+            padding: 2.5rem 3rem 6rem;
+            max-width: 1100px;
+        }
+
+        .search-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: linear-gradient(to bottom, rgba(3,7,18,0.95) 80%, transparent);
+            padding: 1rem 0 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0.7rem;
+            padding: 0.9rem 1.1rem 0.9rem 2.8rem;
+            color: #fff;
+            font-size: 0.95rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.4);
+        }
+
+        .qa-card {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 1rem;
+            margin-bottom: 1.2rem;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .qa-card:hover { border-color: rgba(56,189,248,0.25); }
+
+        .qa-card.open { border-color: rgba(56,189,248,0.4); }
+
+        .qa-question {
+            cursor: pointer;
+            padding: 1.2rem 1.4rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            user-select: none;
+        }
+
+        .qa-q-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1;
+        }
+
+        .qa-q-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.35;
+        }
+
+        .qa-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .mini-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.2rem 0.6rem;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.05);
+            color: rgba(255,255,255,0.55);
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .mini-tag.risk { color: #fca5a5; border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.05); }
+        .mini-tag.tech { color: #93c5fd; border-color: rgba(56,189,248,0.25); background: rgba(56,189,248,0.05); }
+        .mini-tag.exec { color: #fcd34d; border-color: rgba(245,158,11,0.25); background: rgba(245,158,11,0.05); }
+        .mini-tag.gov  { color: #f9a8d4; border-color: rgba(244,114,182,0.25); background: rgba(244,114,182,0.05); }
+
+        .chevron {
+            color: rgba(255,255,255,0.4);
+            transition: transform 0.25s;
+            margin-top: 0.3rem;
+        }
+
+        .qa-card.open .chevron { transform: rotate(180deg); color: var(--brand-primary); }
+
+        .qa-body {
+            display: none;
+            padding: 0 1.4rem 1.4rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: -0.2rem;
+        }
+
+        .qa-card.open .qa-body { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .answer-block {
+            margin-top: 1.2rem;
+        }
+
+        .answer-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--brand-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .answer-label.short  { color: #6ee7b7; }
+        .answer-label.deep   { color: #93c5fd; }
+        .answer-label.anchor { color: #f9a8d4; }
+        .answer-label.trap   { color: #fca5a5; }
+
+        .answer-short {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.55;
+            padding: 0.9rem 1rem;
+            background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(56,189,248,0.04));
+            border-left: 3px solid var(--accent-green);
+            border-radius: 0.5rem;
+        }
+
+        .answer-deep {
+            color: #cbd5e1;
+            line-height: 1.65;
+            font-size: 0.95rem;
+        }
+
+        .answer-deep p { margin: 0 0 0.7rem; }
+        .answer-deep ul { margin: 0.4rem 0 0.8rem 1.2rem; padding: 0; }
+        .answer-deep li { margin-bottom: 0.4rem; }
+        .answer-deep b, .answer-deep strong { color: #fff; }
+        .answer-deep code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            background: rgba(56,189,248,0.08);
+            color: #93c5fd;
+            padding: 0.1rem 0.4rem;
+            border-radius: 0.3rem;
+        }
+
+        .anchor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.6rem;
+            margin-top: 0.6rem;
+        }
+
+        .anchor-chip {
+            background: rgba(244,114,182,0.05);
+            border: 1px solid rgba(244,114,182,0.15);
+            border-radius: 0.5rem;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.82rem;
+            color: #f5d0e2;
+        }
+
+        .anchor-chip b { color: #fff; display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.2rem; color: var(--brand-accent); }
+
+        .trap-box {
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 0.5rem;
+            padding: 0.8rem 1rem;
+            font-size: 0.88rem;
+            color: #fecaca;
+            line-height: 1.55;
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .persona-header .pic {
+            width: 56px;
+            height: 56px;
+            border-radius: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, rgba(56,189,248,0.15), rgba(167,139,250,0.1));
+            border: 1px solid rgba(56,189,248,0.25);
+        }
+
+        .persona-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .persona-sub {
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            margin-top: 0.3rem;
+        }
+
+        .persona-mindset {
+            margin: 1.2rem 0 2rem;
+            padding: 1rem 1.2rem;
+            background: rgba(15,23,42,0.5);
+            border-left: 3px solid var(--brand-secondary);
+            border-radius: 0.5rem;
+            color: #cbd5e1;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .persona-mindset b { color: #fff; }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .nav-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-top a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.15s;
+        }
+
+        .nav-top a:hover { color: var(--brand-primary); }
+
+        .toolbar {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            cursor: pointer;
+            padding: 0.4rem 0.85rem;
+            border-radius: 99px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.65);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .filter-pill.active {
+            background: var(--brand-primary);
+            color: #020617;
+            border-color: var(--brand-primary);
+        }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar {
+                position: relative;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+            }
+            .content { padding: 1.5rem 1.2rem 4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- ============================================================ -->
+        <!-- SIDEBAR — Personas / Atores decisores                          -->
+        <!-- ============================================================ -->
+        <aside class="sidebar">
+            <div style="padding: 0 0.75rem 1rem;">
+                <div class="tag" style="margin-bottom: 0.6rem;"><i class="fas fa-microphone"></i> Q&A do apresentador</div>
+                <div style="font-size: 1.1rem; font-weight: 800; line-height: 1.2;">PFRM Secure Agents</div>
+                <div style="font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 0.2rem;">Prepare-se para a sala de decisão.</div>
+            </div>
+
+            <h2>Atores decisores</h2>
+            <div id="personaList"></div>
+
+            <h2 style="margin-top: 1.5rem;">Atalhos</h2>
+            <div style="padding: 0 0.75rem;">
+                <a href="conceito.html" style="display: block; color: #cbd5e1; font-size: 0.85rem; padding: 0.4rem 0; text-decoration: none;">
+                    <i class="fas fa-arrow-left" style="margin-right: 0.4rem; color: var(--brand-primary);"></i>
+                    Voltar ao Conceito
+                </a>
+                <a href="/" style="display: block; color: #cbd5e1; font-size: 0.85rem; padding: 0.4rem 0; text-decoration: none;">
+                    <i class="fas fa-rocket" style="margin-right: 0.4rem; color: var(--brand-accent);"></i>
+                    Abrir o produto
+                </a>
+            </div>
+        </aside>
+
+        <!-- ============================================================ -->
+        <!-- CONTENT                                                        -->
+        <!-- ============================================================ -->
+        <section class="content">
+            <div class="nav-top">
+                <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+                    <i class="fas fa-shield-halved" style="color: var(--brand-primary); margin-right: 0.4rem;"></i>
+                    Material de apoio · uso interno do apresentador
+                </div>
+                <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace;">
+                    <span id="qaCount">0</span> perguntas catalogadas
+                </div>
+            </div>
+
+            <div id="personaHeader"></div>
+
+            <div class="search-wrap" style="position: relative;">
+                <i class="fas fa-search search-icon"></i>
+                <input id="searchInput" class="search-input" type="text" placeholder="Buscar por palavra-chave, tema ou objeção (ex: LGPD, GPU, payback, alucinação)...">
+                <div class="toolbar">
+                    <button class="filter-pill active" data-filter="all">Todas</button>
+                    <button class="filter-pill" data-filter="risk">Risco</button>
+                    <button class="filter-pill" data-filter="tech">Técnica</button>
+                    <button class="filter-pill" data-filter="exec">Executiva</button>
+                    <button class="filter-pill" data-filter="gov">Governança</button>
+                </div>
+            </div>
+
+            <div id="qaContainer"></div>
+        </section>
+    </div>
+
+    <script>
+        // ===========================================================
+        // DATA — Personas + Q&A
+        // ===========================================================
+        const PERSONAS = [
+            {
+                id: 'ceo',
+                name: 'CEO / Patrocinador Executivo',
+                icon: 'fa-chess-king',
+                sub: 'Quer entender por que isso, por que agora, e o que muda na história da companhia.',
+                mindset: '<b>Mentalidade:</b> não quer detalhe técnico. Quer convicção, ambição, ancoragem em mercado e diferenciação competitiva. Mede em 60 segundos se vale apostar o nome dele.'
+            },
+            {
+                id: 'cfo',
+                name: 'CFO / Financeiro',
+                icon: 'fa-coins',
+                sub: 'Quer ver custo, retorno, comparativo com SaaS e horizonte de payback.',
+                mindset: '<b>Mentalidade:</b> a pergunta-mãe é "quanto custa e quando paga?". Vai testar pressupostos. Não responda com "vai depender" — responda com faixa, premissa explícita e fonte.'
+            },
+            {
+                id: 'cio',
+                name: 'CIO / Diretor de TI',
+                icon: 'fa-server',
+                sub: 'Quer entender arquitetura, integração com legado, escala e dependência de fornecedor.',
+                mindset: '<b>Mentalidade:</b> já foi queimado antes. Vai sondar vendor lock-in, custo de operação, plano de DR e como isso vai conviver com SAP, Cervello, AD, M365.'
+            },
+            {
+                id: 'ciso',
+                name: 'CISO / Segurança da Informação',
+                icon: 'fa-shield-halved',
+                sub: 'Quer evidência de que nenhum dado sensível sai do perímetro e que tudo é auditável.',
+                mindset: '<b>Mentalidade:</b> presume risco até provarem o contrário. Vai testar superfície de ataque, exfiltração via prompt, isolamento por setor, criptografia e trilha.'
+            },
+            {
+                id: 'dpo',
+                name: 'DPO / Jurídico / Compliance',
+                icon: 'fa-balance-scale',
+                sub: 'Quer enquadramento LGPD, base legal, retenção, direito do titular e risco regulatório setorial.',
+                mindset: '<b>Mentalidade:</b> não quer surpresa em auditoria da ANPD nem em fiscalização Anvisa. Foca em quem é controlador, operador, e onde o dado pessoal pode aparecer no fluxo.'
+            },
+            {
+                id: 'arquiteto',
+                name: 'Arquiteto / Tech Lead',
+                icon: 'fa-diagram-project',
+                sub: 'Quer testar a decisão técnica: RAG vs fine-tuning, modelo local vs API, escolha de stack.',
+                mindset: '<b>Mentalidade:</b> vai pegar no detalhe. Quer saber por que Qdrant e não pgvector, por que Ollama e não vLLM, por que knowledge graph, como lida com drift e atualização do corpus.'
+            },
+            {
+                id: 'operacoes',
+                name: 'Diretor de Operações / Negócio',
+                icon: 'fa-people-line',
+                sub: 'Quer saber se as pessoas vão usar, se vai conflitar com processo existente, e como medir adoção.',
+                mindset: '<b>Mentalidade:</b> já viu sistema bonito morrer por falta de uso. Quer change management, dono claro do processo, treinamento e métrica de adoção real, não de login.'
+            },
+            {
+                id: 'inovacao',
+                name: 'Diretor de Inovação / Estratégia',
+                icon: 'fa-lightbulb',
+                sub: 'Quer entender por que construir e não comprar Copilot, ChatGPT Enterprise ou Gemini.',
+                mindset: '<b>Mentalidade:</b> está atrás de tese diferenciada. Vai perguntar moat, defensabilidade, e se isso é commodity em 18 meses.'
+            },
+            {
+                id: 'auditoria',
+                name: 'Auditoria Interna / Controles',
+                icon: 'fa-file-shield',
+                sub: 'Quer evidência de segregação, trilha imutável, controles compensatórios e revisão periódica.',
+                mindset: '<b>Mentalidade:</b> pensa em SOX, ISO 27001, e em como provar isso em uma auditoria externa. Quer ver log, política, papéis, evidência de revisão.'
+            },
+            {
+                id: 'rh',
+                name: 'RH / Pessoas & Cultura',
+                icon: 'fa-users',
+                sub: 'Quer saber se isso substitui pessoas, requalifica, ou cria ansiedade no time.',
+                mindset: '<b>Mentalidade:</b> vai pesar narrativa interna. Mede em mensagem para o colaborador: vai sumir vaga, ou vai sobrar tempo para trabalho qualificado?'
+            }
+        ];
+
+        const QA = [
+            // ============================================================
+            // CEO
+            // ============================================================
+            {
+                persona: 'ceo',
+                tags: ['exec'],
+                q: 'Por que agora? Por que não esperar a tecnologia amadurecer mais 12 meses?',
+                short: 'Porque a janela de virada para a era dos agentes está abrindo agora — e quem chega depois compra o pacote do concorrente como serviço, com a estrutura cognitiva da nossa empresa lá dentro.',
+                deep: '<p>Os modelos generalistas já estão prontos. O que ainda não está pronto, em quase nenhuma empresa, é a <b>camada de contexto curado, agentes setoriais e governança auditável</b>. Essa camada não vem com a tecnologia — ela é construída em cima da operação de cada companhia.</p><p>Esperar 12 meses não acelera. Atrasa. Porque os concorrentes que começarem agora vão sair do piloto em paralelo com a próxima geração de modelos, já com SOPs curados, trilha auditável e times treinados. Quem começa em 2027 começa do zero — com o mesmo modelo, mas sem a camada que faz o modelo virar agente.</p>',
+                anchors: [
+                    { label: 'Dado de mercado', text: '87% dos projetos de IA corporativa não saem do piloto (Gartner/IDC/MIT Sloan, 2024).' },
+                    { label: 'Diferencial', text: 'O moat não é o modelo — é o corpus curado e a governança em cima dele.' }
+                ],
+                trap: 'Se perguntarem "e se sair um modelo melhor?", responda: <b>"Trocamos o motor sem trocar o veículo."</b> A arquitetura desacopla modelo de corpus, justamente para sobreviver à próxima geração.'
+            },
+            {
+                persona: 'ceo',
+                tags: ['exec', 'risk'],
+                q: 'O que acontece se a gente não fizer nada?',
+                short: 'Continuamos pagando o custo invisível de buscar SOP, abrir chamado sem contexto e usar ChatGPT público à revelia — enquanto o concorrente vira referência setorial.',
+                deep: '<p>O custo do "não fazer" não está em rubrica. Ele está distribuído em três lugares:</p><ul><li><b>Produtividade silenciosa:</b> cada analista perde tempo procurando o processo certo, e essa hora não é orçada em lugar nenhum.</li><li><b>Risco oculto:</b> colaboradores já usam IA pública, sem trilha. Compliance descobre depois que algo vazou.</li><li><b>Posicionamento:</b> o setor está se reorganizando em torno de quem opera com agentes. Não estar na conversa em 2026 é estar atrás em 2027.</li></ul>',
+                anchors: [
+                    { label: 'Sinal interno', text: 'Uso não-oficial de ChatGPT público em desktops corporativos já é realidade documentada na indústria.' }
+                ]
+            },
+            {
+                persona: 'ceo',
+                tags: ['exec'],
+                q: 'Qual é a história que eu conto no conselho?',
+                short: '"Somos a primeira distribuidora farmacêutica do país que opera com agentes governados por dentro — não com IA aluga do lado de fora."',
+                deep: '<p>A narrativa tem três batidas:</p><ul><li><b>Tese:</b> a era dos agentes destrava produtividade, mas só com conhecimento curado e governança.</li><li><b>Movimento:</b> a companhia construiu a plataforma interna que faz isso — Secure Agents — e já está operacional.</li><li><b>Promessa:</b> em 12 meses, processos críticos (atendimento, suporte, conformidade) operam com agentes auditáveis, e o ganho aparece em SLA, custo de operação e tempo de onboarding.</li></ul>',
+                anchors: [
+                    { label: 'Posicionamento', text: 'Saímos da era do chatbot e do copiloto para a era do agente — com governança.' }
+                ]
+            },
+            {
+                persona: 'ceo',
+                tags: ['exec', 'risk'],
+                q: 'E se isso falhar publicamente? Qual é o risco de imagem?',
+                short: 'A trilha auditável é o seguro. Toda resposta tem fonte clicável, toda ação tem justificativa, e nada sai do nosso perímetro. O risco real está em deixar a IA pública entrar pela porta de trás.',
+                deep: '<p>O risco de imagem da IA corporativa nasce de três coisas: <b>alucinação pública</b>, <b>vazamento de dado</b> e <b>ação não rastreável</b>. A arquitetura responde aos três:</p><ul><li>O agente <b>só responde a partir do corpus aprovado</b> — se não encontra, diz "não encontrei", não inventa.</li><li>O modelo roda <b>local</b>. Nenhuma pergunta nem documento sai para terceiros.</li><li>Cada resposta carrega <b>fonte clicável</b>, e cada ação fica em <b>audit log</b> consultável.</li></ul>',
+                anchors: [
+                    { label: 'Controle', text: 'Stack 100% on-premise: Ollama + Qdrant + Postgres + RabbitMQ + Neo4j.' }
+                ]
+            },
+
+            // ============================================================
+            // CFO
+            // ============================================================
+            {
+                persona: 'cfo',
+                tags: ['exec'],
+                q: 'Quanto custa para manter isso rodando por ano?',
+                short: 'O custo recorrente é dominado por um servidor dedicado com GPU rodando on-premise, storage e banco — CAPEX único de hardware, sem licença por usuário, sem custo por token, sem saída de dado para nuvem pública.',
+                deep: '<p>Três blocos de custo:</p><ul><li><b>Infra (servidor dedicado on-prem com GPU):</b> CAPEX único de hardware, depreciado em 3–5 anos. A GPU dedicada destrava modelos maiores, latência baixa e concorrência real — sem virar OPEX recorrente de nuvem.</li><li><b>Licenças:</b> a stack é open-source (Ollama, Qdrant, Postgres, RabbitMQ, Neo4j Community, Next.js).</li><li><b>Operação:</b> curador setorial (papel, não FTE novo) + sustentação técnica do time já existente.</li></ul><p>Compare com o modelo SaaS: <b>Copilot M365 chega a ~US$ 30/usuário/mês</b>, e mesmo assim não resolve a camada de SOP curado nem governança setorial — você ainda precisa construir essa camada por cima. Em 18 meses, o CAPEX da GPU dedicada já paga o equivalente em mensalidade SaaS para uma base de poucas centenas de usuários.</p>',
+                anchors: [
+                    { label: 'Benchmark', text: 'Copilot E3: ~US$ 30/usuário/mês. ChatGPT Enterprise: ~US$ 60/usuário/mês.' },
+                    { label: 'Stack interna', text: 'CAPEX único de servidor com GPU. Sem licença recorrente de modelo.' }
+                ],
+                trap: 'Não se comprometa com número absoluto antes do dimensionamento. Diga: <b>"Posso voltar com TCO em planilha em uma semana, mas a ordem de grandeza é fração do que custaria Copilot para a mesma base."</b>'
+            },
+            {
+                persona: 'cfo',
+                tags: ['exec'],
+                q: 'Qual é o payback? Em quanto tempo isso se paga?',
+                short: 'O payback aparece em dois vetores mensuráveis: tempo de busca por SOP (medível em hora-analista) e ticket médio do suporte (medível em chamado fechado por hora). A meta razoável de payback é entre 6 e 12 meses, dependendo do volume.',
+                deep: '<p>Métricas que destravam o cálculo:</p><ul><li><b>Tempo médio de localização de SOP:</b> tipicamente 20 a 40 minutos por consulta. Cai para segundos.</li><li><b>Chamados que entram sem contexto:</b> hoje exigem ida-e-volta com o solicitante. O agente abre o chamado já contextualizado.</li><li><b>Onboarding de novo analista:</b> tempo de produtividade plena cai porque o conhecimento está consultável em linguagem natural.</li></ul><p>O modelo de payback não depende de redução de headcount — depende de <b>liberação de hora qualificada</b> para trabalho de maior valor.</p>',
+                anchors: [
+                    { label: 'Driver 1', text: 'Hora-analista liberada da busca documental.' },
+                    { label: 'Driver 2', text: 'Redução de retrabalho em chamado sem contexto.' },
+                    { label: 'Driver 3', text: 'Tempo de onboarding de novo colaborador.' }
+                ]
+            },
+            {
+                persona: 'cfo',
+                tags: ['exec', 'risk'],
+                q: 'Por que não comprar SaaS? Sai mais barato e mais rápido.',
+                short: 'SaaS resolve "ter IA". Não resolve "ter agentes governados". A camada que destrava ROI — corpus curado, agente setorial, trilha auditável — você constrói do mesmo jeito, com ou sem SaaS por baixo. E ainda paga licença por usuário em cima.',
+                deep: '<p>Três armadilhas do "compra SaaS e pronto":</p><ul><li><b>Custo escala com pessoas, não com valor.</b> 1.000 usuários × US$ 30 × 12 = US$ 360k/ano — antes de qualquer ganho.</li><li><b>Dado sai do perímetro.</b> Mesmo com contrato, sua operação trafega por infraestrutura de terceiros.</li><li><b>Lock-in cognitivo.</b> O conhecimento curado fica preso ao fornecedor. Trocar de SaaS depois é começar de novo.</li></ul><p>A escolha não é "construir vs comprar". É <b>"construir a camada de valor uma vez, e trocar o modelo por baixo quando for melhor"</b>.</p>',
+                anchors: [
+                    { label: 'Princípio', text: 'O moat é o corpus curado, não o modelo. SaaS te trava no modelo deles.' }
+                ]
+            },
+            {
+                persona: 'cfo',
+                tags: ['exec'],
+                q: 'Por que servidor dedicado com GPU e não nuvem por token?',
+                short: 'Porque GPU dedicada on-premise é CAPEX único previsível, mantém o dado dentro de casa e não tem teto de custo por uso. Token em nuvem parece barato no piloto e explode em produção com volume real.',
+                deep: '<p>A decisão é arquitetural e financeira ao mesmo tempo:</p><ul><li><b>Previsibilidade:</b> CAPEX fixo de hardware + energia, sem surpresa de fatura por consumo.</li><li><b>Soberania de dado:</b> nada sai do perímetro. Não há prompt nem documento trafegando para terceiro.</li><li><b>Latência:</b> GPU dedicada serve modelos maiores em tempo real, viabilizando streaming de resposta e voz sem depender de banda externa.</li><li><b>Headroom:</b> a mesma máquina suporta evolução para modelos maiores (qwen 14B/32B, llama 70B) sem repactuar contrato.</li></ul><p>Token em nuvem entra apenas como <b>camada de exceção</b> para caso específico que exija um modelo de fronteira, sempre com dado anonimizado e contrato dedicado.</p>',
+                anchors: [
+                    { label: 'Base', text: 'Servidor dedicado com GPU on-prem. CAPEX único.' },
+                    { label: 'Exceção', text: 'API externa só para caso pontual, com dado anonimizado.' }
+                ]
+            },
+
+            // ============================================================
+            // CIO
+            // ============================================================
+            {
+                persona: 'cio',
+                tags: ['tech'],
+                q: 'Qual é o stack? O que isso traz de novo para sustentar?',
+                short: 'Next.js no front, Postgres para identidade/auditoria, Qdrant para vetores, Neo4j para grafo de conhecimento, RabbitMQ para hop entre agentes, Ollama para inferência local. Tudo open-source, tudo container, tudo on-prem.',
+                deep: '<p>Componentes e papéis:</p><ul><li><b>Next.js 16:</b> aplicação web (chat, curadoria, painel, admin).</li><li><b>Auth.js + Postgres (Prisma):</b> autenticação por credenciais, sessão, audit log.</li><li><b>Qdrant:</b> base vetorial, com <b>isolamento por setor</b> (coleções separadas para desenvolvimento, segurança, suporte).</li><li><b>Neo4j:</b> grafo de conhecimento (pessoas, processos, sistemas, regulamentações e relações entre eles).</li><li><b>RabbitMQ:</b> barramento agente-agente, com fallback local quando a fila não responde em tempo hábil.</li><li><b>Ollama:</b> serving local de embedding (bge-m3) e geração (qwen3.5:4b).</li></ul><p>Sustentação é igual a sustentar qualquer aplicação Next.js + Postgres + Docker Compose. Nada exótico.</p>',
+                anchors: [
+                    { label: 'Portas', text: 'App 3030, Postgres 5544, Qdrant 6433, RabbitMQ 5673/15673, Ollama 11500.' }
+                ]
+            },
+            {
+                persona: 'cio',
+                tags: ['tech', 'risk'],
+                q: 'E vendor lock-in? Em que ponto a gente fica preso?',
+                short: 'Em nenhum. Modelo é trocável (Ollama é fachada para qualquer modelo open), banco vetorial é Qdrant mas o padrão é o vetor, e o corpus curado vive em Markdown versionado — não em formato proprietário.',
+                deep: '<p>Onde costuma estar o lock-in em projetos de IA — e como a arquitetura responde:</p><ul><li><b>Modelo:</b> Ollama abstrai. Trocar bge-m3 por outro embedding, ou qwen por llama/mistral, é configuração.</li><li><b>Base vetorial:</b> Qdrant tem API REST e formato exportável. Trocar por pgvector, Weaviate ou Milvus é migração padrão de dados.</li><li><b>Corpus:</b> documentos vivem em Markdown na ingestão, com <code>document_id</code> derivado do conteúdo. O ativo cognitivo não está em formato fechado.</li><li><b>Identidade:</b> Auth.js, padrão OAuth/OIDC quando integrarmos com AD/Entra.</li></ul>',
+                anchors: [
+                    { label: 'Princípio', text: 'O ativo é o corpus curado, e ele vive em formato aberto.' }
+                ]
+            },
+            {
+                persona: 'cio',
+                tags: ['tech'],
+                q: 'Como isso integra com SAP, Cervello, AD/Entra, M365?',
+                short: 'Integração por API e por filas. O agente já abre chamado no Cervello via integração HTTP interna com token e idempotency key. AD/Entra entra na próxima fase via Auth.js. SAP e M365 entram caso a caso, sempre por contrato definido.',
+                deep: '<p>Estado atual:</p><ul><li><b>Cervello:</b> integração já implementada via <code>POST /integrations/pfrm/cervello/electronic-order-ticket</code>, com bearer token, idempotency key e rede Docker isolada. Validado em chat do setor desenvolvimento.</li><li><b>Human-in-captcha:</b> sidecar com worker Playwright + noVNC para abertura supervisionada quando a integração direta exigir intervenção humana.</li><li><b>AD/Entra:</b> próxima fase, via Auth.js OIDC. Hoje opera com credenciais seedadas para o piloto.</li><li><b>SAP e M365:</b> conector dedicado por caso de uso, sempre com escopo mínimo de permissão.</li></ul>',
+                anchors: [
+                    { label: 'Padrão', text: 'Toda integração externa: token, idempotency, audit log.' }
+                ]
+            },
+            {
+                persona: 'cio',
+                tags: ['tech', 'risk'],
+                q: 'Qual é o plano de DR e backup?',
+                short: 'Postgres (identidade e auditoria) e Qdrant (vetores) seguem política padrão da casa: backup diário, retenção definida em política. O corpus original em Markdown é versionável em Git e regenerável. Modelos são reinstalados a partir de imagem.',
+                deep: '<p>Cada componente tem caminho de recuperação:</p><ul><li><b>Postgres:</b> dump diário, point-in-time recovery quando habilitado.</li><li><b>Qdrant:</b> snapshot de coleção; em caso extremo, <b>reingerir o corpus regenera os vetores</b> (idempotência por <code>document_id</code> garante consistência).</li><li><b>Neo4j:</b> backup periódico via dump.</li><li><b>Corpus fonte:</b> os documentos originais (.md/.docx/.pdf) vivem em repositório versionado, fora do banco.</li><li><b>Modelos:</b> reinstalação via Ollama. Não há estado treinado proprietário a recuperar.</li></ul>',
+                anchors: [
+                    { label: 'Reversibilidade', text: 'Em pior caso: reinstala stack, reingere corpus, sistema volta consistente.' }
+                ]
+            },
+            {
+                persona: 'cio',
+                tags: ['tech'],
+                q: 'Como escala? Se passar de piloto para 1.000 usuários?',
+                short: 'Componente por componente. Aplicação Next.js escala horizontal atrás de load balancer. Qdrant e Postgres aceitam réplica. Ollama escala em paralelo sobre a GPU dedicada, com headroom para um segundo nó quando o volume justificar. Não há ponto único de gargalo arquitetural.',
+                deep: '<p>Gargalo real a vigiar não é o framework — é a inferência de modelo, e ela já está endereçada com GPU dedicada na base. Caminhos de escala:</p><ul><li>Pool de workers Ollama compartilhando a mesma GPU em paralelo.</li><li>Modelos quantizados menores para perguntas simples (roteamento de complexidade).</li><li>Cache de embedding para perguntas recorrentes.</li><li>Segundo servidor com GPU em cluster, se o volume passar do envelope do primeiro nó.</li></ul>',
+                anchors: [
+                    { label: 'Base', text: 'Servidor dedicado com GPU já dimensionado para o piloto e para a fase 2.' },
+                    { label: 'Métrica de capacidade', text: 'Validar P50 e P95 sob carga real antes de adicionar nó.' }
+                ]
+            },
+
+            // ============================================================
+            // CISO
+            // ============================================================
+            {
+                persona: 'ciso',
+                tags: ['risk', 'gov'],
+                q: 'Como você garante que nenhum dado sensível sai do perímetro?',
+                short: 'O stack inteiro roda on-premise. Nenhum prompt, nenhum documento, nenhuma resposta toca infraestrutura de terceiros. A inferência é local, no Ollama, e o tráfego fica em rede Docker interna.',
+                deep: '<p>Pontos de saída de dado em IA corporativa típica — e como cada um é fechado aqui:</p><ul><li><b>Prompt para API externa:</b> não acontece. Ollama serve modelo local.</li><li><b>Embedding para serviço externo:</b> não acontece. bge-m3 roda local.</li><li><b>Telemetria do framework:</b> desabilitada em build.</li><li><b>Logs com PII em terceiro:</b> não há agregador externo no pipeline padrão.</li></ul><p>Auditável por inspeção de tráfego de saída: a aplicação não fala com domínios externos no fluxo de chat.</p>',
+                anchors: [
+                    { label: 'Garantia técnica', text: '127.0.0.1:11434 e portas internas. Sem chamada saindo do host.' }
+                ]
+            },
+            {
+                persona: 'ciso',
+                tags: ['risk', 'gov'],
+                q: 'E injeção de prompt? Alguém pode fazer o agente vazar segredo?',
+                short: 'Três camadas: o agente só vê o corpus do setor dele (isolamento por coleção Qdrant), o prompt do sistema é separado do contexto do usuário, e cada resposta vai com fonte — se a resposta tentar fugir do corpus, fica visível.',
+                deep: '<p>Defesas implementadas e em roadmap:</p><ul><li><b>Isolamento por setor:</b> coleções Qdrant separadas (desenvolvimento, segurança, suporte). Um usuário do setor X não consulta corpus do setor Y por desenho.</li><li><b>Segregação de prompt:</b> prompt de sistema do agente é fixado em código, não em corpus indexado. O usuário não consegue redefinir comportamento via documento ingerido.</li><li><b>Resposta com fonte:</b> toda saída cita o trecho do SOP que a fundamentou. Resposta sem fonte é sinal vermelho.</li><li><b>Audit log:</b> cada pergunta, fonte recuperada e ação acionada fica em trilha.</li></ul><p>Em roadmap: red team próprio com biblioteca de prompts adversários, antes de qualquer rollout amplo.</p>',
+                anchors: [
+                    { label: 'Princípio', text: 'O agente não tem mais privilégio do que o usuário que o invocou.' }
+                ],
+                trap: 'Se vier "mas e jailbreak conhecido X?", responda: <b>"Tratamos como bug de segurança — bug bounty interno e teste contínuo."</b> Não prometa imunidade.'
+            },
+            {
+                persona: 'ciso',
+                tags: ['risk', 'gov'],
+                q: 'O que está em audit log? Quem revisa?',
+                short: 'Audit log captura mensagem, usuário, setor, fontes recuperadas, hops entre agentes e ação disparada (ex: chamado Cervello). Revisão fica com Segurança e Auditoria Interna, com filtro por janela de tempo e por usuário.',
+                deep: '<p>Modelo de auditoria viva, hoje em produção:</p><ul><li><b>AuditEvent</b> em Postgres registra cada interação relevante.</li><li>Cada hop agente-a-agente (via RabbitMQ) deixa rastro de origem, destino e justificativa.</li><li>Cada ação externa (ex: abertura de chamado) carrega idempotency key e correlation id.</li><li>Painel administrativo expõe os últimos eventos com filtro.</li></ul>',
+                anchors: [
+                    { label: 'Cadência', text: 'Revisão recomendada: semanal por Segurança, mensal por Auditoria.' }
+                ]
+            },
+            {
+                persona: 'ciso',
+                tags: ['risk', 'tech'],
+                q: 'E se o servidor for comprometido? Qual é o blast radius?',
+                short: 'O blast radius é o corpus indexado e os logs — todo o resto é regenerável. O sistema não armazena segredo do usuário em texto plano, não tem chave de API de terceiro porque não fala com terceiro, e a credencial de integração interna tem escopo mínimo.',
+                deep: '<p>Vetores que normalmente preocupam — e o estado aqui:</p><ul><li><b>Chave de modelo externo:</b> não existe. Não há OpenAI key, não há Anthropic key.</li><li><b>Senha de usuário:</b> hash padrão (Auth.js).</li><li><b>Token de integração (Cervello):</b> escopo restrito à ação específica (abrir ticket), com idempotency key.</li><li><b>Corpus:</b> contém SOPs — sensibilidade definida na classificação do documento, não no sistema.</li></ul>',
+                anchors: [
+                    { label: 'Princípio', text: 'Menos segredo armazenado = menos a perder.' }
+                ]
+            },
+
+            // ============================================================
+            // DPO / Jurídico
+            // ============================================================
+            {
+                persona: 'dpo',
+                tags: ['gov', 'risk'],
+                q: 'Como isso se enquadra na LGPD? Qual a base legal?',
+                short: 'A operação é tratamento de dado corporativo, não dado pessoal de cliente em rota direta. Quando dado pessoal aparece (em chamado, em SOP que cite colaborador), a base legal é execução de contrato de trabalho ou legítimo interesse, e o tratamento fica restrito ao mínimo necessário.',
+                deep: '<p>Pontos de cuidado e como são tratados:</p><ul><li><b>Dado de colaborador no corpus:</b> tela <code>/admin/people-reclassify</code> permite reclassificar referências a pessoas (vira Conceito/Processo/Sistema/Regulamentação), reduzindo persistência de dado pessoal indireto.</li><li><b>Pergunta do usuário pode conter dado pessoal:</b> fica em audit log com política de retenção configurada — não exposto fora do perímetro.</li><li><b>Direito do titular:</b> dado pessoal identificável é localizável por correlation id e removível por operação administrativa.</li><li><b>Transferência internacional:</b> não há. Stack 100% local.</li></ul>',
+                anchors: [
+                    { label: 'Princípio', text: 'Tratamento mínimo, finalidade explícita, retenção limitada, sem transferência internacional.' }
+                ]
+            },
+            {
+                persona: 'dpo',
+                tags: ['gov'],
+                q: 'Quem é controlador e quem é operador nessa cadeia?',
+                short: 'A companhia é controladora. Não há operador externo porque não há terceiro tratando dado. Os componentes open-source (Postgres, Qdrant, Ollama) rodam em infraestrutura da própria companhia.',
+                deep: '<p>Como a ausência de SaaS externo simplifica enquadramento:</p><ul><li>Não há contrato de operador a renegociar.</li><li>Não há DPA com cloud provider terceiro no caminho do dado pessoal.</li><li>A cadeia inteira é interna — auditoria da ANPD examina um único responsável.</li></ul><p>Atenção: se algum dia entrar GPU externa via API (caso de exceção), aquele fluxo específico precisa de DPA dedicado e anonimização prévia.</p>',
+                anchors: [
+                    { label: 'Hoje', text: 'Controlador único. Sem operador externo no fluxo principal.' }
+                ]
+            },
+            {
+                persona: 'dpo',
+                tags: ['gov', 'risk'],
+                q: 'E se a ANPD ou a Anvisa pedirem evidência de governança de IA?',
+                short: 'Entregamos trilha auditável por interação, política de retenção documentada, classificação de risco por agente e processo de curadoria com aprovação rastreada. A governança não é overlay — é parte do desenho.',
+                deep: '<p>Artefatos que sustentam uma fiscalização:</p><ul><li><b>Audit log estruturado</b> com pergunta, fonte, resposta, ação.</li><li><b>Processo de curadoria</b> com staging, responsável setorial obrigatório (<code>responsibleArea</code>) e variantes aprovadas explicitamente antes de publicar.</li><li><b>Versionamento do corpus</b> via <code>source_document_id</code> e <code>document_id</code>, mantendo identidade do documento bruto e do conteúdo publicado.</li><li><b>Política de retenção</b> por tipo de evento.</li><li><b>Reclassificação de pessoas</b> via tela administrativa quando necessário.</li></ul>',
+                anchors: [
+                    { label: 'Posição setorial', text: 'Distribuição farmacêutica tem regulação Anvisa — a trilha auditável endereça SOP regulado.' }
+                ]
+            },
+            {
+                persona: 'dpo',
+                tags: ['gov'],
+                q: 'O modelo "aprende" com os dados da empresa? Tem risco de memorização?',
+                short: 'Não. O modelo é congelado. A personalização acontece por RAG — buscar e mostrar trechos do corpus na hora da pergunta —, não por fine-tuning. O modelo não retém o que vê.',
+                deep: '<p>Distinção crítica:</p><ul><li><b>Fine-tuning:</b> alterar pesos do modelo. <b>Não usamos.</b></li><li><b>RAG (Retrieval-Augmented Generation):</b> buscar trechos relevantes no Qdrant e passá-los como contexto na pergunta. <b>É o que usamos.</b></li></ul><p>Implicação direta: o modelo de hoje, congelado, não memoriza pergunta nem documento. O conhecimento corporativo vive no Qdrant (sob nosso controle), não dentro do modelo (que poderia, em tese, ser exportado).</p>',
+                anchors: [
+                    { label: 'Diferença', text: 'Modelo = motor. Corpus = bagagem. Trocar motor não perde bagagem.' }
+                ]
+            },
+
+            // ============================================================
+            // Arquiteto / Tech Lead
+            // ============================================================
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'Por que RAG e não fine-tuning?',
+                short: 'Porque RAG separa o modelo da memória corporativa. Mudou o SOP? Reingere e o agente já responde diferente. Fine-tuning exige retreinar, congela conhecimento em pesos e dificulta auditoria.',
+                deep: '<p>Comparativo direto:</p><ul><li><b>Atualização:</b> RAG ingere em minutos. Fine-tuning leva horas/dias por ciclo.</li><li><b>Auditoria:</b> RAG cita o trecho. Fine-tuning não consegue dizer "respondi assim porque vi este documento".</li><li><b>Reversão:</b> RAG remove o documento e a resposta muda. Fine-tuning exige rollback de modelo inteiro.</li><li><b>Governança:</b> RAG permite curadoria com staging e aprovação. Fine-tuning aceita o que entra no dataset.</li></ul><p>Fine-tuning pode entrar depois para <b>estilo de resposta</b> ou <b>vocabulário setorial</b>, nunca para fato corporativo.</p>',
+                anchors: [
+                    { label: 'Decisão', text: 'Fato corporativo → RAG. Estilo/idioma → eventualmente fine-tuning.' }
+                ]
+            },
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'Por que Qdrant e não pgvector? Já temos Postgres.',
+                short: 'Qdrant é especializado em busca vetorial em alta escala, com filtragem por payload e suporte nativo a coleções (que viramos isolamento por setor). pgvector é ótimo para volumes pequenos, mas mistura carga vetorial com OLTP.',
+                deep: '<p>Razões específicas da escolha:</p><ul><li><b>Coleções como isolamento:</b> uma coleção por setor mapeia direto no modelo de segurança.</li><li><b>Filtros de payload:</b> filtrar por <code>document_id</code>, <code>source_document_id</code>, <code>responsibleArea</code> é nativo e barato.</li><li><b>Operacional:</b> snapshot por coleção, recriação independente do Postgres.</li><li><b>Quantização:</b> reduz memória sem perder qualidade prática.</li></ul><p>Postgres segue para o que é dele: identidade, sessão, audit log, metadados.</p>',
+                anchors: [
+                    { label: 'Trade-off', text: 'Mais um componente para operar — em troca de isolamento, escala e ergonomia.' }
+                ]
+            },
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'Como vocês evitam alucinação?',
+                short: 'Três camadas: o agente só responde a partir de chunks recuperados (com fonte clicável), o prompt instrui a dizer "não encontrei" quando o corpus não cobre, e a curadoria garante que o que entra no corpus é SOP aprovado, não rascunho.',
+                deep: '<p>Defesas operacionais contra alucinação:</p><ul><li><b>Recuperação obrigatória:</b> a resposta é construída sobre os top-k chunks de maior similaridade.</li><li><b>Fonte clicável:</b> o usuário vê o trecho citado. Se a resposta destoa do trecho, o erro é visível.</li><li><b>Prompt restritivo:</b> instrução explícita para não inventar quando não houver evidência.</li><li><b>Curadoria com staging:</b> documento passa por revisão setorial (<code>responsibleArea</code>) e duas variantes (conservative/rewrite) antes de virar corpus.</li><li><b>Feedback loop:</b> usuário sinaliza resposta ruim, curador revisita o SOP.</li></ul>',
+                anchors: [
+                    { label: 'Limite honesto', text: 'Nenhum sistema RAG elimina alucinação em 100%. A trilha permite detectar e corrigir.' }
+                ]
+            },
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'Para que serve o knowledge graph? RAG não basta?',
+                short: 'O grafo responde perguntas que vetor não responde: "quem é dono desse processo?", "quais SOPs falam de Anvisa?", "que sistemas dependem desse fornecedor?". Vetor acha similaridade. Grafo acha relação.',
+                deep: '<p>Papéis distintos:</p><ul><li><b>Qdrant (vetorial):</b> "me dê os trechos mais parecidos com a pergunta."</li><li><b>Neo4j (grafo):</b> "me mostre todas as relações entre Pessoa X, Processo Y e Regulamentação Z."</li></ul><p>Casos que o grafo destrava:</p><ul><li>Mapa de quem sabe o quê (silos visíveis).</li><li>Cobertura de SOPs por território de agente.</li><li>Reclassificação controlada (a tela <code>/admin/people-reclassify</code> opera direto no grafo).</li></ul>',
+                anchors: [
+                    { label: 'Sinergia', text: 'Resposta usa vetor; navegação e governança usam grafo.' }
+                ]
+            },
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'Por que GPU dedicada on-prem e não CPU ou inferência em nuvem?',
+                short: 'CPU não sustenta modelo de boa qualidade em latência aceitável para uso real. Nuvem por token sangra OPEX e tira dado do perímetro. GPU dedicada on-prem é o ponto que une qualidade, latência, soberania e custo previsível.',
+                deep: '<p>Cada caminho que descartamos, e por quê:</p><ul><li><b>CPU pura:</b> roda os modelos quantizados pequenos, mas a experiência conversacional fica engessada — streaming lento, modelos maiores inviáveis, concorrência limitada. Bom para POC, ruim para produção.</li><li><b>API externa (OpenAI/Anthropic/Gemini):</b> qualidade de fronteira, mas custo por token escala com volume e o dado precisa sair do perímetro — conflita com a tese de governança.</li><li><b>GPU dedicada on-prem:</b> CAPEX único, modelo open-source de qualidade alta (qwen, llama, mistral) rodando com latência real, dado nunca sai. É o que destrava agente respondendo em segundos com fonte.</li></ul><p>Trade-off honesto: GPU dedicada exige dimensionamento e operação de hardware. Em troca, ganhamos previsibilidade financeira e soberania.</p>',
+                anchors: [
+                    { label: 'Modelos suportados', text: 'bge-m3 (embedding) + qwen/llama/mistral em geração, escaláveis até 70B na mesma classe de hardware.' },
+                    { label: 'Princípio', text: 'O dado é nosso. O modelo é open. A GPU é nossa. Nada sai.' }
+                ]
+            },
+            {
+                persona: 'arquiteto',
+                tags: ['tech'],
+                q: 'O que acontece quando o RabbitMQ não responde?',
+                short: 'Fallback local. O agente origem executa o agente alvo no próprio processo, registra o fato em audit log como degradação controlada, e o usuário recebe resposta correta sem perceber o incidente do barramento.',
+                deep: '<p>Decisão arquitetural validada na implementação: <b>nunca quebrar a experiência por causa do barramento</b>. Se a fila não retorna dentro do prazo:</p><ul><li>O agente origem aciona o agente alvo localmente, no mesmo processo.</li><li>O evento é registrado como "fallback local" em audit, com correlation id.</li><li>O operacional do RabbitMQ é tratado em segundo plano.</li></ul><p>Trade-off: a fila pode evoluir para escala assíncrona depois — o fallback é a rede de segurança que permite ligar a fila sem medo.</p>',
+                anchors: [
+                    { label: 'Princípio', text: 'Resiliência > pureza arquitetural.' }
+                ]
+            },
+
+            // ============================================================
+            // Operações / Negócio
+            // ============================================================
+            {
+                persona: 'operacoes',
+                tags: ['exec'],
+                q: 'Como você garante adoção? Já vi muito sistema bonito morrer.',
+                short: 'Três alavancas: fluxo de curadoria que dá protagonismo ao setor dono do SOP, ganho mensurável no primeiro uso (resposta com fonte em segundos), e integração com o que a pessoa já faz (chamado Cervello a partir do chat).',
+                deep: '<p>O que o produto faz para destravar adoção:</p><ul><li><b>Curador setorial é peça-chave:</b> o SOP só entra com aprovação de quem é dono do processo. Isso vira "meu sistema", não "sistema da TI".</li><li><b>Resposta com fonte:</b> a pessoa confia porque vê o trecho. Não é IA mágica, é busca curada com linguagem natural.</li><li><b>Ação no fim do chat:</b> abrir chamado direto, sem trocar de tela.</li><li><b>Onboarding implícito:</b> novo colaborador aprende o processo conversando com o agente.</li></ul>',
+                anchors: [
+                    { label: 'Métrica', text: 'Adoção real ≠ login. Medir perguntas/dia por usuário ativo, e razão de fonte clicada.' }
+                ]
+            },
+            {
+                persona: 'operacoes',
+                tags: ['exec'],
+                q: 'Quem é dono dessa coisa no dia a dia?',
+                short: 'Dois donos lado a lado: TI sustenta a plataforma, e cada setor é dono do corpus dele. Não há um curador único — há um curador por área, que decide o que vira SOP no agente daquele setor.',
+                deep: '<p>Modelo operacional:</p><ul><li><b>TI:</b> sustenta stack, atualiza modelo, garante SLA, opera audit log.</li><li><b>Curador setorial:</b> aprova ingestão, escolhe variante (conservative/rewrite), responde por qualidade do corpus do seu setor.</li><li><b>Comitê de IA:</b> revisa métricas trimestralmente, define expansão de escopo, aprova nova categoria de agente.</li><li><b>Auditoria / Segurança:</b> revisa audit log periodicamente.</li></ul>',
+                anchors: [
+                    { label: 'Papéis novos', text: 'Curador setorial é papel, não FTE necessariamente.' }
+                ]
+            },
+            {
+                persona: 'operacoes',
+                tags: ['exec'],
+                q: 'Vai conflitar com o que já fazemos? Tipo SharePoint, intranet?',
+                short: 'Não substitui — consulta. SharePoint continua sendo o repositório. O agente consulta a versão aprovada e mostra o trecho com link para a fonte original. A intranet ganha um canal de busca em linguagem natural por cima.',
+                deep: '<p>Como conviver com o que existe:</p><ul><li>SharePoint e drives compartilhados continuam sendo fonte. A ingestão lê deles (com aprovação setorial).</li><li>O agente nunca silencia a fonte — ele mostra de onde tirou.</li><li>Em vez de competir com a intranet, dá à intranet uma camada conversacional.</li></ul>',
+                anchors: [
+                    { label: 'Posicionamento', text: 'É novo canal de acesso, não novo repositório.' }
+                ]
+            },
+
+            // ============================================================
+            // Inovação
+            // ============================================================
+            {
+                persona: 'inovacao',
+                tags: ['exec'],
+                q: 'Por que isso e não Microsoft Copilot?',
+                short: 'Copilot é assistente pessoal sobre arquivos do M365. O Secure Agents é plataforma de agentes setoriais sobre corpus curado e governado, com ação no mundo (abrir chamado, rotear entre agentes). São coisas diferentes.',
+                deep: '<p>Diferenças estruturais:</p><ul><li><b>Copilot:</b> ajuda você a escrever email mais rápido sobre seus arquivos.</li><li><b>Secure Agents:</b> agente setorial que decide, age e responde por trilha auditável, sobre SOP aprovado.</li></ul><p>Não são concorrentes diretos. Coexistem: Copilot continua para produtividade pessoal; Secure Agents endereça o processo organizacional governado.</p>',
+                anchors: [
+                    { label: 'Eixos', text: 'Copilot = produtividade individual. Secure Agents = processo governado.' }
+                ]
+            },
+            {
+                persona: 'inovacao',
+                tags: ['exec'],
+                q: 'Qual o moat? Em 18 meses isso vira commodity?',
+                short: 'O moat é o corpus curado e o grafo de conhecimento — não o modelo. Modelo é commodity, sim. Corpus curado com SOPs aprovados, classificados, vinculados a processo, pessoa e regulamentação, é ativo da companhia que não vem em caixa.',
+                deep: '<p>O que dura, e o que não dura:</p><ul><li><b>Não dura (vira commodity):</b> modelo de inferência, embedding, banco vetorial.</li><li><b>Dura (acumula valor):</b> corpus curado, grafo de relações, política de governança, processo de curadoria setorial, audit history.</li></ul><p>Cada ciclo de curadoria torna o ativo mais valioso. Cada SOP aprovado, cada pessoa reclassificada, cada feedback aplicado adiciona valor que não se compra no mercado.</p>',
+                anchors: [
+                    { label: 'Tese', text: 'O modelo vira commodity. O corpus governado, não.' }
+                ]
+            },
+            {
+                persona: 'inovacao',
+                tags: ['exec'],
+                q: 'Isso é um produto ou um projeto? Tem visão de plataforma?',
+                short: 'Plataforma. A arquitetura suporta N agentes setoriais sobre uma base comum de curadoria, grafo e governança. O primeiro caso é desenvolvimento+segurança+suporte. O próximo pode ser comercial, financeiro, fiscal — sem refazer estrutura.',
+                deep: '<p>O que viabiliza pensar como plataforma:</p><ul><li><b>Isolamento por setor</b> já é desenho de coleção Qdrant.</li><li><b>Agentes especialistas</b> com escopo, prompt e permissões próprias é padrão repetível.</li><li><b>Curadoria com responsável setorial</b> escala para qualquer área.</li><li><b>Audit log e grafo</b> não dependem do setor.</li></ul>',
+                anchors: [
+                    { label: 'Visão', text: 'Cada novo setor é configuração, não construção.' }
+                ]
+            },
+
+            // ============================================================
+            // Auditoria
+            // ============================================================
+            {
+                persona: 'auditoria',
+                tags: ['gov'],
+                q: 'Como vocês demonstram segregação de funções?',
+                short: 'Quem ingere ≠ quem aprova ≠ quem consulta. A curadoria com staging exige <code>responsibleArea</code> no upload e bloqueia publicação até aprovação do setor dono. Audit log mostra quem fez o quê, e quando.',
+                deep: '<p>Modelo concreto:</p><ul><li><b>Ingestão:</b> qualquer usuário autorizado pode subir documento para staging — com setor responsável obrigatório.</li><li><b>Análise / entrevista:</b> agente entrevistador gera duas variantes (<code>conservative</code> e <code>rewrite</code>) por seção; o curador escolhe.</li><li><b>Aprovação:</b> curador setorial aprova preview final; só então o documento entra em produção.</li><li><b>Publicação:</b> sistema regenera chunks/embeddings, atualiza <code>document_id</code>, preserva <code>source_document_id</code> e remove de staging.</li><li><b>Consulta:</b> usuário final só vê o resultado curado.</li></ul>',
+                anchors: [
+                    { label: 'Evidência', text: 'Cada etapa fica em audit log com timestamp e ator.' }
+                ]
+            },
+            {
+                persona: 'auditoria',
+                tags: ['gov'],
+                q: 'Como vocês evidenciam revisão periódica do corpus?',
+                short: 'Painel administrativo mostra documentos por idade, autor, setor, e quem revisou pela última vez. A cadência de revisão é política definida por setor — o sistema dá visibilidade, o setor define o ciclo.',
+                deep: '<p>Ferramentas no produto que sustentam revisão:</p><ul><li>Listagem de chunks com preview e conteúdo completo sob demanda em <code>/admin/qdrant</code>.</li><li>Mapa do conhecimento (grafo) mostra cobertura por território.</li><li>Reclassificação de pessoas mantém o corpus aderente quando alguém muda de função ou sai.</li><li>Feedback do usuário marca SOPs que precisam de atenção.</li></ul>',
+                anchors: [
+                    { label: 'Recomendação', text: 'Política: SOP regulado revisado a cada 6 meses; SOP operacional, a cada 12.' }
+                ]
+            },
+            {
+                persona: 'auditoria',
+                tags: ['gov'],
+                q: 'Como isso conversa com ISO 27001, SOX, frameworks de risco?',
+                short: 'Os controles do produto mapeiam direto em domínios padrão: identidade (A.9), criptografia (A.10), operações seguras (A.12), trilha de eventos (A.12.4), gestão de incidentes (A.16). O que falta para certificar é política e cadência, não ferramenta.',
+                deep: '<p>Mapeamento prático:</p><ul><li><b>A.9 — Controle de acesso:</b> Auth.js com credenciais; roadmap OIDC.</li><li><b>A.12.4 — Registro e monitoramento:</b> AuditEvent em Postgres.</li><li><b>A.13 — Segurança de comunicação:</b> rede interna, TLS no perímetro.</li><li><b>A.18 — Conformidade:</b> trilha endereça LGPD, regulação setorial.</li></ul>',
+                anchors: [
+                    { label: 'Caminho', text: 'Produto entrega o controle. Política da casa formaliza.' }
+                ]
+            },
+
+            // ============================================================
+            // RH
+            // ============================================================
+            {
+                persona: 'rh',
+                tags: ['exec'],
+                q: 'Isso vai substituir gente?',
+                short: 'Não substitui — libera. O agente assume o que é repetitivo e busca-de-SOP. A hora liberada vai para análise, decisão e relacionamento com cliente — exatamente o que valoriza a pessoa.',
+                deep: '<p>Mensagem para o colaborador, sem rodeio:</p><ul><li>O que sai do prato: procurar SOP, abrir chamado sem contexto, responder dúvida básica repetida.</li><li>O que entra no prato: julgamento, exceção, melhoria de processo, atendimento qualificado.</li><li>Quem ganha: o profissional sênior que reclama de gastar tempo com pergunta básica; o júnior que aprende mais rápido conversando com o agente.</li></ul>',
+                anchors: [
+                    { label: 'Narrativa interna', text: '"Mais tempo para o que só você faz."' }
+                ]
+            },
+            {
+                persona: 'rh',
+                tags: ['exec'],
+                q: 'Que competências novas o time vai precisar?',
+                short: 'Curador setorial (papel novo, não FTE novo necessariamente) e dono de processo com letramento em IA. TI ganha sustentação padrão de stack web — não precisa de cientista de dados na operação.',
+                deep: '<p>Mapa de papéis e capacidades:</p><ul><li><b>Curador setorial:</b> domina o processo do seu setor, aprende a operar a tela de curadoria.</li><li><b>Dono de processo:</b> letramento em IA suficiente para entender saída do agente, identificar alucinação e dar feedback.</li><li><b>Sustentação TI:</b> Next.js + Docker Compose + Postgres + Qdrant. Sem skill exótico.</li><li><b>Comitê de IA:</b> camada de governança, papel rotativo entre lideranças.</li></ul>',
+                anchors: [
+                    { label: 'Trilha', text: 'Treinamento de curador: ~4h. Letramento de usuário: ~30 min com vídeo + tour.' }
+                ]
+            },
+            {
+                persona: 'rh',
+                tags: ['risk'],
+                q: 'E a ansiedade do time com "IA vai me tirar do emprego"?',
+                short: 'Endereçamos com transparência e protagonismo. O curador setorial é quem decide o que o agente sabe. Isso reposiciona a pessoa como dona do conhecimento, não como recurso ameaçado.',
+                deep: '<p>Princípios de comunicação interna:</p><ul><li><b>Transparência:</b> mostrar o que o agente faz e o que não faz, incluindo limites.</li><li><b>Protagonismo:</b> o conhecimento do colaborador é o que faz o agente funcionar — sem ele, o agente é genérico.</li><li><b>Reconhecimento:</b> celebrar curadoria como contribuição corporativa visível.</li><li><b>Trilha de carreira:</b> letramento em IA vira ativo individual de empregabilidade.</li></ul>',
+                anchors: [
+                    { label: 'Mensagem', text: '"Você não compete com o agente. Você decide o que ele sabe."' }
+                ]
+            }
+        ];
+
+        // ===========================================================
+        // RENDER
+        // ===========================================================
+        const personaList = document.getElementById('personaList');
+        const qaContainer = document.getElementById('qaContainer');
+        const personaHeader = document.getElementById('personaHeader');
+        const searchInput = document.getElementById('searchInput');
+        const qaCount = document.getElementById('qaCount');
+        const filterPills = document.querySelectorAll('.filter-pill');
+
+        let currentPersona = 'all';
+        let currentFilter = 'all';
+        let currentQuery = '';
+
+        qaCount.innerText = QA.length;
+
+        function renderPersonas() {
+            const counts = {};
+            QA.forEach(item => { counts[item.persona] = (counts[item.persona] || 0) + 1; });
+
+            const allBtn = `
+                <button class="persona-btn ${currentPersona === 'all' ? 'active' : ''}" data-persona="all">
+                    <span class="ico"><i class="fas fa-layer-group"></i></span>
+                    <span>Todas as personas</span>
+                    <span class="count">${QA.length}</span>
+                </button>
+            `;
+            personaList.innerHTML = allBtn + PERSONAS.map(p => `
+                <button class="persona-btn ${currentPersona === p.id ? 'active' : ''}" data-persona="${p.id}">
+                    <span class="ico"><i class="fas ${p.icon}"></i></span>
+                    <span>${p.name.split(' / ')[0]}</span>
+                    <span class="count">${counts[p.id] || 0}</span>
+                </button>
+            `).join('');
+
+            personaList.querySelectorAll('.persona-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentPersona = btn.dataset.persona;
+                    renderPersonas();
+                    renderHeader();
+                    renderQA();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+        }
+
+        function renderHeader() {
+            if (currentPersona === 'all') {
+                personaHeader.innerHTML = `
+                    <div class="persona-header">
+                        <div class="pic"><i class="fas fa-layer-group"></i></div>
+                        <div>
+                            <div class="persona-title gradient-text">Todas as perguntas</div>
+                            <div class="persona-sub">Visão consolidada para preparação geral antes da apresentação.</div>
+                        </div>
+                    </div>
+                    <div class="persona-mindset">
+                        <b>Como usar:</b> filtre por persona na barra lateral para ensaiar uma sala específica, ou use a busca para localizar uma objeção exata (ex: "GPU", "LGPD", "Copilot", "payback"). Cada cartão traz uma <b>resposta curta para falar em voz alta</b> e uma <b>resposta profunda</b> para sustentar a réplica.
+                    </div>
+                `;
+                return;
+            }
+            const p = PERSONAS.find(x => x.id === currentPersona);
+            personaHeader.innerHTML = `
+                <div class="persona-header">
+                    <div class="pic"><i class="fas ${p.icon}"></i></div>
+                    <div>
+                        <div class="persona-title gradient-text">${p.name}</div>
+                        <div class="persona-sub">${p.sub}</div>
+                    </div>
+                </div>
+                <div class="persona-mindset">${p.mindset}</div>
+            `;
+        }
+
+        function tagLabel(t) {
+            return ({ risk: 'Risco', tech: 'Técnica', exec: 'Executiva', gov: 'Governança' })[t] || t;
+        }
+
+        function matchesFilter(item) {
+            if (currentPersona !== 'all' && item.persona !== currentPersona) return false;
+            if (currentFilter !== 'all' && !(item.tags || []).includes(currentFilter)) return false;
+            if (currentQuery) {
+                const haystack = (item.q + ' ' + item.short + ' ' + item.deep + ' ' + (item.anchors || []).map(a => a.label + ' ' + a.text).join(' ')).toLowerCase();
+                if (!haystack.includes(currentQuery.toLowerCase())) return false;
+            }
+            return true;
+        }
+
+        function renderQA() {
+            const filtered = QA.filter(matchesFilter);
+            if (filtered.length === 0) {
+                qaContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-search" style="font-size: 2rem; opacity: 0.3; margin-bottom: 1rem;"></i>
+                        <div>Nenhuma pergunta combina com este filtro.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            qaContainer.innerHTML = filtered.map((item, idx) => {
+                const persona = PERSONAS.find(p => p.id === item.persona);
+                const tagsHtml = (item.tags || []).map(t => `<span class="mini-tag ${t}">${tagLabel(t)}</span>`).join('');
+                const personaTag = currentPersona === 'all' && persona ? `<span class="mini-tag"><i class="fas ${persona.icon}" style="margin-right: 0.3rem;"></i>${persona.name.split(' / ')[0]}</span>` : '';
+
+                const anchorsHtml = (item.anchors || []).length > 0 ? `
+                    <div class="answer-block">
+                        <div class="answer-label anchor"><i class="fas fa-anchor"></i> Âncoras de reforço</div>
+                        <div class="anchor-grid">
+                            ${item.anchors.map(a => `<div class="anchor-chip"><b>${a.label}</b>${a.text}</div>`).join('')}
+                        </div>
+                    </div>
+                ` : '';
+
+                const trapHtml = item.trap ? `
+                    <div class="answer-block">
+                        <div class="answer-label trap"><i class="fas fa-triangle-exclamation"></i> Cuidado / Repergunta esperada</div>
+                        <div class="trap-box">${item.trap}</div>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="qa-card" data-idx="${idx}">
+                        <div class="qa-question">
+                            <div class="qa-q-meta">
+                                <div class="qa-q-text">${item.q}</div>
+                                <div class="qa-tags">${personaTag}${tagsHtml}</div>
+                            </div>
+                            <i class="fas fa-chevron-down chevron"></i>
+                        </div>
+                        <div class="qa-body">
+                            <div class="answer-block">
+                                <div class="answer-label short"><i class="fas fa-bolt"></i> Resposta curta — fale em voz alta</div>
+                                <div class="answer-short">${item.short}</div>
+                            </div>
+                            <div class="answer-block">
+                                <div class="answer-label deep"><i class="fas fa-layer-group"></i> Resposta profunda — sustente a réplica</div>
+                                <div class="answer-deep">${item.deep}</div>
+                            </div>
+                            ${anchorsHtml}
+                            ${trapHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            qaContainer.querySelectorAll('.qa-card').forEach(card => {
+                const q = card.querySelector('.qa-question');
+                q.addEventListener('click', () => card.classList.toggle('open'));
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            currentQuery = e.target.value.trim();
+            renderQA();
+        });
+
+        filterPills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                filterPills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                currentFilter = pill.dataset.filter;
+                renderQA();
+            });
+        });
+
+        renderPersonas();
+        renderHeader();
+        renderQA();
+    </script>
+</body>
+</html>
+

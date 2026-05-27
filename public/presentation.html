@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFRM Secure Agents - Apresentação Executiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+        :root {
+            --brand-primary: #38bdf8;
+            --brand-secondary: #818cf8;
+            --bg-dark: #020617;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 2rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-primary);
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screenshot-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 30%, var(--brand-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-btn {
+            cursor: pointer;
+            padding: 0.8rem 1.5rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: var(--brand-primary);
+            color: #000;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--brand-primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .tag {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--brand-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .problem-list i { color: var(--accent-red); }
+        .solution-list i { color: var(--accent-green); }
+
+    </style>
+</head>
+<body>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+
+    <main id="presentation-container">
+        <!-- Slide 1: Título -->
+        <section class="slide active" id="slide-1">
+            <div class="max-w-5xl mx-auto text-center">
+                <div class="tag mb-6 inline-block">Portal de Inteligência Corporativa</div>
+                <h1 class="text-7xl font-extrabold mb-6 tracking-tight">
+                    PFRM <span class="gradient-text">Secure Agents</span>
+                </h1>
+                <p class="text-2xl text-slate-400 mb-12 max-w-2xl mx-auto font-light">
+                    Transformando o conhecimento em ação com segurança, curadoria e IA especializada.
+                </p>
+                <div class="flex justify-center gap-8 text-slate-500">
+                    <div class="flex items-center gap-2"><i class="fas fa-shield-alt"></i> Setorial</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-check-circle"></i> Curado</div>
+                    <div class="flex items-center gap-2"><i class="fas fa-bolt"></i> Auditável</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: O Problema -->
+        <section class="slide" id="slide-2">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="tag mb-4">O Desafio</div>
+                    <h2 class="text-5xl font-bold mb-8">Por que precisamos do <span class="text-red-400">Secure Agents</span>?</h2>
+                    <ul class="space-y-6 problem-list text-xl text-slate-300">
+                        <li class="flex gap-4">
+                            <i class="fas fa-times-circle mt-1"></i>
+                            <span><b>Silos de Conhecimento:</b> Informações perdidas em pastas, chats e manuais desatualizados.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fas fa-times-circle mt-1"></i>
+                            <span><b>Riscos de Segurança:</b> Dados sensíveis expostos em LLMs públicos ou acessíveis a quem não deveria.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fas fa-times-circle mt-1"></i>
+                            <span><b>Alucinação e Erros:</b> IAs genéricas que inventam processos, gerando retrabalho e riscos operacionais.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="screenshot-placeholder">
+                    <div class="text-center p-8">
+                        <i class="fas fa-exclamation-triangle text-6xl mb-4 text-red-500/50"></i>
+                        <p>Visualização de Gaps e Erros de Conhecimento</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: A Solução -->
+        <section class="slide" id="slide-3">
+            <div class="max-w-6xl mx-auto text-center">
+                <div class="tag mb-4">A Solução</div>
+                <h2 class="text-6xl font-bold mb-12">Um Ecossistema de <span class="text-sky-400">Agentes Especialistas</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card border-t-4 border-t-sky-500">
+                        <div class="w-16 h-16 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-sky-400 text-2xl">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Forja</h3>
+                        <p class="text-slate-400">Especialista em TI, APIs e automações. O motor técnico do sistema.</p>
+                    </div>
+                    <div class="card border-t-4 border-t-emerald-500">
+                        <div class="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-400 text-2xl">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Sentinela</h3>
+                        <p class="text-slate-400">Garante o compliance, políticas de segurança e análise de riscos.</p>
+                    </div>
+                    <div class="card border-t-4 border-t-amber-500">
+                        <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-400 text-2xl">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Suporte</h3>
+                        <p class="text-slate-400">Focado na operação, SLAs e atendimento ágil ao usuário final.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Chat Inteligente (RAG) -->
+        <section class="slide" id="slide-4">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="screenshot-placeholder">
+                    <img src="content-manager-screenshot.png" alt="Screenshot do Chat">
+                    <div class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 hover:opacity-100 transition-opacity">
+                        <p class="text-white font-bold">Interface do Chat Seguro</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="tag mb-4">Funcionalidade</div>
+                    <h2 class="text-5xl font-bold mb-8">Chat com <span class="text-sky-400">Evidência Real</span></h2>
+                    <ul class="space-y-4 solution-list text-xl text-slate-300">
+                        <li class="flex gap-4">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span><b>Zero Alucinação:</b> Respostas baseadas apenas em documentos da empresa.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span><b>Citações e Fontes:</b> Clique e veja exatamente de qual manual veio a informação.</span>
+                        </li>
+                        <li class="flex gap-4">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span><b>Delegação Cross-Sector:</b> Se o suporte não sabe, ele pergunta ao técnico automaticamente.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Ingestão e Curadoria -->
+        <section class="slide" id="slide-5">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="tag mb-4">Governança</div>
+                    <h2 class="text-5xl font-bold mb-8">Conhecimento <span class="text-emerald-400">Auditado</span></h2>
+                    <p class="text-xl text-slate-400 mb-8">Não basta subir um arquivo. O sistema garante a qualidade através de um fluxo rigoroso:</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border border-white/10">
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center font-bold">1</div>
+                            <span class="text-lg">Upload para Ambiente de <b>Staging</b></span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border border-white/10">
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center font-bold">2</div>
+                            <span class="text-lg">Revisão por <b>Curadores do Setor</b></span>
+                        </div>
+                        <div class="flex items-center gap-4 bg-white/5 p-4 rounded-lg border border-white/10">
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center font-bold">3</div>
+                            <span class="text-lg">Promoção para <b>SOP (Procedimento Padrão)</b></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="screenshot-placeholder" style="padding: 0; background: none; border: none;">
+                    <img src="screenshots/curation.png" alt="Painel de Curadoria e Aprovação" style="border-radius: 0.75rem; border: 1px solid rgba(255,255,255,0.1);">
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 6: Automação Forja -->
+        <section class="slide" id="slide-6">
+            <div class="max-w-6xl mx-auto text-center">
+                <div class="tag mb-4">Produtividade</div>
+                <h2 class="text-5xl font-bold mb-12">Do Chat para a <span class="text-amber-400">Execução</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="text-left space-y-6">
+                        <div class="card border-l-4 border-l-amber-500">
+                            <h4 class="text-2xl font-bold mb-2">Automações Integradas</h4>
+                            <p class="text-slate-400">Dispare processos complexos diretamente pela conversa.</p>
+                            <ul class="mt-4 space-y-2 text-slate-300">
+                                <li><i class="fas fa-arrow-right text-amber-500 mr-2"></i> Abertura de Chamados (Cervello)</li>
+                                <li><i class="fas fa-arrow-right text-amber-500 mr-2"></i> Cotação de Medicamentos</li>
+                                <li><i class="fas fa-arrow-right text-amber-500 mr-2"></i> Coleta de Índices Financeiros</li>
+                            </ul>
+                        </div>
+                        <div class="card border-l-4 border-l-amber-500">
+                            <h4 class="text-2xl font-bold mb-2">Aprovação Segura</h4>
+                            <p class="text-slate-400">Setores não autorizados precisam fornecer justificativa auditada para disparar ações.</p>
+                        </div>
+                    </div>
+                    <div class="screenshot-placeholder">
+                        <div class="text-center p-8">
+                            <i class="fas fa-robot text-6xl mb-4 text-amber-500/50"></i>
+                            <p>Exemplo de Fluxo de Automação no Chat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 7: Painel Admin / Graph -->
+        <section class="slide" id="slide-7">
+            <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="screenshot-placeholder">
+                    <div class="text-center p-8">
+                        <i class="fas fa-project-diagram text-6xl mb-4 text-sky-500/50"></i>
+                        <p>Visualização do Knowledge Graph</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="tag mb-4">Administração</div>
+                    <h2 class="text-5xl font-bold mb-8">Visão 360º do <span class="text-sky-400">Ecossistema</span></h2>
+                    <div class="grid grid-cols-1 gap-6">
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-history text-2xl text-sky-400"></i>
+                            <div>
+                                <h4 class="font-bold">Audit Log Completo</h4>
+                                <p class="text-slate-400 text-sm">Saiba quem perguntou o quê, quando e quais fontes foram usadas.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-search-minus text-2xl text-sky-400"></i>
+                            <div>
+                                <h4 class="font-bold">Análise de Gaps</h4>
+                                <p class="text-slate-400 text-sm">Identifique onde o conhecimento da empresa está falhando para agir rápido.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-network-wired text-2xl text-sky-400"></i>
+                            <div>
+                                <h4 class="font-bold">Knowledge Graph</h4>
+                                <p class="text-slate-400 text-sm">Veja como os temas se conectam e identifique especialistas e silos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Valor e Próximos Passos -->
+        <section class="slide" id="slide-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="tag mb-8">Conclusão</div>
+                <h2 class="text-6xl font-bold mb-10">Conhecimento que gera <span class="text-emerald-400">Resultado</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <div class="text-3xl font-bold text-sky-400 mb-2">+ Agilidade</div>
+                        <p class="text-sm text-slate-400">Respostas instantâneas para perguntas complexas.</p>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <div class="text-3xl font-bold text-emerald-400 mb-2">- Risco</div>
+                        <p class="text-sm text-slate-400">Dados protegidos e processos curados.</p>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <div class="text-3xl font-bold text-amber-400 mb-2">+ Controle</div>
+                        <p class="text-sm text-slate-400">Auditoria total sobre o uso da IA.</p>
+                    </div>
+                </div>
+                <div class="card p-8 bg-sky-500/10 border-sky-500/20">
+                    <h3 class="text-2xl font-bold mb-4">Prontos para o Próximo Nível?</h3>
+                    <p class="text-slate-300 mb-8">O PFRM Secure Agents já está operacional e pronto para integrar novos setores e automações.</p>
+                    <button onclick="window.location.href='/'" class="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold rounded-full text-xl transition-all shadow-lg shadow-sky-500/30">
+                        Acessar o Portal <i class="fas fa-external-link-alt ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Navegacao -->
+    <nav class="fixed bottom-12 left-0 right-0 flex justify-center items-center gap-10 z-50">
+        <button id="prevBtn" class="nav-btn"><i class="fas fa-chevron-left mr-2"></i> Anterior</button>
+        <div class="px-6 py-2 bg-slate-900/50 backdrop-blur-md rounded-full border border-slate-800">
+            <span id="slideNumber" class="text-sky-400 font-mono font-bold">1 / 8</span>
+        </div>
+        <button id="nextBtn" class="nav-btn">Próximo <i class="fas fa-chevron-right ml-2"></i></button>
+    </nav>
+
+    <div class="fixed bottom-4 right-4 text-slate-600 text-[10px] uppercase font-bold tracking-widest">
+        Use as setas do teclado para navegar
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 8;
+
+        const slides = document.querySelectorAll('.slide');
+        const slideNumberDisplay = document.getElementById('slideNumber');
+        const progressFill = document.getElementById('progressFill');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateUI() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide - 1);
+            });
+
+            slideNumberDisplay.innerText = `${currentSlide} / ${totalSlides}`;
+            progressFill.style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+            prevBtn.style.opacity = currentSlide === 1 ? '0.3' : '1';
+            prevBtn.style.pointerEvents = currentSlide === 1 ? 'none' : 'auto';
+            
+            if (currentSlide === totalSlides) {
+                nextBtn.innerHTML = 'Concluir <i class="fas fa-check ml-2"></i>';
+            } else {
+                nextBtn.innerHTML = 'Próximo <i class="fas fa-chevron-right ml-2"></i>';
+            }
+        }
+
+        function goToNext() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateUI();
+            }
+        }
+
+        function goToPrev() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        nextBtn.onclick = goToNext;
+        prevBtn.onclick = goToPrev;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') goToNext();
+            if (e.key === 'ArrowLeft' || e.key === 'Backspace') goToPrev();
+        });
+
+        // Touch support simples
+        let touchstartX = 0;
+        let touchendX = 0;
+        
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50) goToNext();
+            if (touchendX > touchstartX + 50) goToPrev();
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
+tml>

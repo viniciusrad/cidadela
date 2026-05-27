@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"/c/Users/vinicius.souza/.claude/plans\")",
+      "Read(//c/Users/vinicius.souza/.claude/plans/**)",
+      "PowerShell(git *)",
+      "PowerShell(docker inspect pfrm-secure-agents-app-1 *)",
+      "PowerShell(docker inspect pfrm-secure-agents-app-1 --format '{{json .Mounts}}' | ConvertFrom-Json | ForEach-Object { $_ } | Select-Object Type,Source,Destination | Format-Table -AutoSize)",
+      "PowerShell(docker exec pfrm-secure-agents-app-1 *)",
+      "PowerShell(docker restart pfrm-secure-agents-app-1 *)",
+      "PowerShell($ErrorActionPreference='SilentlyContinue'; $ready=$false; for\\($i=0;$i -lt 30;$i++\\){ try { $r = Invoke-WebRequest -Uri \"http://localhost:3030/api/health/live\" -UseBasicParsing -TimeoutSec 5; if\\($r.StatusCode -eq 200\\){ Write-Output \"READY after $i tries: $\\($r.StatusCode\\) $\\($r.Content\\)\"; $ready=$true; break } } catch { Start-Sleep -Seconds 2 } }; if\\(-not $ready\\){ Write-Output \"Not ready yet; last container logs:\"; docker logs --tail 25 pfrm-secure-agents-app-1 })",
+      "PowerShell(Out-Null *)",
+      "PowerShell($ErrorActionPreference='SilentlyContinue'; for\\($i=0;$i -lt 40;$i++\\){ try { $r = Invoke-WebRequest -Uri \"http://localhost:3030/api/health/live\" -UseBasicParsing -TimeoutSec 5; if\\($r.StatusCode -eq 200\\){ Write-Output \"READY after $i tries\"; break } } catch { Start-Sleep -Seconds 2 } })"
+    ]
+  }
+}

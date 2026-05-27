@@ -1,0 +1,473 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Sector {
+  desenvolvimento
+  seguranca
+  suporte
+  desktop
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum MessageRole {
+  user
+  assistant
+}
+
+enum AgentCallStatus {
+  ok
+  timeout
+  bus_unavailable
+  protocol_violation
+  error
+}
+
+enum ChunkFeedbackStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DocumentStatus {
+  UPLOADED
+  STAGED
+  IN_REVIEW
+  NEEDS_REVISION
+  READY_FOR_APPROVAL
+  APPROVED
+  PROMOTED
+  REJECTED
+}
+
+model User {
+  id                            String                @id @default(cuid())
+  email                         String                @unique
+  passwordHash                  String                @map("password_hash")
+  name                          String
+  sector                        Sector
+  role                          UserRole              @default(user)
+  createdAt                     DateTime              @default(now()) @map("created_at")
+  conversations                 Conversation[]
+  curationDocuments             CurationDocument[]
+  approvals                     DocumentApproval[]
+  chunkFeedbacks                ChunkFeedback[]       @relation("SubmittedFeedback")
+  reviewedFeedbacks             ChunkFeedback[]       @relation("ReviewedFeedback")
+  indicatedAutomationCandidates AutomationCandidate[] @relation("AutomationCandidateIndicatedBy")
+  askedUnanswered               UnansweredQuestion[]  @relation("AskedUnanswered")
+  resolvedUnanswered            UnansweredQuestion[]  @relation("ResolvedUnanswered")
+  notifications                 Notification[]
+
+  @@map("users")
+}
+
+model Conversation {
+  id                  String               @id @default(uuid())
+  userId              String               @map("user_id")
+  sector              Sector
+  title               String
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages            Message[]
+  unansweredQuestions UnansweredQuestion[]
+
+  @@index([userId, updatedAt])
+  @@map("conversations")
+}
+
+model Message {
+  id             String          @id @default(cuid())
+  conversationId String          @map("conversation_id")
+  role           MessageRole
+  content        String
+  citations      Json?
+  agentId        String?         @map("agent_id")
+  traceId        String          @map("trace_id")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  conversation   Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  chunkFeedbacks ChunkFeedback[]
+
+  @@index([conversationId, createdAt])
+  @@index([traceId])
+  @@map("messages")
+}
+
+model AgentCall {
+  id            String          @id @default(cuid())
+  traceId       String          @map("trace_id")
+  parentTraceId String?         @map("parent_trace_id")
+  fromAgent     String          @map("from_agent")
+  toAgent       String          @map("to_agent")
+  intent        String
+  protocol      String
+  request       Json
+  response      Json?
+  status        AgentCallStatus
+  latencyMs     Int?            @map("latency_ms")
+  createdAt     DateTime        @default(now()) @map("created_at")
+
+  @@index([traceId, createdAt])
+  @@map("agent_calls")
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  traceId    String   @map("trace_id")
+  actorType  String   @map("actor_type")
+  actorId    String   @map("actor_id")
+  targetType String   @map("target_type")
+  targetId   String   @map("target_id")
+  eventType  String   @map("event_type")
+  payload    Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([traceId, createdAt])
+  @@map("audit_events")
+}
+
+model Protocol {
+  id         String   @id @default(cuid())
+  fromSector String   @map("from_sector")
+  toSector   String   @map("to_sector")
+  intent     String
+  template   String
+  maxTokens  Int      @map("max_tokens")
+  enabled    Boolean  @default(true)
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([fromSector, toSector, intent])
+  @@map("protocols")
+}
+
+model CurationDocument {
+  id                       String                   @id @default(cuid())
+  documentId               String                   @map("document_id")
+  sourceDocumentId         String                   @map("source_document_id")
+  fileName                 String                   @map("file_name")
+  relativePath             String?                  @map("relative_path")
+  documentTitle            String                   @map("document_title")
+  sourceFormat             String                   @map("source_format")
+  sector                   String
+  uploadedById             String                   @map("uploaded_by_id")
+  uploadedAt               DateTime                 @default(now()) @map("uploaded_at")
+  contentHash              String                   @map("content_hash")
+  fileSizeBytes            Int                      @map("file_size_bytes")
+  normalizedMarkdown       String                   @map("normalized_markdown")
+  effectiveFrom            DateTime?                @map("effective_from")
+  supersedes               String?
+  owner                    String?
+  sensitivity              String?
+  topic                    String?
+  documentType             String?                  @map("document_type")
+  classificationSource     String?                  @map("classification_source")
+  classificationConfidence Float?                   @map("classification_confidence")
+  authorityLevel           String?                  @map("authority_level")
+  curationReadinessScore   Float?                   @map("curation_readiness_score")
+  curationProfile          Json?                    @map("curation_profile")
+  knowledgeExtraction      Json?                    @map("knowledge_extraction")
+  status                   DocumentStatus           @default(UPLOADED)
+  sopReadinessScore        Float?                   @map("sop_readiness_score")
+  sopPath                  String?                  @map("sop_path")
+  promotedAt               DateTime?                @map("promoted_at")
+  rejectedAt               DateTime?                @map("rejected_at")
+  rejectionReason          String?                  @map("rejection_reason")
+  uploadedBy               User                     @relation(fields: [uploadedById], references: [id])
+  reviews                  DocumentReview[]
+  approvals                DocumentApproval[]
+  correlationRuns          DocumentCorrelationRun[]
+  automationCandidates     AutomationCandidate[]
+  processGapQuestions      ProcessGapQuestion[]     @relation("ProcessGapQuestionTargetDocument")
+  unansweredQuestions      UnansweredQuestion[]
+
+  @@unique([documentId, sector])
+  @@index([sector, status, uploadedAt])
+  @@index([sourceDocumentId, sector])
+  @@map("documents")
+}
+
+model DocumentReview {
+  id                 String           @id @default(cuid())
+  curationDocumentId String           @map("curation_document_id")
+  reviewedById       String?          @map("reviewed_by_id")
+  actorType          String           @map("actor_type")
+  questions          Json
+  variantChoices     Json?            @map("variant_choices")
+  notes              String?
+  createdAt          DateTime         @default(now()) @map("created_at")
+  document           CurationDocument @relation(fields: [curationDocumentId], references: [id], onDelete: Cascade)
+
+  @@index([curationDocumentId, createdAt])
+  @@map("document_reviews")
+}
+
+model DocumentApproval {
+  id                 String           @id @default(cuid())
+  curationDocumentId String           @map("curation_document_id")
+  approverId         String           @map("approver_id")
+  approverRole       String           @map("approver_role")
+  decision           String
+  reason             String?
+  createdAt          DateTime         @default(now()) @map("created_at")
+  approver           User             @relation(fields: [approverId], references: [id])
+  document           CurationDocument @relation(fields: [curationDocumentId], references: [id], onDelete: Cascade)
+
+  @@index([curationDocumentId, createdAt])
+  @@map("document_approvals")
+}
+
+model DocumentCorrelationRun {
+  id                 String           @id @default(cuid())
+  curationDocumentId String           @map("curation_document_id")
+  triggeredById      String?          @map("triggered_by_id")
+  model              String
+  status             String
+  findings           Json
+  questions          Json?
+  summary            String?
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+  resolvedAt         DateTime?        @map("resolved_at")
+  document           CurationDocument @relation(fields: [curationDocumentId], references: [id], onDelete: Cascade)
+
+  @@index([curationDocumentId, createdAt])
+  @@map("document_correlation_runs")
+}
+
+model AutomationCandidate {
+  id                  String           @id @default(cuid())
+  curationDocumentId  String           @map("curation_document_id")
+  processMapId        String?          @map("process_map_id")
+  sector              String
+  title               String
+  processName         String?          @map("process_name")
+  automationLevel     String           @map("automation_level")
+  automationLabel     String?          @map("automation_label")
+  suggestedScriptType String?          @map("suggested_script_type")
+  confidence          Float
+  status              String           @default("suggested")
+  indicatedByUserId   String?          @map("indicated_by_user_id")
+  indicatedByRole     String?          @map("indicated_by_role")
+  payload             Json
+  createdAt           DateTime         @default(now()) @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+  document            CurationDocument @relation(fields: [curationDocumentId], references: [id], onDelete: Cascade)
+  indicatedBy         User?            @relation("AutomationCandidateIndicatedBy", fields: [indicatedByUserId], references: [id])
+  processMap          ProcessMap?      @relation(fields: [processMapId], references: [id], onDelete: SetNull)
+
+  @@index([sector, status])
+  @@index([curationDocumentId])
+  @@index([processMapId])
+  @@map("automation_candidates")
+}
+
+model ProcessMap {
+  id                         String                @id @default(cuid())
+  fingerprint                String                @unique
+  name                       String
+  sector                     Sector
+  status                     String                @default("mapped")
+  automationReadinessScore   Float                 @map("automation_readiness_score")
+  documentationCoverageScore Float                 @map("documentation_coverage_score")
+  confidenceScore            Float                 @map("confidence_score")
+  summary                    String
+  recommendedAutomationLevel String                @map("recommended_automation_level")
+  suggestedScriptType        String?               @map("suggested_script_type")
+  processSignals             Json                  @map("process_signals")
+  systemNames                Json                  @map("system_names")
+  documentRefs               Json                  @map("document_refs")
+  graphEvidence              Json                  @map("graph_evidence")
+  vectorEvidence             Json                  @map("vector_evidence")
+  createdAt                  DateTime              @default(now()) @map("created_at")
+  updatedAt                  DateTime              @updatedAt @map("updated_at")
+  lastAnalyzedAt             DateTime?             @map("last_analyzed_at")
+  questions                  ProcessGapQuestion[]
+  automationCandidates       AutomationCandidate[]
+
+  @@index([sector, status])
+  @@index([recommendedAutomationLevel])
+  @@map("process_maps")
+}
+
+model ProcessGapQuestion {
+  id                       String            @id @default(cuid())
+  processMapId             String            @map("process_map_id")
+  question                 String
+  rationale                String
+  priority                 String
+  status                   String            @default("open")
+  targetDocumentId         String?           @map("target_document_id")
+  targetCurationDocumentId String?           @map("target_curation_document_id")
+  derivedFrom              String            @map("derived_from")
+  createdAt                DateTime          @default(now()) @map("created_at")
+  answeredAt               DateTime?         @map("answered_at")
+  processMap               ProcessMap        @relation(fields: [processMapId], references: [id], onDelete: Cascade)
+  targetCurationDocument   CurationDocument? @relation("ProcessGapQuestionTargetDocument", fields: [targetCurationDocumentId], references: [id], onDelete: SetNull)
+
+  @@index([processMapId, status])
+  @@index([targetCurationDocumentId])
+  @@map("process_gap_questions")
+}
+
+model KnowledgeOwner {
+  id        String   @id @default(cuid())
+  topic     String
+  sector    Sector
+  userEmail String   @map("user_email")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([topic, sector])
+  @@map("knowledge_owners")
+}
+
+model KnowledgeCapability {
+  id               String   @id @default(cuid())
+  sector           Sector
+  documentId       String   @map("document_id")
+  sourceDocumentId String   @map("source_document_id")
+  documentTitle    String   @map("document_title")
+  topic            String?
+  owner            String?
+  sensitivity      String
+  capabilityText   String   @map("capability_text")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@unique([sourceDocumentId, sector])
+  @@index([sector, sensitivity])
+  @@map("knowledge_capabilities")
+}
+
+model AgentConfig {
+  sector                   Sector   @id
+  displayName              String?  @map("display_name")
+  summary                  String?
+  instructions             String?
+  capabilities             Json?
+  chatModel                String?  @map("chat_model")
+  topK                     Int?     @map("top_k")
+  localConfidenceThreshold Float?   @map("local_confidence_threshold")
+  updatedBy                String?  @map("updated_by")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  @@map("agent_configs")
+}
+
+model ChunkFeedback {
+  id              String              @id @default(cuid())
+  messageId       String              @map("message_id")
+  userId          String              @map("user_id")
+  sector          Sector
+  documentId      String              @map("document_id")
+  chunkIndex      Int                 @map("chunk_index")
+  originalContent String              @map("original_content")
+  proposedContent String              @map("proposed_content")
+  status          ChunkFeedbackStatus @default(PENDING)
+  reviewedById    String?             @map("reviewed_by_id")
+  createdAt       DateTime            @default(now()) @map("created_at")
+  updatedAt       DateTime            @updatedAt @map("updated_at")
+
+  message  Message @relation(fields: [messageId], references: [id])
+  user     User    @relation(fields: [userId], references: [id], name: "SubmittedFeedback")
+  reviewer User?   @relation(fields: [reviewedById], references: [id], name: "ReviewedFeedback")
+
+  @@index([sector, status])
+  @@map("chunk_feedbacks")
+}
+
+model SectorDefinition {
+  slug                     String    @id
+  displayName              String    @map("display_name")
+  description              String?
+  agentName                String    @map("agent_name")
+  agentSummary             String    @map("agent_summary")
+  agentInstructions        String    @map("agent_instructions")
+  capabilities             Json?
+  chatModel                String?   @map("chat_model")
+  topK                     Int?      @map("top_k")
+  localConfidenceThreshold Float?    @map("local_confidence_threshold")
+  qdrantCollection         String    @map("qdrant_collection")
+  qdrantStagingCollection  String    @map("qdrant_staging_collection")
+  isNative                 Boolean   @default(false) @map("is_native")
+  enabled                  Boolean   @default(true)
+  provisionedAt            DateTime? @map("provisioned_at")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime  @updatedAt @map("updated_at")
+  createdBy                String?   @map("created_by")
+
+  outboundRules SectorAccessRule[] @relation("OutboundRules")
+  inboundRules  SectorAccessRule[] @relation("InboundRules")
+
+  @@map("sector_definitions")
+}
+
+model SectorAccessRule {
+  id              String   @id @default(cuid())
+  fromSector      String   @map("from_sector")
+  toSector        String   @map("to_sector")
+  accessLevel     String   @default("public") @map("access_level")
+  routingKeywords Json?    @map("routing_keywords")
+  enabled         Boolean  @default(true)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  from SectorDefinition @relation("OutboundRules", fields: [fromSector], references: [slug], onDelete: Cascade)
+  to   SectorDefinition @relation("InboundRules", fields: [toSector], references: [slug], onDelete: Cascade)
+
+  @@unique([fromSector, toSector])
+  @@index([fromSector, enabled])
+  @@map("sector_access_rules")
+}
+
+model UnansweredQuestion {
+  id                 String    @id @default(cuid())
+  traceId            String    @unique @map("trace_id")
+  conversationId     String    @map("conversation_id")
+  askedById          String    @map("asked_by_id")
+  sector             String
+  question           String
+  status             String    @default("open")
+  answerType         String?   @map("answer_type")
+  answerText         String?   @map("answer_text")
+  resolvedById       String?   @map("resolved_by_id")
+  resolvedAt         DateTime? @map("resolved_at")
+  curationDocumentId String?   @map("curation_document_id")
+  notifiedAt         DateTime? @map("notified_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  conversation     Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  askedBy          User              @relation("AskedUnanswered", fields: [askedById], references: [id], onDelete: Cascade)
+  resolvedBy       User?             @relation("ResolvedUnanswered", fields: [resolvedById], references: [id], onDelete: SetNull)
+  curationDocument CurationDocument? @relation(fields: [curationDocumentId], references: [id], onDelete: SetNull)
+
+  @@index([sector, status])
+  @@index([askedById])
+  @@index([curationDocumentId])
+  @@map("unanswered_questions")
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  type      String
+  title     String
+  body      String
+  href      String?
+  metadata  Json?
+  readAt    DateTime? @map("read_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@map("notifications")
+}

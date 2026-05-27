@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/temp/repo/pfrm-secure-chat/**)"
+    ],
+    "additionalDirectories": [
+      "C:\\temp\\repo\\pfrm-secure-chat\\docs"
+    ]
+  }
+}

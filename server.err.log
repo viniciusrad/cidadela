@@ -1,0 +1,41 @@
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\temp\repo\package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\package-lock.json
+
+[31m[auth][error][0m CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin
+    at e$ (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:41403)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async e7 (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:51175)
+    at async e9 (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:55731)
+    at async fk (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:61063)
+    at async i (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\[root-of-the-server]__0a9d4qj._.js:2:417)
+    at async rP (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:16:2271)
+    at async C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:16:671
+    at async rx (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:14:14435)
+    at async lP (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:51:28238)
+    at async n (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:1:10837)
+    at async ub.handleResponse (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:53:36916)
+    at async p (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:2:3527)
+    at async Module.M [as handler] (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:2:9139)
+    at async NextNodeServer.renderToResponseWithComponentsImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1454:9)
+    at async NextNodeServer.renderPageComponent (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1506:24)
+[31m[auth][error][0m CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin
+    at e$ (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:41403)
+    at async e7 (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:51175)
+    at async e9 (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:55731)
+    at async fk (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\pfrm-secure-chat_pfrm-secure-agents_0ys_jii._.js:414:61063)
+    at async i (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\[root-of-the-server]__0a9d4qj._.js:2:417)
+    at async rP (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:16:2271)
+    at async C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:16:671
+    at async rx (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:14:14435)
+    at async lP (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:51:28238)
+    at async n (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:1:10837)
+    at async ub.handleResponse (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:53:36916)
+    at async p (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:2:3527)
+    at async Module.M [as handler] (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\server\chunks\ssr\0n_p_next_dist_esm_build_templates_app-page_03k4bju.js:2:9139)
+    at async NextNodeServer.renderToResponseWithComponentsImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1454:9)
+    at async NextNodeServer.renderPageComponent (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1506:24)
+    at async NextNodeServer.renderToResponseImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1556:32)

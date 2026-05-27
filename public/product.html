@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cortex AI — Conhecimento Organizacional Inteligente</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #07090f;
+      --surface:  #0d1117;
+      --border:   #1e2733;
+      --muted:    #8b949e;
+      --text:     #e6edf3;
+      --accent:   #58a6ff;
+      --accent2:  #3fb950;
+      --accent3:  #d2a8ff;
+      --accent4:  #ffa657;
+      --glow:     rgba(88,166,255,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+    section { padding: 96px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(7,9,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1120px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); font-size: 14px; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-cta {
+      background: var(--accent);
+      color: #000;
+      padding: 8px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: .85; text-decoration: none; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 120px 0 96px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(88,166,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.25);
+      border-radius: 100px;
+      padding: 6px 16px; font-size: 13px;
+      color: var(--accent); margin-bottom: 32px;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #e6edf3 30%, #58a6ff 70%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      max-width: 640px; margin: 0 auto 48px;
+      font-size: 20px; color: var(--muted); line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent);
+      color: #000; font-weight: 700;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 16px; transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: .85; text-decoration: none; }
+    .btn-secondary {
+      border: 1px solid var(--border);
+      color: var(--text); font-weight: 600;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 16px; transition: border-color .2s, color .2s;
+    }
+    .btn-secondary:hover { border-color: var(--muted); text-decoration: none; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; margin-top: 80px;
+    }
+    .stat {
+      background: var(--surface);
+      padding: 32px 24px; text-align: center;
+    }
+    .stat-value {
+      font-size: 40px; font-weight: 800;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+    /* ── SECTION HEADINGS ── */
+    .section-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800; letter-spacing: -1px; line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 18px; color: var(--muted); max-width: 560px;
+      line-height: 1.7;
+    }
+    .section-header { margin-bottom: 64px; }
+
+    /* ── PROBLEM ── */
+    .problem-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .problem-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+    }
+    .problem-icon { font-size: 28px; margin-bottom: 16px; }
+    .problem-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .problem-card p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+    }
+    .step {
+      position: relative;
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 18px; color: #000;
+      margin-bottom: 20px;
+    }
+    .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+    .step p { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 20px;
+      overflow: hidden;
+    }
+    .feature-cell {
+      background: var(--surface);
+      padding: 48px 40px;
+      position: relative;
+    }
+    .feature-cell:hover { background: #0f1621; }
+    .feature-cell.wide { grid-column: span 2; }
+    .feature-accent {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 24px;
+    }
+    .accent-blue  { background: rgba(88,166,255,0.12); }
+    .accent-green { background: rgba(63,185,80,0.12); }
+    .accent-purple{ background: rgba(210,168,255,0.12); }
+    .accent-orange{ background: rgba(255,166,87,0.12); }
+    .accent-red   { background: rgba(248,81,73,0.12); }
+    .accent-teal  { background: rgba(56,211,182,0.12); }
+    .feature-cell h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .feature-cell p { font-size: 15px; color: var(--muted); line-height: 1.7; }
+    .feature-list {
+      list-style: none; margin-top: 20px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .feature-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--muted);
+    }
+    .feature-list li::before {
+      content: '✓';
+      color: var(--accent2); font-weight: 700;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ── AGENTS ── */
+    .agents-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .agent-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      transition: border-color .2s, transform .2s;
+    }
+    .agent-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .agent-avatar {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; margin-bottom: 16px;
+    }
+    .agent-card h4 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .agent-sector { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .agent-card p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow {
+      display: flex; flex-direction: column; gap: 4px;
+      max-width: 760px; margin: 0 auto;
+    }
+    .flow-row {
+      display: flex; align-items: stretch; gap: 4px;
+    }
+    .flow-box {
+      flex: 1; background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px;
+      font-size: 14px;
+    }
+    .flow-box strong { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    .flow-box span { color: var(--muted); }
+    .flow-arrow {
+      display: flex; align-items: center; justify-content: center;
+      padding: 4px; color: var(--muted); font-size: 20px;
+    }
+    .flow-box.highlight { border-color: var(--accent); background: rgba(88,166,255,0.05); }
+
+    /* ── ONTOLOGY ── */
+    .ontology-visual {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 48px; margin-top: 48px;
+      overflow: hidden; position: relative;
+    }
+    .onto-grid {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 16px; position: relative; z-index: 1;
+    }
+    .onto-node {
+      background: var(--bg); border-radius: 12px;
+      padding: 20px 16px; text-align: center;
+      border: 1px solid var(--border);
+      transition: border-color .2s;
+    }
+    .onto-node:hover { border-color: var(--accent); }
+    .onto-icon { font-size: 28px; margin-bottom: 8px; }
+    .onto-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .onto-count { font-size: 24px; font-weight: 800; }
+    .onto-rel { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .onto-connector {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; margin-top: 16px; position: relative; z-index: 1;
+    }
+    .onto-edge {
+      background: rgba(88,166,255,0.06);
+      border: 1px dashed rgba(88,166,255,0.2);
+      border-radius: 10px; padding: 14px;
+      text-align: center; font-size: 12px; color: var(--muted);
+    }
+    .onto-edge strong { display: block; color: var(--accent); font-size: 11px; margin-bottom: 4px; }
+
+    /* ── TECH STACK ── */
+    .stack-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .stack-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .stack-icon { font-size: 28px; flex-shrink: 0; }
+    .stack-name { font-size: 15px; font-weight: 600; }
+    .stack-role { font-size: 12px; color: var(--muted); }
+
+    /* ── USE CASES ── */
+    .usecases { display: flex; flex-direction: column; gap: 48px; }
+    .usecase {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 48px; align-items: start;
+    }
+    .usecase-left {}
+    .usecase-industry {
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .usecase h3 { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+    .usecase-problem { font-size: 15px; color: var(--muted); line-height: 1.6; }
+    .usecase-right {}
+    .usecase-results {
+      list-style: none; display: flex; flex-direction: column; gap: 12px;
+    }
+    .usecase-results li {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px;
+      display: flex; align-items: center; gap: 14px;
+      font-size: 15px;
+    }
+    .result-icon { font-size: 20px; flex-shrink: 0; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, rgba(88,166,255,0.08) 0%, rgba(210,168,255,0.06) 100%);
+      border: 1px solid rgba(88,166,255,0.15);
+      border-radius: 24px; padding: 80px 48px;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800; letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+    .cta-section p { font-size: 18px; color: var(--muted); max-width: 520px; margin: 0 auto 48px; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--muted); font-size: 14px;
+    }
+
+    /* ── TAGS ── */
+    .tag {
+      display: inline-block;
+      background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 6px; padding: 3px 10px;
+      font-size: 12px; color: var(--accent); font-weight: 600;
+    }
+    .tag-green { background: rgba(63,185,80,0.1); border-color: rgba(63,185,80,0.2); color: var(--accent2); }
+    .tag-purple { background: rgba(210,168,255,0.1); border-color: rgba(210,168,255,0.2); color: var(--accent3); }
+    .tag-orange { background: rgba(255,166,87,0.1); border-color: rgba(255,166,87,0.2); color: var(--accent4); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .feature-cell.wide { grid-column: span 1; }
+      .onto-grid { grid-template-columns: repeat(3, 1fr); }
+      .onto-connector { grid-template-columns: repeat(2, 1fr); }
+      .usecase { grid-template-columns: 1fr; gap: 24px; }
+      .nav-cta { display: none; }
+    }
+    @media (max-width: 480px) {
+      section { padding: 64px 0; }
+      .onto-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-icon">⬡</div>
+      Cortex AI
+    </div>
+    <ul class="nav-links">
+      <li><a href="#solution">Solução</a></li>
+      <li><a href="#agents">Agentes</a></li>
+      <li><a href="#ontology">Ontologia</a></li>
+      <li><a href="#usecases">Casos de Uso</a></li>
+      <li><a href="#stack">Tecnologia</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">Agendar Demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-badge">
+      <span>⬡</span> Plataforma de Conhecimento Organizacional com IA
+    </div>
+    <h1>O cérebro que a sua<br>empresa ainda não tem</h1>
+    <p>Cortex AI mapeia, organiza e disponibiliza o conhecimento de cada área do seu negócio via agentes de IA setoriais — com ontologia própria, curadoria estruturada e rastreabilidade total.</p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary">Agendar demonstração</a>
+      <a href="#solution" class="btn-secondary">Ver como funciona</a>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value">100%</div>
+        <div class="stat-label">IA rodando localmente — sem dados na nuvem</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">&lt; 5min</div>
+        <div class="stat-label">Para ingerir e tornar um documento consultável</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">N+∞</div>
+        <div class="stat-label">Setores e agentes simultâneos</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">0 silos</div>
+        <div class="stat-label">Delegação inter-agentes com protocolo seguro</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">O Problema</div>
+      <h2 class="section-title">O conhecimento da empresa<br>existe. Só que ninguém sabe onde.</h2>
+      <p class="section-sub">Cada área guarda seus procedimentos de um jeito diferente. O resultado: retrabalho, decisões erradas e onboarding demorado.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="problem-icon">📁</div>
+        <h3>Conhecimento espalhado e inacessível</h3>
+        <p>SOPs em pastas obscuras, decisões em e-mails, processos críticos que só existem na cabeça de uma pessoa.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">🔄</div>
+        <h3>Processos duplicados entre áreas</h3>
+        <p>Financeiro, Jurídico e Operações descrevem o mesmo processo de três formas diferentes — sem que ninguém saiba.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">🧱</div>
+        <h3>Silos que bloqueiam automação</h3>
+        <p>Sem um mapa claro de processos, identificar o que pode ser automatizado vira uma tarefa de meses de consultoria.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">⏱️</div>
+        <h3>Onboarding demorado e frágil</h3>
+        <p>Novos colaboradores levam semanas para entender como as coisas funcionam — e ainda assim cometem erros evitáveis.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">🔍</div>
+        <h3>Busca que não entende contexto</h3>
+        <p>O buscador da intranet não sabe que "aprovação de contrato" e "assinatura de termo" são o mesmo processo.</p>
+      </div>
+      <div class="problem-card">
+        <div class="problem-icon">📋</div>
+        <h3>Auditoria e compliance às escuras</h3>
+        <p>Provar que um processo foi seguido corretamente exige horas de rastreamento manual em logs e e-mails.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section id="solution">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">A Solução</div>
+      <h2 class="section-title">Uma plataforma que<br>aprende, organiza e responde</h2>
+      <p class="section-sub">Cortex AI ingere os documentos da sua empresa, constrói uma ontologia viva do conhecimento e disponibiliza esse saber via agentes especializados por setor.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Ingestão e Curadoria -->
+      <div class="feature-cell">
+        <div class="feature-accent accent-blue">📥</div>
+        <h3>Ingestão com curadoria estruturada</h3>
+        <p>Todo documento passa por um pipeline de validação antes de entrar na base. Perguntas estruturais são geradas automaticamente conforme o tipo do documento — SOP, norma, FAQ, anúncio — e um <em>readiness score</em> indica o quanto o conteúdo está pronto para publicação.</p>
+        <ul class="feature-list">
+          <li>Suporte a PDF, DOCX, DOC e Markdown</li>
+          <li>Perguntas automáticas por tipo de documento</li>
+          <li>Fluxo de aprovação dupla com histórico</li>
+          <li>Staging isolado por setor antes da promoção</li>
+        </ul>
+      </div>
+
+      <!-- Agentes setoriais -->
+      <div class="feature-cell">
+        <div class="feature-accent accent-green">🤖</div>
+        <h3>Agentes de IA por setor</h3>
+        <p>Cada área da empresa tem seu próprio agente com identidade, instrução e base de conhecimento exclusiva. Quando uma pergunta exige outra área, o agente delega automaticamente via barramento seguro — sem expor dados além do necessário.</p>
+        <ul class="feature-list">
+          <li>Personalidade e instruções configuráveis por setor</li>
+          <li>Delegação inter-agentes com protocolo auditado</li>
+          <li>Respostas com citação de fonte e chunk de origem</li>
+          <li>Controle de acesso: quais setores podem conversar entre si</li>
+        </ul>
+      </div>
+
+      <!-- Grafo de Conhecimento -->
+      <div class="feature-cell wide">
+        <div class="feature-accent accent-purple">🕸️</div>
+        <h3>Grafo de conhecimento organizacional (ontologia)</h3>
+        <p>Cada documento promovido alimenta automaticamente um grafo semântico em Neo4j. Conceitos, procedimentos, sistemas e regulamentações são extraídos pelo LLM e conectados entre si — revelando relações que nenhum índice de texto plano consegue capturar.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+          <ul class="feature-list">
+            <li>Extração automática de entidades por LLM local</li>
+            <li>Nós: Documento, Conceito, Procedimento, Sistema, Regulamentação</li>
+            <li>Relações: HAS_CONCEPT, DESCRIBES, REFERENCES_SYSTEM, COMPLIES_WITH</li>
+          </ul>
+          <ul class="feature-list">
+            <li>Visualização interativa com simulação de forças</li>
+            <li>Análise de impacto: quais docs são afetados se uma norma muda</li>
+            <li>Descoberta de hubs — os conceitos mais críticos do negócio</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Consolidação -->
+      <div class="feature-cell">
+        <div class="feature-accent accent-orange">🔗</div>
+        <h3>Consolidação de processos cross-setor</h3>
+        <p>A plataforma detecta automaticamente quando múltiplos setores descrevem o mesmo processo de formas diferentes e propõe um documento unificado — eliminando contradições e criando a versão oficial.</p>
+        <ul class="feature-list">
+          <li>Busca cross-setor por similaridade semântica</li>
+          <li>Score de evidência por nível de sobreposição</li>
+          <li>Templates: Playbook, Executive Briefing, Onboarding, Compliance</li>
+        </ul>
+      </div>
+
+      <!-- Mapa de Automação -->
+      <div class="feature-cell">
+        <div class="feature-accent accent-teal">⚙️</div>
+        <h3>Mapa de potencial de automação</h3>
+        <p>Com os processos documentados e ranqueados, a plataforma identifica quais têm maior potencial de automação via RPA ou workflow — entregando uma lista priorizada, com evidências, direto aos responsáveis.</p>
+        <ul class="feature-list">
+          <li>Score de automação baseado em estrutura e frequência</li>
+          <li>Evidências: chunks que sustentam cada processo</li>
+          <li>Integração com automações existentes via API</li>
+        </ul>
+      </div>
+
+      <!-- Auditoria -->
+      <div class="feature-cell">
+        <div class="feature-accent accent-red">🔒</div>
+        <h3>Auditoria e rastreabilidade total</h3>
+        <p>Cada pergunta, resposta, delegação inter-agente, aprovação de documento e acionamento de automação é registrado com timestamp, ator, contexto e resultado — sem exceções.</p>
+        <ul class="feature-list">
+          <li>Trilha completa: pergunta → agente → delegação → resposta</li>
+          <li>Feedback de usuários ligado ao evento original</li>
+          <li>Eventos de curadoria: quem aprovou, quando, com qual motivo</li>
+          <li>Detecção de lacunas: perguntas sem resposta adequada</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMO FUNCIONA -->
+<section id="howto">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Como Funciona</div>
+      <h2 class="section-title">Da pasta de SOPs ao<br>agente que responde em segundos</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Ingestão</h3>
+        <p>O time carrega documentos via interface web ou API. PDFs, Word e Markdown são normalizados automaticamente para Markdown estruturado.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Curadoria</h3>
+        <p>O gestor responde perguntas estruturais geradas pelo LLM. Um <em>readiness score</em> mostra o quanto o documento está completo antes de publicar.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Indexação Semântica</h3>
+        <p>O documento é fragmentado em chunks, embeddings são gerados com o modelo local e tudo é indexado no banco vetorial, isolado por setor.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Construção da Ontologia</h3>
+        <p>O LLM extrai conceitos, procedimentos, sistemas e normas do documento e os conecta no grafo de conhecimento da empresa.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <h3>Consulta via Agente</h3>
+        <p>Colaboradores perguntam ao agente do próprio setor em linguagem natural. O agente recupera contexto via RAG + grafo e responde com citações.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <h3>Delegação e Automação</h3>
+        <p>Quando a resposta exige outro setor, o agente delega por barramento seguro. Processos identificáveis podem acionar automações RPA diretamente.</p>
+      </div>
+    </div>
+
+    <!-- MINI FLOW -->
+    <div class="flow" style="margin-top: 64px;">
+      <div class="flow-row">
+        <div class="flow-box">
+          <strong>📄 Documento</strong>
+          <span>PDF · DOCX · DOC · MD</span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <strong>🔧 Normalização</strong>
+          <span>Markdown estruturado</span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">
+          <strong>✏️ Curadoria</strong>
+          <span>Perguntas + readiness score</span>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box highlight">
+          <strong>✅ Promoção</strong>
+          <span>Aprovação dupla</span>
+        </div>
+      </div>
+      <div class="flow-arrow" style="justify-content: flex-end; padding-right: 120px;">↓</div>
+      <div class="flow-row" style="flex-direction: row-reverse;">
+        <div class="flow-box highlight">
+          <strong>💬 Agente responde</strong>
+          <span>RAG + Grafo + Citações</span>
+        </div>
+        <div class="flow-arrow">←</div>
+        <div class="flow-box">
+          <strong>🔍 Busca semântica</strong>
+          <span>Qdrant · Neo4j</span>
+        </div>
+        <div class="flow-arrow">←</div>
+        <div class="flow-box">
+          <strong>🕸️ Ontologia</strong>
+          <span>Conceitos · Sistemas · Normas</span>
+        </div>
+        <div class="flow-arrow">←</div>
+        <div class="flow-box">
+          <strong>📦 Indexação</strong>
+          <span>Embeddings · Chunks · Metadados</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENTES -->
+<section id="agents">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Agentes Setoriais</div>
+      <h2 class="section-title">Cada área tem seu<br>especialista de IA</h2>
+      <p class="section-sub">Os agentes são configurados com personalidade, instruções e base de conhecimento específica. Novos setores são criados sem código — apenas configuração.</p>
+    </div>
+    <div class="agents-grid">
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(88,166,255,0.12);">⚡</div>
+        <div class="agent-sector" style="color: var(--accent);">Engenharia / TI</div>
+        <h4>Agente de Desenvolvimento</h4>
+        <p>Responde sobre APIs, fluxos de deploy, lógica de código e arquitetura de sistemas. Aciona automações técnicas com aprovação imediata.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(248,81,73,0.12);">🛡️</div>
+        <div class="agent-sector" style="color: #f85149;">Segurança / Compliance</div>
+        <h4>Agente de Segurança</h4>
+        <p>Especialista em políticas de acesso, controle de risco, frameworks regulatórios e incidentes. Requer confirmação antes de acionar processos externos.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(63,185,80,0.12);">🎯</div>
+        <div class="agent-sector" style="color: var(--accent2);">Atendimento / Suporte</div>
+        <h4>Agente de Suporte</h4>
+        <p>Triagem de incidentes, SLAs, procedimentos de escalada e impacto ao usuário. Consulta Segurança e Engenharia automaticamente quando necessário.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(210,168,255,0.12);">💼</div>
+        <div class="agent-sector" style="color: var(--accent3);">Jurídico / Regulatório</div>
+        <h4>Agente Regulatório</h4>
+        <p>Contratos, normas, obrigações legais e compliance. Cruza automaticamente com políticas internas de outros setores ao responder.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(255,166,87,0.12);">📊</div>
+        <div class="agent-sector" style="color: var(--accent4);">Financeiro / Operações</div>
+        <h4>Agente Operacional</h4>
+        <p>Procedimentos financeiros, aprovações, limites operacionais e fluxo de caixa. Conecta a bases de dados estruturadas via integração.</p>
+      </div>
+      <div class="agent-card">
+        <div class="agent-avatar" style="background: rgba(56,211,182,0.12);">➕</div>
+        <div class="agent-sector" style="color: #38d3b6;">Personalizado</div>
+        <h4>Qualquer outro setor</h4>
+        <p>Crie agentes para RH, Qualidade, Logística ou qualquer área — via painel admin, sem código. Nome, persona e capacidades configuráveis.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONTOLOGIA -->
+<section id="ontology">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Ontologia Organizacional</div>
+      <h2 class="section-title">Um mapa vivo do<br>conhecimento da empresa</h2>
+      <p class="section-sub">Diferente de uma base de dados, a ontologia do Cortex AI captura as <em>relações</em> entre conceitos — permitindo descobertas que a busca por texto plano nunca encontraria.</p>
+    </div>
+
+    <div class="ontology-visual">
+      <div class="onto-grid">
+        <div class="onto-node">
+          <div class="onto-icon">📄</div>
+          <div class="onto-name" style="color: var(--accent);">Documento</div>
+          <div class="onto-count" style="color: var(--accent);">N</div>
+          <div class="onto-rel">SOPs, normas, FAQs</div>
+        </div>
+        <div class="onto-node">
+          <div class="onto-icon">💡</div>
+          <div class="onto-name" style="color: var(--accent3);">Conceito</div>
+          <div class="onto-count" style="color: var(--accent3);">∞</div>
+          <div class="onto-rel">Termos técnicos únicos</div>
+        </div>
+        <div class="onto-node">
+          <div class="onto-icon">⚙️</div>
+          <div class="onto-name" style="color: var(--accent2);">Procedimento</div>
+          <div class="onto-count" style="color: var(--accent2);">∞</div>
+          <div class="onto-rel">Processos operacionais</div>
+        </div>
+        <div class="onto-node">
+          <div class="onto-icon">🖥️</div>
+          <div class="onto-name" style="color: var(--accent4);">Sistema</div>
+          <div class="onto-count" style="color: var(--accent4);">∞</div>
+          <div class="onto-rel">ERP, APIs, plataformas</div>
+        </div>
+        <div class="onto-node">
+          <div class="onto-icon">📋</div>
+          <div class="onto-name" style="color: #f85149;">Regulamentação</div>
+          <div class="onto-count" style="color: #f85149;">∞</div>
+          <div class="onto-rel">LGPD, ISO, normas internas</div>
+        </div>
+      </div>
+      <div class="onto-connector">
+        <div class="onto-edge">
+          <strong>HAS_CONCEPT</strong>
+          Documento → Conceito
+        </div>
+        <div class="onto-edge">
+          <strong>DESCRIBES</strong>
+          Documento → Procedimento
+        </div>
+        <div class="onto-edge">
+          <strong>REFERENCES_SYSTEM</strong>
+          Documento → Sistema
+        </div>
+        <div class="onto-edge">
+          <strong>COMPLIES_WITH</strong>
+          Documento → Regulamentação
+        </div>
+      </div>
+      <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div style="padding: 16px; background: rgba(88,166,255,0.04); border: 1px solid rgba(88,166,255,0.1); border-radius: 10px; font-size: 14px;">
+          <div style="color: var(--accent); font-weight: 600; margin-bottom: 6px;">🔍 Análise de impacto</div>
+          <div style="color: var(--muted);">Se a norma X mudar, quais documentos e processos são afetados?</div>
+        </div>
+        <div style="padding: 16px; background: rgba(63,185,80,0.04); border: 1px solid rgba(63,185,80,0.1); border-radius: 10px; font-size: 14px;">
+          <div style="color: var(--accent2); font-weight: 600; margin-bottom: 6px;">🔗 Descoberta de conexões</div>
+          <div style="color: var(--muted);">Conceitos usados em vários setores revelam pontos de integração.</div>
+        </div>
+        <div style="padding: 16px; background: rgba(210,168,255,0.04); border: 1px solid rgba(210,168,255,0.1); border-radius: 10px; font-size: 14px;">
+          <div style="color: var(--accent3); font-weight: 600; margin-bottom: 6px;">📊 Hubs de conhecimento</div>
+          <div style="color: var(--muted);">Identifica entidades críticas: o que mais documentos referenciam.</div>
+        </div>
+        <div style="padding: 16px; background: rgba(255,166,87,0.04); border: 1px solid rgba(255,166,87,0.1); border-radius: 10px; font-size: 14px;">
+          <div style="color: var(--accent4); font-weight: 600; margin-bottom: 6px;">⚠️ Cobertura regulatória</div>
+          <div style="color: var(--muted);">Quais normas têm documentação adequada e quais estão expostas.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASOS DE USO -->
+<section id="usecases">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Casos de Uso</div>
+      <h2 class="section-title">Resultados concretos<br>em operações reais</h2>
+    </div>
+    <div class="usecases">
+
+      <div class="usecase">
+        <div class="usecase-left">
+          <div class="usecase-industry">Saúde &amp; Farmácia</div>
+          <h3>Conformidade regulatória contínua</h3>
+          <p class="usecase-problem">Laboratórios e distribuidoras enfrentam dezenas de normas da ANVISA com frequência de atualização alta. Identificar quais SOPs precisam de revisão a cada mudança normativa consome semanas de trabalho manual.</p>
+        </div>
+        <div class="usecase-right">
+          <ul class="usecase-results">
+            <li><span class="result-icon">✅</span> Análise de impacto automática: qual norma mudou → quais SOPs são afetados</li>
+            <li><span class="result-icon">✅</span> Agente de Compliance responde dúvidas regulatórias em segundos com citação de fonte</li>
+            <li><span class="result-icon">✅</span> Trilha de auditoria prova adequação em fiscalizações sem busca manual</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="usecase">
+        <div class="usecase-left">
+          <div class="usecase-industry">Serviços Financeiros</div>
+          <h3>Onboarding e gestão de risco operacional</h3>
+          <p class="usecase-problem">Bancos e fintechs têm processos críticos que dependem de pessoas-chave. Um analista sênior que sai leva consigo anos de conhecimento implícito sobre aprovações, exceções e escaladas.</p>
+        </div>
+        <div class="usecase-right">
+          <ul class="usecase-results">
+            <li><span class="result-icon">✅</span> Conhecimento tácito capturado, curado e disponível para toda equipe</li>
+            <li><span class="result-icon">✅</span> Novos analistas operacionais em dias — não semanas</li>
+            <li><span class="result-icon">✅</span> Processos de exceção documentados e auditáveis</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="usecase">
+        <div class="usecase-left">
+          <div class="usecase-industry">Indústria &amp; Manufatura</div>
+          <h3>Mapeamento e priorização de automação</h3>
+          <p class="usecase-problem">Gestores de excelência operacional sabem que há processos automáveis, mas não têm visibilidade de quais têm maior impacto. A consultoria tradicional leva meses e custa caro.</p>
+        </div>
+        <div class="usecase-right">
+          <ul class="usecase-results">
+            <li><span class="result-icon">✅</span> Ranking de processos por potencial de automação — gerado da base documental existente</li>
+            <li><span class="result-icon">✅</span> Consolidação automática de processos duplicados entre plantas e turnos</li>
+            <li><span class="result-icon">✅</span> Integração direta com ferramentas de RPA para acionamento controlado</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="usecase">
+        <div class="usecase-left">
+          <div class="usecase-industry">Tecnologia &amp; SaaS</div>
+          <h3>Base de conhecimento para suporte técnico</h3>
+          <p class="usecase-problem">Times de suporte L1/L2 perdem tempo buscando respostas em wikis desatualizados, Confluence e Slack. Cada ticket repetido é dinheiro gasto.</p>
+        </div>
+        <div class="usecase-right">
+          <ul class="usecase-results">
+            <li><span class="result-icon">✅</span> Agente de Suporte responde com base nos procedimentos mais recentes — sempre atualizados</li>
+            <li><span class="result-icon">✅</span> Perguntas sem resposta detectadas e sinalizadas para criação de novo conteúdo</li>
+            <li><span class="result-icon">✅</span> Delegação automática para Engenharia quando o incidente exige profundidade técnica</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Tecnologia</div>
+      <h2 class="section-title">Stack de ponta,<br>rodando onde você precisar</h2>
+      <p class="section-sub">Cortex AI opera 100% on-premise ou em nuvem privada. Nenhum dado trafega para servidores externos. LLM, embeddings e banco vetorial rodam dentro da sua infraestrutura.</p>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="stack-icon">⚛️</div>
+        <div>
+          <div class="stack-name">Next.js + React</div>
+          <div class="stack-role">Interface web — App Router</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🦙</div>
+        <div>
+          <div class="stack-name">Ollama (LLM local)</div>
+          <div class="stack-role">Chat · Embeddings · Extração</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">📐</div>
+        <div>
+          <div class="stack-name">Qdrant</div>
+          <div class="stack-role">Banco vetorial por setor</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🕸️</div>
+        <div>
+          <div class="stack-name">Neo4j</div>
+          <div class="stack-role">Grafo de conhecimento</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🐇</div>
+        <div>
+          <div class="stack-name">RabbitMQ</div>
+          <div class="stack-role">Barramento inter-agentes</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🗄️</div>
+        <div>
+          <div class="stack-name">PostgreSQL + Prisma</div>
+          <div class="stack-role">Persistência e auditoria</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🔐</div>
+        <div>
+          <div class="stack-name">Auth.js</div>
+          <div class="stack-role">Autenticação por credenciais</div>
+        </div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-icon">🐳</div>
+        <div>
+          <div class="stack-name">Docker Compose</div>
+          <div class="stack-role">Stack completa em containers</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <span class="tag">On-premise</span>
+      <span class="tag">Nuvem privada</span>
+      <span class="tag-green">Zero data egress</span>
+      <span class="tag-green">LLM local</span>
+      <span class="tag-purple">Multi-setor</span>
+      <span class="tag-purple">Multi-tenant ready</span>
+      <span class="tag-orange">Audit trail completo</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-section">
+      <h2>Transforme o conhecimento<br>da sua empresa em vantagem competitiva</h2>
+      <p>Agende uma demonstração personalizada. Em 30 minutos você verá o sistema funcionando com documentos reais da sua operação.</p>
+      <div class="cta-actions">
+        <a href="mailto:contato@cortexai.com.br" class="btn-primary">Agendar demonstração</a>
+        <a href="mailto:comercial@cortexai.com.br" class="btn-secondary">Falar com vendas</a>
+      </div>
+      <div style="margin-top: 48px; display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;">
+        <div style="text-align: center;">
+          <div style="font-size: 13px; color: var(--muted);">Implementação</div>
+          <div style="font-weight: 700; color: var(--text);">Em dias, não meses</div>
+        </div>
+        <div style="width: 1px; background: var(--border);"></div>
+        <div style="text-align: center;">
+          <div style="font-size: 13px; color: var(--muted);">Privacidade</div>
+          <div style="font-weight: 700; color: var(--text);">Dados nunca saem da sua infra</div>
+        </div>
+        <div style="width: 1px; background: var(--border);"></div>
+        <div style="text-align: center;">
+          <div style="font-size: 13px; color: var(--muted);">Suporte</div>
+          <div style="font-weight: 700; color: var(--text);">Dedicado na implantação</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+      <div class="logo-icon" style="width:24px;height:24px;font-size:12px;">⬡</div>
+      <span style="font-weight: 700; color: var(--text);">Cortex AI</span>
+    </div>
+    <p>Plataforma de mapeamento de processos e conhecimento organizacional com IA.</p>
+    <p style="margin-top: 8px; font-size: 12px; color: #444d56;">Todos os modelos de linguagem rodam localmente. Nenhum dado é enviado a terceiros.</p>
+  </div>
+</footer>
+
+</body>
+</html>

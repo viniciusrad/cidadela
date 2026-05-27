@@ -1,0 +1,109 @@
+services:
+  app:
+    image: ${APP_IMAGE:-pfrm-secure-agents:homolog}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    ports:
+      - "${APP_BIND_ADDRESS:-0.0.0.0}:${APP_PORT:-3030}:3030"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - AUTH_SECRET=${AUTH_SECRET:?AUTH_SECRET is required}
+      - AUTH_TRUST_HOST=${AUTH_TRUST_HOST:-true}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:?NEXTAUTH_URL is required}
+      - DATABASE_URL=${DATABASE_URL:?DATABASE_URL is required}
+      - QDRANT_URL=${QDRANT_URL:?QDRANT_URL is required}
+      - OLLAMA_URL=${OLLAMA_URL:?OLLAMA_URL is required}
+      - RABBITMQ_URL=${RABBITMQ_URL:?RABBITMQ_URL is required}
+      - NEO4J_URI=${NEO4J_URI:?NEO4J_URI is required}
+      - NEO4J_USER=${NEO4J_USER:-neo4j}
+      - NEO4J_PASSWORD=${NEO4J_PASSWORD:?NEO4J_PASSWORD is required}
+      - QDRANT_API_KEY
+      - QDRANT_COLLECTION_SECURITY
+      - QDRANT_COLLECTION_SUPPORT
+      - QDRANT_COLLECTION_DEV
+      - QDRANT_COLLECTION_DESKTOP
+      - QDRANT_STAGING_COLLECTION_SECURITY
+      - QDRANT_STAGING_COLLECTION_SUPPORT
+      - QDRANT_STAGING_COLLECTION_DEV
+      - QDRANT_STAGING_COLLECTION_DESKTOP
+      - QDRANT_VECTOR_SIZE
+      - SOP_OUTPUT_DIR=/app/files/sop
+      - SOP_READINESS_THRESHOLD
+      - CURATION_REQUIRES_OWNER_APPROVAL
+      - CURATION_REQUIRES_ADMIN_APPROVAL
+      - CURATION_ALLOW_SAME_USER_DUAL_APPROVAL
+      - OLLAMA_EMBED_MODEL
+      - OLLAMA_CHAT_MODEL
+      - OLLAMA_CLASSIFIER_MODEL
+      - RERANKER_ENABLED
+      - RERANKER_MODEL
+      - RABBITMQ_MANAGEMENT_URL
+      - CHAT_TOP_K
+      - CHAT_LOCAL_CONFIDENCE_THRESHOLD
+      - BUS_RPC_TIMEOUT_MS
+      - BUS_BOOTSTRAP_ENABLED
+      - ROUTER_MODE
+      - HUMAN_CAPTCHA_API_URL
+      - HUMAN_CAPTCHA_INTERNAL_TOKEN
+      - HUMAN_CAPTCHA_CERVELLO_TIMEOUT_MS
+      - HUMAN_CAPTCHA_AUTOMATION_TIMEOUT_MS
+      - HUMAN_CAPTCHA_CERVELLO_PROCESS_KEY
+      - HUMAN_CAPTCHA_MEDICATION_PRICE_PROCESS_KEY
+      - HUMAN_CAPTCHA_CURRENCY_INDEX_PROCESS_KEY
+      - SEARCH_PORTAL_URL
+      - SEARCH_PORTAL_PUBLIC_URL
+      - SEARCH_PORTAL_TIMEOUT_MS
+      - SEARCH_PORTAL_ALLOWED_SECTORS
+      - MCP_EDI_ENABLED
+      - MCP_EDI_URL
+      - MCP_EDI_TIMEOUT_MS
+      - MCP_EDI_ALLOWED_SECTORS
+      - TEAMS_WEBHOOK_GAPS
+      - TEAMS_WEBHOOK_DIGEST
+      - NOTIFICATIONS_ENABLED
+      - NOTIFICATIONS_INTERVAL_MS
+      - WEEKLY_DIGEST_INTERVAL_MS
+      - PILOT_USER_EMAILS
+      - PILOT_SECTOR
+      - PILOT_START_DATE
+      - PILOT_SPONSOR
+      - PILOT_CHAMPION
+    volumes:
+      - knowledge_artifacts:/app/files
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3030/api/health/live').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  migrate:
+    profiles: ["ops"]
+    image: ${MIGRATOR_IMAGE:-pfrm-secure-agents-migrator:homolog}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      - DATABASE_URL=${DATABASE_URL:?DATABASE_URL is required}
+    restart: "no"
+    command: ["npx", "prisma", "migrate", "deploy"]
+
+volumes:
+  knowledge_artifacts:

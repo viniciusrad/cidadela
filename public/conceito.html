@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFRM Secure Agents — O Conceito</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --brand-primary: #38bdf8;
+            --brand-secondary: #a78bfa;
+            --brand-accent: #f472b6;
+            --bg-dark: #030712;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(167, 139, 250, 0.12), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.06), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-3%, 3%) scale(1.1); }
+        }
+
+        main { position: relative; z-index: 1; }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 3rem 8rem;
+            animation: slideIn 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide.active .reveal { animation: fadeUp 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
+        .slide.active .reveal-1 { animation-delay: 0.1s; }
+        .slide.active .reveal-2 { animation-delay: 0.25s; }
+        .slide.active .reveal-3 { animation-delay: 0.4s; }
+        .slide.active .reveal-4 { animation-delay: 0.55s; }
+        .slide.active .reveal-5 { animation-delay: 0.7s; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 10%, #38bdf8 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-warm {
+            background: linear-gradient(135deg, #fbbf24 0%, #f472b6 60%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-cool {
+            background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--brand-primary);
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .tag-warm {
+            background: rgba(244, 114, 182, 0.08);
+            color: var(--brand-accent);
+            border-color: rgba(244, 114, 182, 0.2);
+        }
+
+        .tag-warn {
+            background: rgba(239, 68, 68, 0.08);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        /* Promise card (Winston's empowerment promise) */
+        .promise-card {
+            background:
+                linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(167, 139, 250, 0.05));
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promise-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(56, 189, 248, 0.1), transparent 30%);
+            animation: rotate 8s linear infinite;
+        }
+
+        .promise-card > * { position: relative; z-index: 1; }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 40px -20px rgba(56, 189, 248, 0.3);
+        }
+
+        .nav-btn {
+            cursor: pointer;
+            padding: 0.7rem 1.4rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-btn:hover {
+            background: var(--brand-primary);
+            color: #020617;
+            border-color: var(--brand-primary);
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .slide-marker {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.2em;
+            z-index: 50;
+            text-transform: uppercase;
+        }
+
+        /* Huge stat numbers */
+        .mega-stat {
+            font-size: clamp(8rem, 18vw, 14rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            font-feature-settings: 'tnum';
+        }
+
+        /* Trinity visualization */
+        .trinity-node {
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .trinity-node::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            opacity: 0;
+            z-index: -1;
+            filter: blur(20px);
+            transition: opacity 0.4s ease;
+        }
+
+        .trinity-node:hover::after { opacity: 0.5; }
+
+        /* Before/after comparison */
+        .compare-col {
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            min-height: 100%;
+        }
+
+        .compare-before {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), transparent);
+        }
+
+        .compare-after {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(56, 189, 248, 0.05));
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .quote-mark {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 7rem;
+            line-height: 1;
+            color: var(--brand-primary);
+            opacity: 0.3;
+        }
+
+        .slogan {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        /* Timeline */
+        .timeline-step {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .timeline-step::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 2rem;
+            bottom: -2rem;
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(56, 189, 248, 0.4), transparent);
+        }
+
+        .timeline-step:last-child::before { display: none; }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2), 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .timeline-step.pending .timeline-dot {
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.04);
+        }
+
+        .timeline-step.current .timeline-dot {
+            background: var(--brand-accent);
+            box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.2), 0 0 30px rgba(244, 114, 182, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .pillar-icon {
+            width: 4rem;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        kbd {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-bottom-width: 2px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.75rem;
+        }
+
+        .ring-glow { box-shadow: 0 0 80px -20px var(--brand-primary); }
+
+        .hint-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        .hint-line::before {
+            content: '';
+            display: block;
+            width: 1.5rem;
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Big number for surprise slide */
+        .surprise-percent {
+            font-size: clamp(10rem, 22vw, 18rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.05em;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <div class="slide-marker" id="slideMarker">SLIDE 01 / 09</div>
+
+    <main id="presentation-container">
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 1 — PROMISE (Winston's empowerment promise opener)      -->
+        <!-- ============================================================ -->
+        <section class="slide active" id="slide-1">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-bolt"></i> O Conceito</div>
+                <h1 class="text-7xl md:text-8xl font-extrabold tracking-tight mb-10 reveal reveal-2 leading-none">
+                    A peça que <span class="gradient-text">faltava</span><br>
+                    para a era dos <span class="gradient-text-warm">agentes</span>.
+                </h1>
+
+                <div class="promise-card reveal reveal-3 max-w-3xl">
+                    <div class="text-xs uppercase tracking-[0.25em] text-sky-400 font-bold mb-3 flex items-center gap-2">
+                        <i class="fas fa-handshake"></i> Promessa desta apresentação
+                    </div>
+                    <p class="text-2xl md:text-3xl font-light leading-snug">
+                        Em <b class="font-bold">9 slides</b>, você vai entender por que toda companhia hoje tem
+                        <span class="text-sky-400 font-semibold">IA</span> — mas quase nenhuma tem
+                        <span class="text-pink-400 font-semibold">agentes em produção</span> — e qual é o
+                        <b class="font-bold">único conceito</b> que destrava essa virada.
+                    </p>
+                </div>
+
+                <div class="mt-12 reveal reveal-4 flex flex-wrap gap-8 text-sm text-slate-500">
+                    <div class="flex items-center gap-2"><kbd>→</kbd> avançar</div>
+                    <div class="flex items-center gap-2"><kbd>←</kbd> voltar</div>
+                    <div class="flex items-center gap-2"><kbd>Esc</kbd> visão geral</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 2 — THE QUESTION (engage the audience, Winston)         -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-2">
+            <div class="max-w-5xl mx-auto w-full text-center">
+                <div class="tag reveal reveal-1 mb-10"><i class="fas fa-question"></i> A pergunta certa</div>
+
+                <h2 class="reveal reveal-2 text-5xl md:text-7xl font-extrabold tracking-tight leading-tight mb-12">
+                    Por que <span class="text-red-300">toda</span> iniciativa de IA corporativa<br>
+                    <span class="gradient-text-warm">estagna no piloto?</span>
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+                    <div class="reveal reveal-3 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-2"><i class="fas fa-folder-open"></i></div>
+                        <div class="font-bold mb-1">"Falta dado."</div>
+                        <div class="text-sm text-slate-500 line-through">Você tem dado demais.</div>
+                    </div>
+                    <div class="reveal reveal-4 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-2"><i class="fas fa-microchip"></i></div>
+                        <div class="font-bold mb-1">"Falta modelo."</div>
+                        <div class="text-sm text-slate-500 line-through">O modelo é commodity.</div>
+                    </div>
+                    <div class="reveal reveal-5 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-2"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="font-bold mb-1">"Falta orçamento."</div>
+                        <div class="text-sm text-slate-500 line-through">Você já gastou.</div>
+                    </div>
+                </div>
+
+                <p class="reveal reveal-5 text-xl text-slate-400 max-w-2xl mx-auto">
+                    Nenhuma dessas é a resposta. <span class="text-white font-semibold">Vire o slide.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 3 — SURPRISE (Winston's S — single shocking number)     -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-3">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag tag-warn reveal reveal-1 mb-8"><i class="fas fa-triangle-exclamation"></i> A surpresa</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="reveal reveal-2">
+                        <div class="surprise-percent gradient-text-warm">50<span class="text-5xl align-top">%</span></div>
+                        <div class="text-2xl font-semibold mt-4 text-slate-200">
+                            dos projetos de GenAI, até o fim de 2025,<br>
+                            <span class="text-pink-300">foram abandonados após PoC.</span>
+                        </div>
+                        <a
+                            href="https://www.gartner.com/en/articles/genai-project-failure"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center gap-2 text-xs text-slate-500 hover:text-sky-300 mt-3 font-mono transition-colors"
+                        >
+                            Gartner, 26 jan. 2026 · ver fonte <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+
+                    <div class="reveal reveal-3 space-y-4">
+                        <div class="text-sm uppercase tracking-widest text-sky-400 font-bold mb-2">
+                            E não é por causa do modelo.
+                        </div>
+                        <h3 class="text-4xl font-bold leading-tight mb-6">
+                            É porque o modelo <span class="text-red-300">não sabe</span><br>
+                            o que a sua empresa <span class="gradient-text">sabe</span>.
+                        </h3>
+                        <div class="card border-l-4 border-l-pink-400">
+                            <p class="text-lg text-slate-300">
+                                <i class="fas fa-quote-left text-pink-400 mr-3"></i>
+                                A IA generalista <b>alucina sobre o seu negócio</b> porque foi
+                                treinada sobre o mundo — não sobre a <b>sua operação</b>,
+                                seus SOPs, seus riscos, sua governança.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 4 — THE STORY (Winston's S — narrative arc, where we are) -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-4">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-route"></i> A história</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    Três gerações de IA corporativa.
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-14 max-w-3xl">
+                    Toda companhia atravessa esta trilha. Quase nenhuma chega ao fim.
+                </p>
+
+                <div class="space-y-10 max-w-4xl">
+                    <div class="timeline-step pending reveal reveal-3">
+                        <div class="timeline-dot"></div>
+                        <div class="text-xs font-mono text-slate-500 mb-1">2022 — 2023</div>
+                        <h3 class="text-3xl font-bold text-slate-400 mb-2">Era do <span class="line-through">Chatbot</span></h3>
+                        <p class="text-slate-500">Responde. Não age. Não cita fonte. Não tem memória corporativa.</p>
+                    </div>
+
+                    <div class="timeline-step pending reveal reveal-4">
+                        <div class="timeline-dot"></div>
+                        <div class="text-xs font-mono text-slate-500 mb-1">2024 — 2025</div>
+                        <h3 class="text-3xl font-bold text-slate-300 mb-2">Era do <span>Copilot</span></h3>
+                        <p class="text-slate-400">Ajuda o humano. Mas o humano continua sendo o gargalo.</p>
+                    </div>
+
+                    <div class="timeline-step current reveal reveal-5">
+                        <div class="timeline-dot"></div>
+                        <div class="text-xs font-mono text-pink-300 mb-1">AGORA</div>
+                        <h3 class="text-4xl font-extrabold gradient-text-warm mb-2">Era do Agente</h3>
+                        <p class="text-slate-200 text-lg">
+                            <b>Decide. Executa. Responde por seus atos.</b><br>
+                            Mas só funciona com <b class="text-sky-400">conhecimento curado, agentes setoriais e governança auditável</b>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 5 — SYMBOL (Winston's S — the trinity, the conceptual core) -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-5">
+            <div class="max-w-6xl mx-auto w-full text-center">
+                <div class="tag reveal reveal-1 mb-6"><i class="fas fa-gem"></i> O Símbolo</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-3">
+                    O conceito cabe em <span class="gradient-text">três pilares</span>.
+                </h2>
+                <p class="reveal reveal-2 text-lg text-slate-400 mb-14 max-w-2xl mx-auto">
+                    Tire qualquer um e o agente desmorona. Junte os três e a era da automação destrava.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="trinity-node card reveal reveal-3 text-left">
+                        <div class="pillar-icon bg-sky-500/15 text-sky-400">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-1">Pilar 1</div>
+                        <h3 class="text-2xl font-bold mb-3">Conhecimento curado</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Não é dado. É <b class="text-white">SOP versionado</b>, com
+                            curador setorial, aprovação rastreada e zero alucinação.
+                        </p>
+                    </div>
+
+                    <div class="trinity-node card reveal reveal-4 text-left ring-glow" style="border-color: rgba(167, 139, 250, 0.4);">
+                        <div class="pillar-icon bg-purple-500/15 text-purple-300">
+                            <i class="fas fa-people-group"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-purple-300 mb-1">Pilar 2</div>
+                        <h3 class="text-2xl font-bold mb-3">Agentes especialistas</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            <b class="text-white">Forja, Sentinela, Suporte.</b>
+                            Cada um com escopo, prompt, permissões e ações próprias.
+                            Conversam entre si — como um time real.
+                        </p>
+                    </div>
+
+                    <div class="trinity-node card reveal reveal-5 text-left">
+                        <div class="pillar-icon bg-pink-500/15 text-pink-300">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-1">Pilar 3</div>
+                        <h3 class="text-2xl font-bold mb-3">Governança auditável</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Cada resposta tem <b class="text-white">fonte</b>. Cada ação tem
+                            <b class="text-white">justificativa</b>. Cada disparo tem
+                            <b class="text-white">trilha</b>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-5 mt-12 text-2xl font-light text-slate-300">
+                    Esse triângulo tem nome: <span class="font-bold gradient-text">PFRM Secure Agents</span>.
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 6 — SLOGAN (Winston's S — the memorable line)           -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-6">
+            <div class="max-w-5xl mx-auto w-full">
+                <div class="tag tag-warm reveal reveal-1 mb-12"><i class="fas fa-quote-left"></i> O Slogan</div>
+
+                <div class="quote-mark reveal reveal-2">"</div>
+
+                <h2 class="slogan reveal reveal-3 mb-8">
+                    Não é mais um <span class="text-slate-500 line-through">chatbot</span>.<br>
+                    É o <span class="gradient-text">sistema nervoso</span><br>
+                    da automação por agentes.
+                </h2>
+
+                <div class="reveal reveal-4 grid grid-cols-1 md:grid-cols-3 gap-4 mt-12 max-w-4xl">
+                    <div class="hint-line">Sente o contexto da operação</div>
+                    <div class="hint-line">Decide com evidência citada</div>
+                    <div class="hint-line">Aciona o músculo certo</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 7 — PROOF (Winston's "verbal punctuation": THIS exists) -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-7">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-6"><i class="fas fa-circle-check"></i> A prova</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    Isto não é <span class="text-slate-500 italic">slideware</span>.
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-10 max-w-3xl">
+                    O produto já está <b class="text-emerald-400">operacional</b>. Cada captura abaixo é uma tela viva, hoje, dentro da PFRM.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="reveal reveal-3 card p-3 overflow-hidden">
+                        <img src="screenshots/chat.png" alt="Chat com evidência" class="w-full rounded-md mb-3" style="border: 1px solid rgba(255,255,255,0.08)">
+                        <div class="px-3 pb-2">
+                            <div class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-1">Pilar 1 + 2</div>
+                            <div class="font-bold">Chat com fonte clicável</div>
+                            <div class="text-sm text-slate-500">Toda resposta cita o SOP que a fundamentou.</div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-4 card p-3 overflow-hidden">
+                        <img src="screenshots/curation.png" alt="Curadoria" class="w-full rounded-md mb-3" style="border: 1px solid rgba(255,255,255,0.08)">
+                        <div class="px-3 pb-2">
+                            <div class="text-xs font-mono uppercase tracking-widest text-emerald-400 mb-1">Pilar 1</div>
+                            <div class="font-bold">Curadoria com staging</div>
+                            <div class="text-sm text-slate-500">Documento só vira SOP depois de aprovado pelo setor dono.</div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-4 card p-3 overflow-hidden">
+                        <img src="screenshots/graph.png" alt="Knowledge graph" class="w-full rounded-md mb-3" style="border: 1px solid rgba(255,255,255,0.08)">
+                        <div class="px-3 pb-2">
+                            <div class="text-xs font-mono uppercase tracking-widest text-purple-300 mb-1">Pilar 2 + 3</div>
+                            <div class="font-bold">Grafo do conhecimento</div>
+                            <div class="text-sm text-slate-500">Quem sabe o quê. Onde estão os silos. Quais agentes cobrem qual território.</div>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-5 card p-3 overflow-hidden">
+                        <img src="screenshots/feedback.png" alt="Feedback e auditoria" class="w-full rounded-md mb-3" style="border: 1px solid rgba(255,255,255,0.08)">
+                        <div class="px-3 pb-2">
+                            <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-1">Pilar 3</div>
+                            <div class="font-bold">Auditoria viva</div>
+                            <div class="text-sm text-slate-500">Cada pergunta, fonte, ação e justificativa fica rastreável.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 8 — BEFORE/AFTER (cycle on the salient idea, Winston)   -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-8">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-6"><i class="fas fa-arrows-left-right"></i> A virada</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-12">
+                    O que muda na <span class="gradient-text">terça-feira de manhã</span>.
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="compare-col compare-before reveal reveal-3">
+                        <div class="tag tag-warn mb-6"><i class="fas fa-circle-xmark"></i> Sem o Secure Agents</div>
+                        <ul class="space-y-5 text-lg text-slate-300">
+                            <li class="flex gap-3"><i class="fas fa-circle-xmark text-red-400 mt-1.5 flex-shrink-0"></i><span>O analista <b>perde 40min</b> procurando o SOP correto.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-xmark text-red-400 mt-1.5 flex-shrink-0"></i><span>O ChatGPT público <b>inventa</b> um processo que não existe aqui.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-xmark text-red-400 mt-1.5 flex-shrink-0"></i><span>O chamado entra <b>sem contexto</b> no Cervello.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-xmark text-red-400 mt-1.5 flex-shrink-0"></i><span>Compliance descobre o uso de IA <b>depois</b> que algo vazou.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-xmark text-red-400 mt-1.5 flex-shrink-0"></i><span>A empresa <b>fala de agentes</b>. Não <b>opera com agentes</b>.</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="compare-col compare-after reveal reveal-4">
+                        <div class="tag mb-6" style="background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.3);"><i class="fas fa-circle-check"></i> Com o Secure Agents</div>
+                        <ul class="space-y-5 text-lg text-slate-100">
+                            <li class="flex gap-3"><i class="fas fa-circle-check text-emerald-400 mt-1.5 flex-shrink-0"></i><span>O analista <b>pergunta em linguagem natural</b> e recebe resposta com fonte clicável.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-check text-emerald-400 mt-1.5 flex-shrink-0"></i><span>A resposta <b>só vem do corpus aprovado</b> — alucinação some.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-check text-emerald-400 mt-1.5 flex-shrink-0"></i><span>O agente <b>abre o chamado pelo próprio chat</b>, já com contexto.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-check text-emerald-400 mt-1.5 flex-shrink-0"></i><span>Compliance acompanha <b>em tempo real</b>, por trilha auditável.</span></li>
+                            <li class="flex gap-3"><i class="fas fa-circle-check text-emerald-400 mt-1.5 flex-shrink-0"></i><span>A companhia <b>vira referência</b> em automação por agentes no setor.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 9 — CONTRIBUTIONS (Winston: end with what you delivered) -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-9">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag tag-warm reveal reveal-1 mb-8"><i class="fas fa-flag-checkered"></i> Contribuições</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-7xl font-extrabold mb-3 leading-none">
+                    O que você <span class="gradient-text-cool">leva</span> daqui.
+                </h2>
+                <p class="reveal reveal-2 text-lg text-slate-400 mb-12">
+                    (Winston ensina: a apresentação termina com <b>contribuições</b>, não com "obrigado".)
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="reveal reveal-3 card">
+                        <div class="text-5xl font-extrabold gradient-text mb-3">01</div>
+                        <h3 class="text-xl font-bold mb-2">Um conceito</h3>
+                        <p class="text-sm text-slate-400">
+                            <b>Conhecimento curado × Agentes setoriais × Governança auditável.</b>
+                            O tripé que destrava a era dos agentes.
+                        </p>
+                    </div>
+
+                    <div class="reveal reveal-4 card">
+                        <div class="text-5xl font-extrabold gradient-text-warm mb-3">02</div>
+                        <h3 class="text-xl font-bold mb-2">Um produto pronto</h3>
+                        <p class="text-sm text-slate-400">
+                            <b>PFRM Secure Agents</b> — já rodando, com chat, curadoria, grafo e auditoria
+                            integrados. Não é roadmap, é hoje.
+                        </p>
+                    </div>
+
+                    <div class="reveal reveal-5 card">
+                        <div class="text-5xl font-extrabold gradient-text-cool mb-3">03</div>
+                        <h3 class="text-xl font-bold mb-2">Uma decisão</h3>
+                        <p class="text-sm text-slate-400">
+                            Ser a companhia que <b>fala</b> de agentes,
+                            ou ser a companhia que <b>opera</b> com agentes.
+                            Essa decisão pode ser tomada nesta sala.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-5 promise-card flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+                    <div>
+                        <div class="text-xs uppercase tracking-[0.25em] text-sky-400 font-bold mb-2">Próximo passo</div>
+                        <p class="text-2xl font-bold">Veja a peça funcionando.</p>
+                        <p class="text-slate-400">Abra o portal e converse com o agente que você acabou de conhecer no conceito.</p>
+                    </div>
+                    <button onclick="window.location.href='/'" class="px-8 py-4 bg-sky-500 hover:bg-sky-400 text-slate-900 font-bold rounded-full text-lg transition-all shadow-lg shadow-sky-500/30 whitespace-nowrap">
+                        Entrar no portal <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navegação -->
+    <nav class="fixed bottom-8 left-0 right-0 flex justify-center items-center gap-6 z-50">
+        <button id="prevBtn" class="nav-btn"><i class="fas fa-chevron-left mr-2"></i>Anterior</button>
+        <div class="px-5 py-2 bg-slate-900/60 backdrop-blur-md rounded-full border border-slate-800 font-mono text-sm">
+            <span id="slideNumber" class="text-sky-400 font-bold">01</span>
+            <span class="text-slate-600 mx-1">/</span>
+            <span class="text-slate-400">09</span>
+        </div>
+        <button id="nextBtn" class="nav-btn">Próximo<i class="fas fa-chevron-right ml-2"></i></button>
+    </nav>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+
+        const slides = document.querySelectorAll('.slide');
+        const slideNumberDisplay = document.getElementById('slideNumber');
+        const slideMarker = document.getElementById('slideMarker');
+        const progressFill = document.getElementById('progressFill');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const pad = n => String(n).padStart(2, '0');
+
+        function updateUI() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide - 1);
+            });
+
+            slideNumberDisplay.innerText = pad(currentSlide);
+            slideMarker.innerText = `SLIDE ${pad(currentSlide)} / ${pad(totalSlides)}`;
+            progressFill.style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+            prevBtn.style.opacity = currentSlide === 1 ? '0.3' : '1';
+            prevBtn.style.pointerEvents = currentSlide === 1 ? 'none' : 'auto';
+
+            if (currentSlide === totalSlides) {
+                nextBtn.innerHTML = 'Reiniciar <i class="fas fa-rotate-left ml-2"></i>';
+            } else {
+                nextBtn.innerHTML = 'Próximo <i class="fas fa-chevron-right ml-2"></i>';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function goToNext() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+            } else {
+                currentSlide = 1;
+            }
+            updateUI();
+        }
+
+        function goToPrev() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        nextBtn.onclick = goToNext;
+        prevBtn.onclick = goToPrev;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter' || e.key === 'PageDown') {
+                e.preventDefault();
+                goToNext();
+            }
+            if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+                e.preventDefault();
+                goToPrev();
+            }
+            if (e.key === 'Home') { currentSlide = 1; updateUI(); }
+            if (e.key === 'End') { currentSlide = totalSlides; updateUI(); }
+        });
+
+        // Touch
+        let touchstartX = 0;
+        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].screenX - touchstartX;
+            if (dx < -50) goToNext();
+            if (dx > 50) goToPrev();
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>

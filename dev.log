@@ -1,0 +1,94 @@
+
+> pfrm-secure-agents@0.1.0 dev
+> cross-env NODE_ENV=development next dev -p 3030
+
+▲ Next.js 16.2.2 (Turbopack)
+- Local:         http://localhost:3030
+- Network:       http://192.168.0.175:3030
+- Environments: .env.local, .env
+✓ Ready in 823ms
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\temp\repo\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\package-lock.json
+
+
+ GET /admin/content 200 in 1165ms (next.js: 520ms, proxy.ts: 368ms, application-code: 277ms)
+ GET /chat 200 in 1274ms (next.js: 195ms, proxy.ts: 373ms, application-code: 705ms)
+ GET /api/admin/chunks?sector=todos&mode=text&limit=50 200 in 820ms (next.js: 382ms, proxy.ts: 34ms, application-code: 403ms)
+ GET /admin/content 200 in 82ms (next.js: 5ms, proxy.ts: 16ms, application-code: 61ms)
+ GET /api/admin/chunks?sector=todos&mode=text&limit=50 200 in 210ms (next.js: 8ms, proxy.ts: 26ms, application-code: 176ms)
+ GET /api/conversations/4ab0c38e-60ed-4601-b6ad-085bb205791a 200 in 1453ms (next.js: 1313ms, proxy.ts: 80ms, application-code: 59ms)
+ GET /api/admin/chunks?sector=todos&mode=text&limit=50&q=zsd 200 in 95ms (next.js: 5ms, proxy.ts: 10ms, application-code: 79ms)
+ GET /api/admin/chunks?sector=todos&mode=text&limit=50&q=monta_retorno 200 in 41ms (next.js: 3ms, proxy.ts: 8ms, application-code: 30ms)
+ GET /api/admin/chunks?sector=todos&mode=semantic&limit=50&q=monta_retorno 200 in 6.8s (next.js: 7ms, proxy.ts: 13ms, application-code: 6.8s)
+ GET /api/admin/chunks?sector=todos&mode=semantic&limit=50&q=como+reemitir+uma+nota+fiscal+que+ficou+pendente 200 in 279ms (next.js: 5ms, proxy.ts: 13ms, application-code: 261ms)
+ GET /login 200 in 125ms (next.js: 58ms, application-code: 68ms)
+ POST /admin/content 303 in 174ms (next.js: 4ms, proxy.ts: 10ms, application-code: 161ms)
+  └─ ƒ <inline action>() in 20ms components/logout-button.tsx
+[31m[auth][error][0m CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin
+    at Module.callback (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_@auth_core_0tc-eos._.js:4314:30)
+    at async AuthInternal (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_@auth_core_0tc-eos._.js:5162:24)
+    at async Auth (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_@auth_core_0tc-eos._.js:5384:34)
+    at async signIn (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\[root-of-the-server]__0oz5fgm._.js:6051:17)
+    at async loginAction (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\[root-of-the-server]__0f36w1c._.js:306:9)
+    at async executeActionAndPrepareForRender (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:64:5248)
+    at async C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:64:1986
+    at async handleAction (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:62:25378)
+    at async renderToHTMLOrFlightImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:69:55630)
+    at async doRender (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_06xxj1m._.js:4481:28)
+    at async AppPageRouteModule.handleResponse (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.dev.js:71:63567)
+    at async handleResponse (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_06xxj1m._.js:4756:32)
+    at async Module.handler (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\.next\dev\server\chunks\ssr\0n_p_06xxj1m._.js:5159:20)
+    at async DevServer.renderToResponseWithComponentsImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1454:9)
+    at async DevServer.renderPageComponent (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1506:24)
+    at async DevServer.renderToResponseImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1556:32)
+    at async DevServer.pipeImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:1043:25)
+    at async NextNodeServer.handleCatchallRenderRequest (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\next-server.js:338:17)
+    at async DevServer.handleRequestImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\base-server.js:934:17)
+    at async C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\dev\next-dev-server.js:394:20
+    at async Span.traceAsyncFn (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\trace\trace.js:164:20)
+    at async DevServer.handleRequest (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\dev\next-dev-server.js:390:24)
+    at async invokeRender (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\lib\router-server.js:266:21)
+    at async handleRequest (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\lib\router-server.js:465:24)
+    at async requestHandlerImpl (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\lib\router-server.js:514:13)
+    at async Server.requestListener (C:\temp\repo\pfrm-secure-chat\pfrm-secure-agents\node_modules\next\dist\server\lib\start-server.js:225:13)
+ POST /login 200 in 149ms (next.js: 5ms, application-code: 144ms)
+  └─ ƒ loginAction({"error":null}, {}) in 126ms app/login/actions.ts
+ GET /chat 200 in 75ms (next.js: 10ms, proxy.ts: 11ms, application-code: 54ms)
+ POST /login 303 in 185ms (next.js: 3ms, application-code: 183ms)
+  └─ ƒ loginAction({"error":"Credenciais invalidas. Revise email e senha."}, {}) in 94ms app/login/actions.ts
+ POST /api/conversations 200 in 114ms (next.js: 67ms, proxy.ts: 8ms, application-code: 39ms)
+ GET /api/conversations/dcf313ab-376f-4bb3-86f4-cbe17f363b44 200 in 90ms (next.js: 33ms, proxy.ts: 21ms, application-code: 36ms)
+[agent] runSectorAgent sector=seguranca traceId=10bdde48-cfd9-440e-b54c-70d91017273a allowDelegation=true
+[router] resolveDelegation origin=seguranca question='qual a função da zsd244?'
+[classifier] origin=seguranca question='qual a função da zsd244?' targets=[ 'desenvolvimento', [length]: 1 ]
+[classifier] LLM decision in 9935ms: {
+  delegate: true,
+  target: 'desenvolvimento',
+  rationale: 'A identificação da função de um componente específico (zsd244) requer conhecimento técnico sobre sistemas, software e implementações, que é o domínio exclusivo do setor de desenvolvimento.'
+}
+[classifier] delegating seguranca -> desenvolvimento via protocol seguranca->desenvolvimento:implementacao-tecnica:v1 (rationale='A identificação da função de um componente específico (zsd244) requer conhecimento técnico sobre sistemas, software e implementações, que é o domínio exclusivo do setor de desenvolvimento.')
+[router] using LLM decision: {
+  delegate: true,
+  target: 'desenvolvimento',
+  intent: 'implementacao-tecnica',
+  protocol: 'seguranca->desenvolvimento:implementacao-tecnica:v1',
+  question: 'qual a função da zsd244?',
+  rationale: 'A identificação da função de um componente específico (zsd244) requer conhecimento técnico sobre sistemas, software e implementações, que é o domínio exclusivo do setor de desenvolvimento.'
+}
+[agent] delegation decision for sector=seguranca: {
+  delegate: true,
+  target: 'desenvolvimento',
+  intent: 'implementacao-tecnica',
+  protocol: 'seguranca->desenvolvimento:implementacao-tecnica:v1',
+  question: 'qual a função da zsd244?',
+  rationale: 'A identificação da função de um componente específico (zsd244) requer conhecimento técnico sobre sistemas, software e implementações, que é o domínio exclusivo do setor de desenvolvimento.'
+}
+ POST /api/chat 200 in 26.6s (next.js: 81ms, proxy.ts: 10ms, application-code: 26.5s)
+ GET /api/conversations 200 in 40ms (next.js: 5ms, proxy.ts: 12ms, application-code: 23ms)
+ GET /chat 200 in 351ms (next.js: 18ms, proxy.ts: 73ms, application-code: 260ms)
+ GET /api/conversations/4ab0c38e-60ed-4601-b6ad-085bb205791a 200 in 82ms (next.js: 33ms, proxy.ts: 12ms, application-code: 36ms)
+[?25h

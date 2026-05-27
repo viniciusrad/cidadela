@@ -1,0 +1,226 @@
+
+> pfrm-secure-agents@0.1.0 dev
+> cross-env NODE_ENV=development next dev -p 3030
+
+▲ Next.js 16.2.2 (Turbopack)
+- Local:         http://localhost:3030
+- Network:       http://192.168.0.206:3030
+- Environments: .env.local, .env
+✓ Ready in 791ms
+
+ GET /admin/content 200 in 1080ms (next.js: 742ms, proxy.ts: 36ms, application-code: 302ms)
+ GET /chat 200 in 1643ms (next.js: 326ms, proxy.ts: 580ms, application-code: 737ms)
+ GET /api/admin/chunks?sector=todos&mode=text&limit=50 200 in 458ms (next.js: 175ms, proxy.ts: 19ms, application-code: 264ms)
+ GET /api/conversations/c700b27f-6501-4bbc-a7a8-e39789c69896 200 in 2.5s (next.js: 2.5s, proxy.ts: 29ms, application-code: 38ms)
+[agent] local search sector=seguranca traceId=d1c5311e-f2f7-4cc1-80c4-d70bfdb30835 rawMatches=4 relevantMatches=0 top=[
+  {
+    score: 0.36255234,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 3,
+    title: 'Politica de Senhas Seguras'
+  },
+  {
+    score: 0.32338515,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 2,
+    title: 'Politica de Senhas Seguras'
+  },
+  {
+    score: 0.28380805,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 1,
+    title: 'Politica de Senhas Seguras'
+  },
+  [length]: 3
+]
+[agent] fanout start sector=seguranca traceId=d1c5311e-f2f7-4cc1-80c4-d70bfdb30835 targets=[ 'desenvolvimento', 'suporte', 'desktop', [length]: 3 ] question='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=desenvolvimento intent=implementacao-tecnica sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=desktop intent=hardware-e-estacoes sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=suporte intent=triagem-atendimento sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search result from=seguranca to=desktop relevantMatches=0 top=[ [length]: 0 ]
+[agent-rpc] search result from=seguranca to=desenvolvimento relevantMatches=3 top=[
+  {
+    score: 0.5144989,
+    documentId: '5267d222c9805a07a691992f8a8e7a8f6bf89ed492c8bac42be2098360a1e8ae',
+    chunkIndex: 0,
+    title: 'transações-importantes-SAP'
+  },
+  {
+    score: 0.49424398,
+    documentId: '613af54bbd80bf76ecf4c0de948566636b1573b1d33e656cd560dd72bed03a2c',
+    chunkIndex: 0,
+    title: 'nota-%2D-SAP'
+  },
+  {
+    score: 0.48975265,
+    documentId: '3f68e2fa8612650bac0ab792153680f359d96b4d534a6c95956f11661c1b0f2f',
+    chunkIndex: 1,
+    title: 'Adicionar-layouts-para-tradução-dos-retornos'
+  },
+  [length]: 3
+]
+[agent-rpc] search result from=seguranca to=suporte relevantMatches=0 top=[ [length]: 0 ]
+[agent] fanout complete sector=seguranca traceId=d1c5311e-f2f7-4cc1-80c4-d70bfdb30835 results=[
+  {
+    target: 'desenvolvimento',
+    status: 'ok',
+    citations: 3,
+    hasRelevantCitations: true
+  },
+  {
+    target: 'suporte',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  {
+    target: 'desktop',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  [length]: 3
+]
+ POST /api/chat 200 in 25.0s (next.js: 70ms, proxy.ts: 11ms, application-code: 24.9s)
+[agent] local search sector=suporte traceId=a8ce77ba-29ab-414f-abf2-1fa7e12458a4 rawMatches=4 relevantMatches=0 top=[
+  {
+    score: 0.33501983,
+    documentId: '2a3e57a0df8cc2121278e1992121c2d687fa90e98a18f292d8f148e68d57eed5',
+    chunkIndex: 1,
+    title: 'Atendimento de Incidentes Operacionais'
+  },
+  {
+    score: 0.3339035,
+    documentId: '2a3e57a0df8cc2121278e1992121c2d687fa90e98a18f292d8f148e68d57eed5',
+    chunkIndex: 2,
+    title: 'Atendimento de Incidentes Operacionais'
+  },
+  {
+    score: 0.31962675,
+    documentId: '2a3e57a0df8cc2121278e1992121c2d687fa90e98a18f292d8f148e68d57eed5',
+    chunkIndex: 3,
+    title: 'Atendimento de Incidentes Operacionais'
+  },
+  [length]: 3
+]
+[agent] fanout start sector=suporte traceId=a8ce77ba-29ab-414f-abf2-1fa7e12458a4 targets=[ 'desenvolvimento', 'seguranca', 'desktop', [length]: 3 ] question='para que serve a transação zsd244?'
+[agent-rpc] search start from=suporte to=desenvolvimento intent=escalonamento-tecnico sourceFilter=none shareableOnly=true query='para que serve a transação zsd244?'
+[agent-rpc] search start from=suporte to=seguranca intent=incidente-seguranca sourceFilter=none shareableOnly=true query='para que serve a transação zsd244?'
+[agent-rpc] search start from=suporte to=desktop intent=hardware-e-estacoes sourceFilter=none shareableOnly=true query='para que serve a transação zsd244?'
+[agent-rpc] search result from=suporte to=desktop relevantMatches=0 top=[ [length]: 0 ]
+[agent-rpc] search result from=suporte to=desenvolvimento relevantMatches=3 top=[
+  {
+    score: 0.54001665,
+    documentId: 'af43eb63fb14702080a677a54876e0131401371047b0585bc5e810db01622721',
+    chunkIndex: 0,
+    title: 'Como-gerar-um-arquivo-de-demanda'
+  },
+  {
+    score: 0.5149849,
+    documentId: 'dfb5f64c04ef9c702db86117e92be820a80b312720e15c5817a20ea7a42741e8',
+    chunkIndex: 3,
+    title: 'Manual-de-Execução-do-Procedimento-de-Geração-e-Envio-de-Relatórios-no-SAP'
+  },
+  {
+    score: 0.50371325,
+    documentId: 'f9efb97344bc5c4bce8d58a68396d652db5952543c6faf025ab0d848f384b494',
+    chunkIndex: 0,
+    title: 'Algumas informações sobre transações'
+  },
+  [length]: 3
+]
+[agent-rpc] search result from=suporte to=seguranca relevantMatches=0 top=[ [length]: 0 ]
+[agent] fanout complete sector=suporte traceId=a8ce77ba-29ab-414f-abf2-1fa7e12458a4 results=[
+  {
+    target: 'desenvolvimento',
+    status: 'ok',
+    citations: 3,
+    hasRelevantCitations: true
+  },
+  {
+    target: 'seguranca',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  {
+    target: 'desktop',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  [length]: 3
+]
+ POST /api/chat 200 in 32.5s (next.js: 5ms, proxy.ts: 16ms, application-code: 32.5s)
+[agent] local search sector=seguranca traceId=c7977bfe-965f-4941-a097-bec066d83349 rawMatches=4 relevantMatches=0 top=[
+  {
+    score: 0.36255234,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 3,
+    title: 'Politica de Senhas Seguras'
+  },
+  {
+    score: 0.32338515,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 2,
+    title: 'Politica de Senhas Seguras'
+  },
+  {
+    score: 0.28380805,
+    documentId: '37d8412e060ae481de636e9bcb04c59eeb9949eca9657049f2140a62765293ce',
+    chunkIndex: 1,
+    title: 'Politica de Senhas Seguras'
+  },
+  [length]: 3
+]
+[agent] fanout start sector=seguranca traceId=c7977bfe-965f-4941-a097-bec066d83349 targets=[ 'desenvolvimento', 'suporte', 'desktop', [length]: 3 ] question='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=suporte intent=triagem-atendimento sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=desktop intent=hardware-e-estacoes sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search start from=seguranca to=desenvolvimento intent=implementacao-tecnica sourceFilter=none shareableOnly=true query='para que serve a transação zsd90?'
+[agent-rpc] search result from=seguranca to=desktop relevantMatches=0 top=[ [length]: 0 ]
+[agent-rpc] search result from=seguranca to=desenvolvimento relevantMatches=3 top=[
+  {
+    score: 0.5144989,
+    documentId: '5267d222c9805a07a691992f8a8e7a8f6bf89ed492c8bac42be2098360a1e8ae',
+    chunkIndex: 0,
+    title: 'transações-importantes-SAP'
+  },
+  {
+    score: 0.49424398,
+    documentId: '613af54bbd80bf76ecf4c0de948566636b1573b1d33e656cd560dd72bed03a2c',
+    chunkIndex: 0,
+    title: 'nota-%2D-SAP'
+  },
+  {
+    score: 0.48975265,
+    documentId: '3f68e2fa8612650bac0ab792153680f359d96b4d534a6c95956f11661c1b0f2f',
+    chunkIndex: 1,
+    title: 'Adicionar-layouts-para-tradução-dos-retornos'
+  },
+  [length]: 3
+]
+[agent-rpc] search result from=seguranca to=suporte relevantMatches=0 top=[ [length]: 0 ]
+[agent] fanout complete sector=seguranca traceId=c7977bfe-965f-4941-a097-bec066d83349 results=[
+  {
+    target: 'desenvolvimento',
+    status: 'ok',
+    citations: 3,
+    hasRelevantCitations: true
+  },
+  {
+    target: 'suporte',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  {
+    target: 'desktop',
+    status: 'ok',
+    citations: 0,
+    hasRelevantCitations: false
+  },
+  [length]: 3
+]
+ POST /api/chat 200 in 26.9s (next.js: 7ms, proxy.ts: 20ms, application-code: 26.8s)
+ GET /api/conversations 200 in 151ms (next.js: 90ms, proxy.ts: 15ms, application-code: 45ms)
+[?25h

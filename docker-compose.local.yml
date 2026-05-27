@@ -1,0 +1,224 @@
+services:
+  app:
+    profiles: ["container-app"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    init: true
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3030}:3030"
+    environment:
+      AUTH_SECRET: ${AUTH_SECRET:-troque-esta-chave-local}
+      AUTH_TRUST_HOST: "true"
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3030}
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://pfrm:pfrm@postgres:5432/pfrm_agents}
+      QDRANT_URL: ${CONTAINER_QDRANT_URL:-http://qdrant:6333}
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+      QDRANT_COLLECTION_SECURITY: ${QDRANT_COLLECTION_SECURITY:-rag_security}
+      QDRANT_COLLECTION_SUPPORT: ${QDRANT_COLLECTION_SUPPORT:-rag_support}
+      QDRANT_COLLECTION_DEV: ${QDRANT_COLLECTION_DEV:-rag_dev}
+      QDRANT_COLLECTION_DESKTOP: ${QDRANT_COLLECTION_DESKTOP:-rag_desktop}
+      QDRANT_STAGING_COLLECTION_SECURITY: ${QDRANT_STAGING_COLLECTION_SECURITY:-rag_security_staging}
+      QDRANT_STAGING_COLLECTION_SUPPORT: ${QDRANT_STAGING_COLLECTION_SUPPORT:-rag_support_staging}
+      QDRANT_STAGING_COLLECTION_DEV: ${QDRANT_STAGING_COLLECTION_DEV:-rag_dev_staging}
+      QDRANT_STAGING_COLLECTION_DESKTOP: ${QDRANT_STAGING_COLLECTION_DESKTOP:-rag_desktop_staging}
+      QDRANT_VECTOR_SIZE: ${QDRANT_VECTOR_SIZE:-1024}
+      SOP_OUTPUT_DIR: /app/files/sop
+      SOP_READINESS_THRESHOLD: ${SOP_READINESS_THRESHOLD:-0.75}
+      CURATION_REQUIRES_OWNER_APPROVAL: ${CURATION_REQUIRES_OWNER_APPROVAL:-true}
+      CURATION_REQUIRES_ADMIN_APPROVAL: ${CURATION_REQUIRES_ADMIN_APPROVAL:-true}
+      CURATION_ALLOW_SAME_USER_DUAL_APPROVAL: ${CURATION_ALLOW_SAME_USER_DUAL_APPROVAL:-true}
+      OLLAMA_HOST_MODE: "false"
+      OLLAMA_URL: ${CONTAINER_OLLAMA_URL:-http://ollama-cpu:11434}
+      OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-bge-m3:latest}
+      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen3.5:4b}
+      RABBITMQ_URL: ${CONTAINER_RABBITMQ_URL:-amqp://pfrm:pfrm@rabbitmq:5672}
+      RABBITMQ_MANAGEMENT_URL: ${CONTAINER_RABBITMQ_MANAGEMENT_URL:-http://rabbitmq:15672}
+      CHAT_TOP_K: ${CHAT_TOP_K:-5}
+      CHAT_LOCAL_CONFIDENCE_THRESHOLD: ${CHAT_LOCAL_CONFIDENCE_THRESHOLD:-0.50}
+      BUS_RPC_TIMEOUT_MS: ${BUS_RPC_TIMEOUT_MS:-60000}
+      BUS_BOOTSTRAP_ENABLED: ${BUS_BOOTSTRAP_ENABLED:-true}
+      ROUTER_MODE: ${ROUTER_MODE:-rules-first}
+      HUMAN_CAPTCHA_API_URL: ${HUMAN_CAPTCHA_API_URL:-http://human-automation-api:3001}
+      HUMAN_CAPTCHA_INTERNAL_TOKEN: ${HUMAN_CAPTCHA_INTERNAL_TOKEN:-dev-internal-token}
+      HUMAN_CAPTCHA_AUTOMATION_TIMEOUT_MS: ${HUMAN_CAPTCHA_AUTOMATION_TIMEOUT_MS:-10000}
+      HUMAN_CAPTCHA_CERVELLO_PROCESS_KEY: ${HUMAN_CAPTCHA_CERVELLO_PROCESS_KEY:-problemas-pedido-eletronico}
+      HUMAN_CAPTCHA_MEDICATION_PRICE_PROCESS_KEY: ${HUMAN_CAPTCHA_MEDICATION_PRICE_PROCESS_KEY:-medication-price-survey}
+      HUMAN_CAPTCHA_CURRENCY_INDEX_PROCESS_KEY: ${HUMAN_CAPTCHA_CURRENCY_INDEX_PROCESS_KEY:-coleta-indices-moedas}
+      NEO4J_URI: ${CONTAINER_NEO4J_URI:-bolt://neo4j:7687}
+      NEO4J_USER: ${LOCAL_NEO4J_USER:-neo4j}
+      NEO4J_PASSWORD: ${LOCAL_NEO4J_PASSWORD:-sua_senha_aqui}
+      SEARCH_PORTAL_URL: ${SEARCH_PORTAL_URL:-http://host.docker.internal:3110}
+      SEARCH_PORTAL_PUBLIC_URL: ${SEARCH_PORTAL_PUBLIC_URL:-http://localhost:3110}
+      SEARCH_PORTAL_TIMEOUT_MS: ${SEARCH_PORTAL_TIMEOUT_MS:-15000}
+      SEARCH_PORTAL_ALLOWED_SECTORS: ${SEARCH_PORTAL_ALLOWED_SECTORS:-desenvolvimento}
+      MCP_EDI_ENABLED: ${MCP_EDI_ENABLED:-true}
+      MCP_EDI_URL: ${MCP_EDI_URL:-http://mcp-edi:3440/mcp}
+      MCP_EDI_TIMEOUT_MS: ${MCP_EDI_TIMEOUT_MS:-20000}
+      MCP_EDI_ALLOWED_SECTORS: ${MCP_EDI_ALLOWED_SECTORS:-desenvolvimento}
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+      - app_next:/app/.next
+      - sop_files:/app/files/sop
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      neo4j:
+        condition: service_started
+    networks:
+      - default
+      - pfrm-local-internal
+
+  migrate:
+    profiles: ["ops"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrator
+    environment:
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://pfrm:pfrm@postgres:5432/pfrm_agents}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    command: ["npx", "prisma", "migrate", "deploy"]
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${LOCAL_POSTGRES_DB:-pfrm_agents}
+      POSTGRES_USER: ${LOCAL_POSTGRES_USER:-pfrm}
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:-pfrm}
+    ports:
+      - "${LOCAL_POSTGRES_PORT:-5544}:5432"
+    volumes:
+      - postgres_agents_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${LOCAL_POSTGRES_USER:-pfrm} -d ${LOCAL_POSTGRES_DB:-pfrm_agents}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_QDRANT_HTTP_PORT:-6433}:6333"
+      - "${LOCAL_QDRANT_GRPC_PORT:-6434}:6334"
+    volumes:
+      - qdrant_agents_data:/qdrant/storage
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bash",
+          "-c",
+          "exec 3<>/dev/tcp/localhost/6333; printf 'GET /readyz HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3; read -t 2 line <&3; [[ $$line == *200* ]]",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${LOCAL_RABBITMQ_USER:-pfrm}
+      RABBITMQ_DEFAULT_PASS: ${LOCAL_RABBITMQ_PASSWORD:-pfrm}
+    ports:
+      - "${LOCAL_RABBITMQ_AMQP_PORT:-5673}:5672"
+      - "${LOCAL_RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
+    volumes:
+      - rabbitmq_agents_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  ollama-cpu:
+    profiles: ["cpu"]
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_OLLAMA_PORT:-11500}:11434"
+    volumes:
+      - ollama_agents_data:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: 15m
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  ollama-gpu:
+    profiles: ["gpu"]
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_OLLAMA_PORT:-11500}:11434"
+    volumes:
+      - ollama_agents_data:/root/.ollama
+    environment:
+      OLLAMA_KEEP_ALIVE: 15m
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  neo4j:
+    image: neo4j:5.18-community
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_NEO4J_HTTP_PORT:-7475}:7474"
+      - "${LOCAL_NEO4J_BOLT_PORT:-7688}:7687"
+    environment:
+      NEO4J_AUTH: ${LOCAL_NEO4J_USER:-neo4j}/${LOCAL_NEO4J_PASSWORD:-sua_senha_aqui}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_memory_heap_max__size: 1G
+      NEO4J_dbms_memory_pagecache_size: 512M
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
+volumes:
+  app_node_modules:
+  app_next:
+  sop_files:
+  postgres_agents_data:
+  qdrant_agents_data:
+  rabbitmq_agents_data:
+  ollama_agents_data:
+  neo4j_data:
+  neo4j_logs:
+
+networks:
+  pfrm-local-internal:
+    name: pfrm-local-internal
+    external: true

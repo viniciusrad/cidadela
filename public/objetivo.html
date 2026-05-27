@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PFRM Secure Agents — O Objetivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --brand-primary: #38bdf8;
+            --brand-secondary: #a78bfa;
+            --brand-accent: #f472b6;
+            --bg-dark: #030712;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-red: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(167, 139, 250, 0.12), transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(244, 114, 182, 0.06), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-3%, 3%) scale(1.1); }
+        }
+
+        main { position: relative; z-index: 1; }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 3rem 8rem;
+            animation: slideIn 0.6s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slide.active .reveal { animation: fadeUp 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) backwards; }
+        .slide.active .reveal-1 { animation-delay: 0.1s; }
+        .slide.active .reveal-2 { animation-delay: 0.25s; }
+        .slide.active .reveal-3 { animation-delay: 0.4s; }
+        .slide.active .reveal-4 { animation-delay: 0.55s; }
+        .slide.active .reveal-5 { animation-delay: 0.7s; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 10%, #38bdf8 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-warm {
+            background: linear-gradient(135deg, #fbbf24 0%, #f472b6 60%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gradient-text-cool {
+            background: linear-gradient(135deg, #34d399 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--brand-primary);
+            padding: 0.4rem 1rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .tag-warm {
+            background: rgba(244, 114, 182, 0.08);
+            color: var(--brand-accent);
+            border-color: rgba(244, 114, 182, 0.2);
+        }
+
+        .tag-warn {
+            background: rgba(239, 68, 68, 0.08);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+
+        .tag-good {
+            background: rgba(16, 185, 129, 0.1);
+            color: #6ee7b7;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .promise-card {
+            background:
+                linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(167, 139, 250, 0.05));
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promise-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(56, 189, 248, 0.1), transparent 30%);
+            animation: rotate 8s linear infinite;
+        }
+
+        .promise-card > * { position: relative; z-index: 1; }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 20px 40px -20px rgba(56, 189, 248, 0.3);
+        }
+
+        .nav-btn {
+            cursor: pointer;
+            padding: 0.7rem 1.4rem;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.2s;
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-btn:hover {
+            background: var(--brand-primary);
+            color: #020617;
+            border-color: var(--brand-primary);
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
+        }
+
+        .slide-marker {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.2em;
+            z-index: 50;
+            text-transform: uppercase;
+        }
+
+        .mega-stat {
+            font-size: clamp(8rem, 18vw, 14rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.04em;
+            font-feature-settings: 'tnum';
+        }
+
+        .trinity-node {
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .trinity-node::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+            opacity: 0;
+            z-index: -1;
+            filter: blur(20px);
+            transition: opacity 0.4s ease;
+        }
+
+        .trinity-node:hover::after { opacity: 0.5; }
+
+        .compare-col {
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            min-height: 100%;
+        }
+
+        .compare-before {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.06), transparent);
+        }
+
+        .compare-after {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(56, 189, 248, 0.05));
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        .quote-mark {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 7rem;
+            line-height: 1;
+            color: var(--brand-primary);
+            opacity: 0.3;
+        }
+
+        .slogan {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+        }
+
+        /* Maturity ladder — Tribal → Documented → Queryable → Automated */
+        .ladder {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            position: relative;
+        }
+
+        .ladder-step {
+            border-radius: 1rem;
+            padding: 1.75rem 1.5rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .ladder-step .ladder-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 0.18em;
+        }
+
+        .ladder-step h4 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0.3rem 0 0.7rem;
+        }
+
+        .ladder-step p {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.5;
+        }
+
+        .ladder-step.tribal { border-color: rgba(239, 68, 68, 0.25); background: linear-gradient(160deg, rgba(239, 68, 68, 0.08), rgba(15, 23, 42, 0.6)); }
+        .ladder-step.doc    { border-color: rgba(245, 158, 11, 0.25); background: linear-gradient(160deg, rgba(245, 158, 11, 0.07), rgba(15, 23, 42, 0.6)); }
+        .ladder-step.query  { border-color: rgba(56, 189, 248, 0.35); background: linear-gradient(160deg, rgba(56, 189, 248, 0.1),  rgba(15, 23, 42, 0.6)); box-shadow: 0 0 80px -30px rgba(56,189,248,0.5); }
+        .ladder-step.auto   { border-color: rgba(167, 139, 250, 0.35); background: linear-gradient(160deg, rgba(167, 139, 250, 0.1), rgba(15, 23, 42, 0.6)); }
+
+        .ladder-arrow {
+            position: absolute;
+            right: -0.95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.8rem;
+            height: 1.8rem;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            z-index: 2;
+        }
+
+        .ladder-step:last-child .ladder-arrow { display: none; }
+
+        .timeline-step {
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .timeline-step::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 2rem;
+            bottom: -2rem;
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(56, 189, 248, 0.4), transparent);
+        }
+
+        .timeline-step:last-child::before { display: none; }
+
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.2), 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .timeline-step.pending .timeline-dot {
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.04);
+        }
+
+        .timeline-step.current .timeline-dot {
+            background: var(--brand-accent);
+            box-shadow: 0 0 0 4px rgba(244, 114, 182, 0.2), 0 0 30px rgba(244, 114, 182, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .pillar-icon {
+            width: 4rem;
+            height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        kbd {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-bottom-width: 2px;
+            padding: 0.15rem 0.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.75rem;
+        }
+
+        .ring-glow { box-shadow: 0 0 80px -20px var(--brand-primary); }
+
+        .hint-line {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        .hint-line::before {
+            content: '';
+            display: block;
+            width: 1.5rem;
+            height: 1px;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .surprise-percent {
+            font-size: clamp(10rem, 22vw, 18rem);
+            font-weight: 900;
+            line-height: 0.85;
+            letter-spacing: -0.05em;
+        }
+
+        /* Persona chips for slide 2 — silos */
+        .silo-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.6rem 1rem 0.6rem 0.6rem;
+            border-radius: 99px;
+            font-size: 0.9rem;
+        }
+
+        .silo-chip .avatar {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #38bdf8, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.75rem;
+            color: #020617;
+        }
+
+        .gap-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            background: rgba(15,23,42,0.55);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .gap-row:hover { border-color: rgba(244, 114, 182, 0.3); transform: translateX(2px); }
+
+        .gap-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 99px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .gap-badge.high { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .gap-badge.med  { background: rgba(245, 158, 11, 0.15); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+        .gap-badge.low  { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56,189,248,0.3); }
+
+    </style>
+</head>
+<body>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+    <div class="slide-marker" id="slideMarker">SLIDE 01 / 09</div>
+
+    <main id="presentation-container">
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 1 — OPENER                                              -->
+        <!-- ============================================================ -->
+        <section class="slide active" id="slide-1">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-bullseye"></i> O Objetivo</div>
+                <h1 class="text-7xl md:text-8xl font-extrabold tracking-tight mb-10 reveal reveal-2 leading-none">
+                    Tornar visível<br>
+                    o que <span class="gradient-text">sempre esteve</span><br>
+                    <span class="gradient-text-warm">invisível</span>.
+                </h1>
+
+                <div class="promise-card reveal reveal-3 max-w-3xl">
+                    <div class="text-xs uppercase tracking-[0.25em] text-sky-400 font-bold mb-3 flex items-center gap-2">
+                        <i class="fas fa-compass"></i> O que esta apresentação trata
+                    </div>
+                    <p class="text-2xl md:text-3xl font-light leading-snug">
+                        Existe um tipo de conhecimento que <b class="font-bold">não está em sistema nenhum</b>.
+                        Ele vive em <span class="text-pink-400 font-semibold">algumas cabeças</span> — e a empresa toda paga
+                        a conta quando essas cabeças <span class="text-sky-400 font-semibold">não estão por perto</span>.
+                    </p>
+                </div>
+
+                <div class="mt-12 reveal reveal-4 flex flex-wrap gap-8 text-sm text-slate-500">
+                    <div class="flex items-center gap-2"><kbd>&rarr;</kbd> avançar</div>
+                    <div class="flex items-center gap-2"><kbd>&larr;</kbd> voltar</div>
+                    <div class="flex items-center gap-2"><kbd>Esc</kbd> visão geral</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 2 — O PROBLEMA (definição)                              -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-2">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-users"></i> O Problema</div>
+
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-6 leading-tight">
+                    Conhecimento <span class="gradient-text-warm">tribal</span>.
+                </h2>
+
+                <p class="reveal reveal-2 text-xl text-slate-300 max-w-3xl mb-12">
+                    Tudo aquilo que a empresa <b class="text-white">sabe fazer</b>,
+                    mas que <b class="text-pink-300">ninguém escreveu</b> em lugar nenhum.
+                    Só existe na cabeça de quem está lá há tempo o suficiente.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="reveal reveal-3 card border-l-4 border-l-pink-400">
+                        <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-2">Sintoma típico</div>
+                        <p class="text-xl text-slate-100 leading-snug">
+                            <i class="fas fa-quote-left text-pink-400 mr-2 opacity-50"></i>
+                            "Pergunta pra <b>Mariana</b>, ela sabe."
+                        </p>
+                        <p class="text-sm text-slate-500 mt-3">A Mariana é o sistema. E ela tira férias.</p>
+                    </div>
+
+                    <div class="reveal reveal-4 card">
+                        <div class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-2">Onde mora</div>
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <div class="silo-chip"><div class="avatar">CA</div> caixa de e-mail</div>
+                            <div class="silo-chip"><div class="avatar">WA</div> conversas de WhatsApp</div>
+                            <div class="silo-chip"><div class="avatar">EX</div> planilhas locais</div>
+                            <div class="silo-chip"><div class="avatar">PO</div> post-its de monitor</div>
+                            <div class="silo-chip"><div class="avatar">RE</div> reuniões não gravadas</div>
+                            <div class="silo-chip"><div class="avatar">CA</div> cabeças de pessoas-chave</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 3 — A SURPRESA (estatística de impacto)                 -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-3">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag tag-warn reveal reveal-1 mb-8"><i class="fas fa-triangle-exclamation"></i> A dimensão</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="reveal reveal-2">
+                        <div class="surprise-percent gradient-text-warm">70<span class="text-5xl align-top">%</span></div>
+                        <div class="text-2xl font-semibold mt-4 text-slate-200">
+                            do conhecimento operacional<br>
+                            <span class="text-pink-300">não está escrito em lugar nenhum.</span>
+                        </div>
+                        <div class="text-xs text-slate-500 mt-3 font-mono">Panopto · IDC · APQC, 2023</div>
+                    </div>
+
+                    <div class="reveal reveal-3 space-y-4">
+                        <div class="text-sm uppercase tracking-widest text-sky-400 font-bold mb-2">
+                            E o custo é mensurável.
+                        </div>
+                        <h3 class="text-3xl font-bold leading-tight mb-6">
+                            Cada colaborador perde <span class="gradient-text">5h por semana</span><br>
+                            procurando informação que <span class="text-red-300">alguém na empresa já tem</span>.
+                        </h3>
+                        <div class="card border-l-4 border-l-sky-400">
+                            <p class="text-lg text-slate-300">
+                                Não é falta de gente boa.<br>
+                                É <b class="text-white">falta de acesso</b> ao que a gente boa já sabe.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 4 — O QUE CAUSA                                         -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-4">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-seedling"></i> Como ele se forma</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    Ninguém planejou que ficasse assim.
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-14 max-w-3xl">
+                    Toda empresa que cresce produz conhecimento tribal pelos mesmos três motivos.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card reveal reveal-3">
+                        <div class="pillar-icon bg-red-500/15 text-red-300">
+                            <i class="fas fa-clock-rotate-left"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-red-300 mb-1">Causa 1</div>
+                        <h3 class="text-2xl font-bold mb-3">Evolução orgânica</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            O processo nunca foi desenhado. Ele <b class="text-white">virou</b> com o tempo,
+                            ajustado por quem estava lá quando algo quebrou. A regra final mora na memória de quem ajustou.
+                        </p>
+                    </div>
+
+                    <div class="card reveal reveal-4">
+                        <div class="pillar-icon bg-amber-500/15 text-amber-300">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-amber-300 mb-1">Causa 2</div>
+                        <h3 class="text-2xl font-bold mb-3">"Sempre foi assim"</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            A justificativa se perdeu, mas a prática continuou.
+                            Ninguém questiona porque <b class="text-white">questionar custa caro</b> —
+                            e ninguém documenta porque a prática parece óbvia para quem já sabe.
+                        </p>
+                    </div>
+
+                    <div class="card reveal reveal-5">
+                        <div class="pillar-icon bg-pink-500/15 text-pink-300">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-1">Causa 3</div>
+                        <h3 class="text-2xl font-bold mb-3">Sem tempo, sem incentivo</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Documentar não entrega no trimestre. Quem entrega no trimestre é <b class="text-white">executar</b>.
+                            Então a documentação fica para depois — e <i>depois</i> não chega.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 5 — O CUSTO                                             -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-5">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag tag-warn reveal reveal-1 mb-8"><i class="fas fa-coins"></i> O custo</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    O que <span class="text-red-300">se paga</span> por isso, todo dia.
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-12 max-w-3xl">
+                    A conta não vem em uma fatura. Vem em horas, em risco e em decisões erradas.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="reveal reveal-3 card flex gap-4 items-start">
+                        <div class="text-red-300 text-3xl mt-1"><i class="fas fa-user-clock"></i></div>
+                        <div>
+                            <div class="font-bold text-lg mb-1">Dependência de pessoa-chave</div>
+                            <p class="text-sm text-slate-400">Quando a Mariana fica doente, o setor desacelera. Quando ela pede demissão, o setor congela.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-3 card flex gap-4 items-start">
+                        <div class="text-red-300 text-3xl mt-1"><i class="fas fa-person-walking-arrow-right"></i></div>
+                        <div>
+                            <div class="font-bold text-lg mb-1">Onboarding interminável</div>
+                            <p class="text-sm text-slate-400">Novo entra, leva 6 meses até render — porque precisa <i>tropeçar</i> em cada caso que ninguém escreveu.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-4 card flex gap-4 items-start">
+                        <div class="text-red-300 text-3xl mt-1"><i class="fas fa-repeat"></i></div>
+                        <div>
+                            <div class="font-bold text-lg mb-1">Decisões reescritas do zero</div>
+                            <p class="text-sm text-slate-400">A mesma discussão acontece de novo, em outra reunião, porque ninguém lembra a justificativa de seis meses atrás.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-4 card flex gap-4 items-start">
+                        <div class="text-red-300 text-3xl mt-1"><i class="fas fa-door-open"></i></div>
+                        <div>
+                            <div class="font-bold text-lg mb-1">Conhecimento que sai pela porta</div>
+                            <p class="text-sm text-slate-400">Quem sai leva contexto que demorou anos para formar. A empresa percebe a perda quando alguém pergunta e ninguém responde.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-5 card flex gap-4 items-start col-span-1 md:col-span-2">
+                        <div class="text-red-300 text-3xl mt-1"><i class="fas fa-shield-halved"></i></div>
+                        <div>
+                            <div class="font-bold text-lg mb-1">Risco operacional invisível</div>
+                            <p class="text-sm text-slate-400">Compliance, segurança e auditoria não conseguem <b>fiscalizar o que não está escrito</b>. O risco existe — só não está mapeado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 6 — POR QUE AS SOLUÇÕES TRADICIONAIS NÃO RESOLVEM       -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-6">
+            <div class="max-w-6xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-8"><i class="fas fa-circle-question"></i> A tentativa que falha</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    Wiki, treinamento, "documente mais".
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-12 max-w-3xl">
+                    Toda empresa já tentou. <b class="text-pink-300">Nenhuma resolveu.</b> O motivo é estrutural.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="reveal reveal-3 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-3"><i class="fas fa-book-skull"></i></div>
+                        <div class="font-bold mb-1">Wiki ninguém lê</div>
+                        <div class="text-sm text-slate-400">Buscar é mais lento do que perguntar pra Mariana — e fica desatualizado em meses.</div>
+                    </div>
+                    <div class="reveal reveal-4 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-3"><i class="fas fa-chalkboard-user"></i></div>
+                        <div class="font-bold mb-1">Treinamento que se esquece</div>
+                        <div class="text-sm text-slate-400">Em 30 dias o colaborador esqueceu o que viu. E o conteúdo já está obsoleto.</div>
+                    </div>
+                    <div class="reveal reveal-5 p-6 rounded-xl border border-red-500/20 bg-red-500/5">
+                        <div class="text-red-300 text-3xl mb-3"><i class="fas fa-file-shield"></i></div>
+                        <div class="font-bold mb-1">"Documente mais"</div>
+                        <div class="text-sm text-slate-400">Imposição sem ferramenta vira papel morto. Quem documenta não é quem consulta.</div>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-5 promise-card max-w-4xl">
+                    <div class="text-xs uppercase tracking-[0.25em] text-sky-400 font-bold mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb"></i> O diagnóstico real
+                    </div>
+                    <p class="text-xl md:text-2xl font-light leading-snug">
+                        O problema não é <b>falta de documentação</b>.<br>
+                        É o <b class="text-pink-300">custo de consultar</b> sendo maior do que o custo de
+                        <b class="text-sky-400">ir perguntar pra alguém</b>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 7 — COMO O SISTEMA AJUDA (três pilares)                 -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-7">
+            <div class="max-w-6xl mx-auto w-full text-center">
+                <div class="tag reveal reveal-1 mb-6"><i class="fas fa-bolt"></i> A virada</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-3">
+                    Três coisas que o <span class="gradient-text">Secure Agents</span> faz<br>
+                    e que <span class="text-pink-300">nenhuma wiki faz</span>.
+                </h2>
+                <p class="reveal reveal-2 text-lg text-slate-400 mb-14 max-w-3xl mx-auto">
+                    Não é uma ferramenta de documentação. É uma ferramenta de <b class="text-white">acesso</b>,
+                    <b class="text-white">descoberta</b> e <b class="text-white">automação progressiva</b>.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="trinity-node card reveal reveal-3 text-left">
+                        <div class="pillar-icon bg-sky-500/15 text-sky-400">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-1">Pilar 1</div>
+                        <h3 class="text-2xl font-bold mb-3">Consulta mais rápida do que ir perguntar</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Pergunta em linguagem natural, resposta em <b class="text-white">segundos</b>,
+                            com a <b class="text-white">fonte clicável</b>. Mais barato consultar do que interromper alguém.
+                        </p>
+                    </div>
+
+                    <div class="trinity-node card reveal reveal-4 text-left ring-glow" style="border-color: rgba(244, 114, 182, 0.4);">
+                        <div class="pillar-icon bg-pink-500/15 text-pink-300">
+                            <i class="fas fa-magnifying-glass-chart"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-1">Pilar 2</div>
+                        <h3 class="text-2xl font-bold mb-3">Gaps que ninguém via, agora visíveis</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Toda pergunta sem resposta <b class="text-white">vira sinal</b>:
+                            "este processo não está mapeado". O sistema mostra <b class="text-white">onde a tribo ainda decide sozinha</b>.
+                        </p>
+                    </div>
+
+                    <div class="trinity-node card reveal reveal-5 text-left">
+                        <div class="pillar-icon bg-purple-500/15 text-purple-300">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="text-xs font-mono uppercase tracking-widest text-purple-300 mb-1">Pilar 3</div>
+                        <h3 class="text-2xl font-bold mb-3">Mapa do que pode ser automatizado</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Cada processo mapeado vira <b class="text-white">candidato a agente</b>.
+                            O sistema indica <b class="text-white">por onde começar</b> a automatização — sem chute.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 8 — GAPS COMO FEATURE (o radar)                         -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-8">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="tag tag-warm reveal reveal-1 mb-6"><i class="fas fa-radar"></i> O radar</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-4">
+                    O que <span class="text-pink-300">não</span> está documentado <span class="gradient-text">também aparece</span>.
+                </h2>
+                <p class="reveal reveal-2 text-xl text-slate-400 mb-10 max-w-3xl">
+                    Exemplo real do painel: o sistema lista, em ordem de criticidade, onde o conhecimento tribal
+                    está sustentando a operação <b class="text-white">sozinho</b>.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2">
+                        <div class="reveal reveal-3 gap-row">
+                            <div>
+                                <div class="font-bold text-lg">Fluxo de exceção de contratação</div>
+                                <div class="text-sm text-slate-500">12 perguntas sem resposta · 4 setores afetados</div>
+                            </div>
+                            <span class="gap-badge high">crítico</span>
+                        </div>
+                        <div class="reveal reveal-3 gap-row">
+                            <div>
+                                <div class="font-bold text-lg">Critério de aprovação de fornecedor sensível</div>
+                                <div class="text-sm text-slate-500">8 perguntas sem resposta · 1 pessoa-chave</div>
+                            </div>
+                            <span class="gap-badge high">crítico</span>
+                        </div>
+                        <div class="reveal reveal-4 gap-row">
+                            <div>
+                                <div class="font-bold text-lg">Política de recall de medicamento controlado</div>
+                                <div class="text-sm text-slate-500">5 perguntas · SOP existe, mas está desatualizado</div>
+                            </div>
+                            <span class="gap-badge med">médio</span>
+                        </div>
+                        <div class="reveal reveal-4 gap-row">
+                            <div>
+                                <div class="font-bold text-lg">Onboarding de novo gestor de filial</div>
+                                <div class="text-sm text-slate-500">3 perguntas · cobertura parcial</div>
+                            </div>
+                            <span class="gap-badge med">médio</span>
+                        </div>
+                        <div class="reveal reveal-5 gap-row">
+                            <div>
+                                <div class="font-bold text-lg">Procedimento de troca de turno na CD</div>
+                                <div class="text-sm text-slate-500">1 pergunta · cobertura adequada</div>
+                            </div>
+                            <span class="gap-badge low">baixo</span>
+                        </div>
+                    </div>
+
+                    <div class="reveal reveal-5 promise-card">
+                        <div class="text-xs uppercase tracking-[0.25em] text-pink-400 font-bold mb-3 flex items-center gap-2">
+                            <i class="fas fa-fire"></i> O que isso destrava
+                        </div>
+                        <ul class="space-y-3 text-slate-200">
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-400 mt-1"></i>Priorizar <b>onde mapear primeiro</b>.</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-400 mt-1"></i>Saber <b>quem precisa documentar</b>.</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-400 mt-1"></i>Medir <b>redução de risco</b> por setor.</li>
+                            <li class="flex gap-2"><i class="fas fa-check text-emerald-400 mt-1"></i>Justificar <b>o próximo agente</b> a construir.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- SLIDE 9 — A ESCADA: TRIBAL → AUTOMATIZÁVEL                    -->
+        <!-- ============================================================ -->
+        <section class="slide" id="slide-9">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="tag reveal reveal-1 mb-6"><i class="fas fa-stairs"></i> O caminho</div>
+                <h2 class="reveal reveal-2 text-5xl md:text-6xl font-extrabold mb-3">
+                    De <span class="text-red-300">tribal</span> a <span class="gradient-text-warm">automatizável</span>.
+                </h2>
+                <p class="reveal reveal-2 text-lg text-slate-400 mb-12 max-w-3xl">
+                    Cada degrau só é possível depois do anterior. O Secure Agents acelera a subida
+                    e indica <b class="text-white">qual processo está pronto</b> para o próximo degrau.
+                </p>
+
+                <div class="ladder reveal reveal-3">
+                    <div class="ladder-step tribal">
+                        <div class="ladder-num">01 / TRIBAL</div>
+                        <h4 class="text-red-300">Na cabeça</h4>
+                        <p>Vive em pessoas-chave. Custo de consulta: interromper alguém.</p>
+                        <div class="ladder-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="ladder-step doc">
+                        <div class="ladder-num">02 / DOCUMENTADO</div>
+                        <h4 class="text-amber-300">Em SOP</h4>
+                        <p>Foi escrito. Mas ninguém acha. Custo de consulta: buscar em wiki.</p>
+                        <div class="ladder-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="ladder-step query">
+                        <div class="ladder-num">03 / CONSULTÁVEL</div>
+                        <h4 class="text-sky-400">No agente</h4>
+                        <p>Pergunta em linguagem natural. Resposta com fonte. Em segundos.</p>
+                        <div class="ladder-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="ladder-step auto">
+                        <div class="ladder-num">04 / AUTOMÁVEL</div>
+                        <h4 class="text-purple-300">Executado</h4>
+                        <p>O agente <b>decide e age</b> dentro do escopo, com trilha auditável.</p>
+                    </div>
+                </div>
+
+                <div class="reveal reveal-5 mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="card">
+                        <div class="text-xs font-mono uppercase tracking-widest text-sky-400 mb-2">O que o sistema entrega no degrau 3</div>
+                        <p class="text-slate-300">Resposta confiável, citada, em <b>segundos</b>. O conhecimento da Mariana, disponível 24/7.</p>
+                    </div>
+                    <div class="card">
+                        <div class="text-xs font-mono uppercase tracking-widest text-pink-300 mb-2">O que ele identifica para o degrau 4</div>
+                        <p class="text-slate-300">Quais processos já têm cobertura suficiente para virar <b>ação automatizada</b> — e quais ainda precisam de mapeamento.</p>
+                    </div>
+                    <div class="card">
+                        <div class="text-xs font-mono uppercase tracking-widest text-purple-300 mb-2">O que isso entrega ao negócio</div>
+                        <p class="text-slate-300">Roadmap de automação <b>baseado em uso real</b>, não em achismo. Cada novo agente <b>se paga</b>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navegação -->
+    <nav class="fixed bottom-8 left-0 right-0 flex justify-center items-center gap-6 z-50">
+        <button id="prevBtn" class="nav-btn"><i class="fas fa-chevron-left mr-2"></i>Anterior</button>
+        <div class="px-5 py-2 bg-slate-900/60 backdrop-blur-md rounded-full border border-slate-800 font-mono text-sm">
+            <span id="slideNumber" class="text-sky-400 font-bold">01</span>
+            <span class="text-slate-600 mx-1">/</span>
+            <span class="text-slate-400">09</span>
+        </div>
+        <button id="nextBtn" class="nav-btn">Próximo<i class="fas fa-chevron-right ml-2"></i></button>
+    </nav>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+
+        const slides = document.querySelectorAll('.slide');
+        const slideNumberDisplay = document.getElementById('slideNumber');
+        const slideMarker = document.getElementById('slideMarker');
+        const progressFill = document.getElementById('progressFill');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        const pad = n => String(n).padStart(2, '0');
+
+        function updateUI() {
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide - 1);
+            });
+
+            slideNumberDisplay.innerText = pad(currentSlide);
+            slideMarker.innerText = `SLIDE ${pad(currentSlide)} / ${pad(totalSlides)}`;
+            progressFill.style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+            prevBtn.style.opacity = currentSlide === 1 ? '0.3' : '1';
+            prevBtn.style.pointerEvents = currentSlide === 1 ? 'none' : 'auto';
+
+            if (currentSlide === totalSlides) {
+                nextBtn.innerHTML = 'Reiniciar <i class="fas fa-rotate-left ml-2"></i>';
+            } else {
+                nextBtn.innerHTML = 'Próximo <i class="fas fa-chevron-right ml-2"></i>';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function goToNext() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+            } else {
+                currentSlide = 1;
+            }
+            updateUI();
+        }
+
+        function goToPrev() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateUI();
+            }
+        }
+
+        nextBtn.onclick = goToNext;
+        prevBtn.onclick = goToPrev;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter' || e.key === 'PageDown') {
+                e.preventDefault();
+                goToNext();
+            }
+            if (e.key === 'ArrowLeft' || e.key === 'Backspace' || e.key === 'PageUp') {
+                e.preventDefault();
+                goToPrev();
+            }
+            if (e.key === 'Home') { currentSlide = 1; updateUI(); }
+            if (e.key === 'End') { currentSlide = totalSlides; updateUI(); }
+        });
+
+        let touchstartX = 0;
+        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].screenX - touchstartX;
+            if (dx < -50) goToNext();
+            if (dx > 50) goToPrev();
+        });
+
+        updateUI();
+    </script>
+</body>
+</html>
