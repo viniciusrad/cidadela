@@ -258,15 +258,15 @@ function DocumentRow({
             {doc.documentTitle}
           </p>
           <div className="mt-1 flex flex-wrap gap-1.5">
-            <Badge className="bg-[var(--surface)] text-[var(--muted)] border-[var(--border)]">
+            <Badge className="bg-[var(--surface)] text-[var(--foreground-soft)] border-[var(--border)]">
               {sectorLabel}
             </Badge>
             {sectorLabel !== doc.sector && (
-              <Badge className="bg-[var(--surface)] text-[var(--muted)] border-[var(--border)]">
+              <Badge className="bg-[var(--surface)] text-[var(--foreground-soft)] border-[var(--border)]">
                 {doc.sector}
               </Badge>
             )}
-            <Badge className="bg-[var(--surface)] text-[var(--muted)] border-[var(--border)]">
+            <Badge className="bg-[var(--surface)] text-[var(--foreground-soft)] border-[var(--border)]">
               {doc.chunkCount} trecho{doc.chunkCount !== 1 ? "s" : ""} indexado{doc.chunkCount !== 1 ? "s" : ""}
             </Badge>
             {inGraph && state.phase === "idle" && (
@@ -421,7 +421,7 @@ function DocumentRow({
                             {rel.title}
                           </p>
                           <div className="mt-1 flex flex-wrap gap-1">
-                            <Badge className="bg-[var(--surface)] text-[var(--muted)] border-[var(--border)]">
+                            <Badge className="bg-[var(--surface)] text-[var(--foreground-soft)] border-[var(--border)]">
                               {rel.sector}
                             </Badge>
                             <Badge className="bg-blue-100 text-blue-800 border-blue-300">
@@ -841,10 +841,10 @@ export function GraphKnowledgePanel() {
         </div>
 
         {recommendedDocs.length > 0 && (
-          <div className="rounded-lg border border-blue-400/30 bg-blue-500/10 p-3">
+          <div className="rounded-lg border border-blue-300 bg-blue-50 p-3">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-300">
+                <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-blue-700">
                   <Sparkles className="h-3.5 w-3.5" />
                   Radar de prioridade
                 </p>
@@ -855,7 +855,7 @@ export function GraphKnowledgePanel() {
               <button
                 onClick={extractRecommended}
                 disabled={batchExtracting}
-                className="flex items-center gap-1.5 rounded-md border border-blue-400/50 bg-blue-500/15 px-3 py-1.5 text-[11px] font-medium text-blue-200 transition-colors hover:bg-blue-500/25 disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-md border border-blue-400 bg-blue-100 px-3 py-1.5 text-[11px] font-medium text-blue-700 transition-colors hover:bg-blue-200 disabled:opacity-50"
               >
                 {batchExtracting ? (
                   <Loader2 className="h-3 w-3 animate-spin" />
@@ -870,7 +870,7 @@ export function GraphKnowledgePanel() {
                 <button
                   key={documentKey(doc)}
                   onClick={() => setSelectedDocument(doc)}
-                  className="rounded-md border border-blue-400/20 bg-[var(--surface)] px-3 py-2 text-left transition-colors hover:border-blue-400/60"
+                  className="rounded-md border border-blue-200 bg-white px-3 py-2 text-left transition-colors hover:border-blue-400"
                 >
                   <p className="truncate text-[11px] font-semibold text-[var(--foreground)]">
                     {doc.documentTitle}
@@ -882,7 +882,7 @@ export function GraphKnowledgePanel() {
               ))}
             </div>
             {batchMessage && (
-              <p className="mt-2 text-[11px] text-blue-200">{batchMessage}</p>
+              <p className="mt-2 text-[11px] text-blue-700">{batchMessage}</p>
             )}
           </div>
         )}

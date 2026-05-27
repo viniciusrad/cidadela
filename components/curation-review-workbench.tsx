@@ -318,10 +318,10 @@ export function CurationReviewWorkbench({
       sectorOptions.length > 0
         ? sectorOptions
         : SECTORS.map((sector) => ({
-            slug: sector,
-            displayName: SECTOR_LABELS[sector],
-            agentName: SECTOR_LABELS[sector],
-          })),
+          slug: sector,
+          displayName: SECTOR_LABELS[sector],
+          agentName: SECTOR_LABELS[sector],
+        })),
     [sectorOptions],
   );
   const availableSectorSlugs = useMemo(
@@ -434,14 +434,14 @@ export function CurationReviewWorkbench({
     isPromoted
       ? "Documento ja publicado no chat."
       : detail?.correlationGate.canApprove === false
-      ? detail.correlationGate.status === "NOT_RUN"
-        ? "Compare com o conteudo ja publicado antes de aprovar."
-        : "Resolva achados high/critical da correlacao antes de aprovar."
-      : detail?.document.status !== "APPROVED"
-      ? "Promote exige status APPROVED. Registre as aprovacoes pendentes primeiro."
-      : approvalGate?.canPromote === false
-        ? "Falta uma aprovacao do dono ou de um admin."
-        : "";
+        ? detail.correlationGate.status === "NOT_RUN"
+          ? "Compare com o conteudo ja publicado antes de aprovar."
+          : "Resolva achados high/critical da correlacao antes de aprovar."
+        : detail?.document.status !== "APPROVED"
+          ? "Promote exige status APPROVED. Registre as aprovacoes pendentes primeiro."
+          : approvalGate?.canPromote === false
+            ? "Falta uma aprovacao do dono ou de um admin."
+            : "";
 
   const updateDocumentStatus = useCallback(
     (documentId: string, update: Partial<InitialCurationDocument>) => {
@@ -584,9 +584,9 @@ export function CurationReviewWorkbench({
         setDetail((current) =>
           current
             ? {
-                ...current,
-                correlationGate,
-              }
+              ...current,
+              correlationGate,
+            }
             : current,
         );
         setCorrelationAnswers(
@@ -680,20 +680,20 @@ export function CurationReviewWorkbench({
       setDetail((current) =>
         current
           ? {
-              ...current,
-              document: {
-                ...current.document,
-                status: payload.status ?? current.document.status,
-                sopReadinessScore:
-                  payload.sopReadinessScore ?? current.document.sopReadinessScore,
-                curationReadinessScore:
-                  payload.curationReadinessScore ??
-                  current.document.curationReadinessScore,
-              },
-              questions: payload.questions ?? current.questions,
-              approvals: payload.approvalsInvalidated ? [] : current.approvals,
-              approvalGate: payload.approvalGate ?? current.approvalGate,
-            }
+            ...current,
+            document: {
+              ...current.document,
+              status: payload.status ?? current.document.status,
+              sopReadinessScore:
+                payload.sopReadinessScore ?? current.document.sopReadinessScore,
+              curationReadinessScore:
+                payload.curationReadinessScore ??
+                current.document.curationReadinessScore,
+            },
+            questions: payload.questions ?? current.questions,
+            approvals: payload.approvalsInvalidated ? [] : current.approvals,
+            approvalGate: payload.approvalGate ?? current.approvalGate,
+          }
           : current,
       );
       updateDocumentStatus(selectedDocumentId, {
@@ -753,21 +753,21 @@ export function CurationReviewWorkbench({
       setDetail((current) =>
         current
           ? {
-              ...current,
-              document: {
-                ...current.document,
-                status: payload.approvalsInvalidated
-                  ? payload.status ?? "NEEDS_REVISION"
-                  : current.document.status,
-                sopReadinessScore:
-                  payload.sopReadinessScore ?? current.document.sopReadinessScore,
-                curationReadinessScore:
-                  payload.curationReadinessScore ??
-                  current.document.curationReadinessScore,
-              },
-              approvals: payload.approvalsInvalidated ? [] : current.approvals,
-              correlationGate,
-            }
+            ...current,
+            document: {
+              ...current.document,
+              status: payload.approvalsInvalidated
+                ? payload.status ?? "NEEDS_REVISION"
+                : current.document.status,
+              sopReadinessScore:
+                payload.sopReadinessScore ?? current.document.sopReadinessScore,
+              curationReadinessScore:
+                payload.curationReadinessScore ??
+                current.document.curationReadinessScore,
+            },
+            approvals: payload.approvalsInvalidated ? [] : current.approvals,
+            correlationGate,
+          }
           : current,
       );
       updateDocumentStatus(selectedDocumentId, {
@@ -797,18 +797,18 @@ export function CurationReviewWorkbench({
 
   const postApproval = async (role: "owner" | "admin") => {
     const response = await fetch(`/api/curation/${selectedDocumentId}/approve`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          role,
-          decision: "approved",
-          reason: approvalReason.trim() || undefined,
-        }),
-      });
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        role,
+        decision: "approved",
+        reason: approvalReason.trim() || undefined,
+      }),
+    });
     const payload = (await response.json()) as {
-        message?: string;
-        status?: string;
-      };
+      message?: string;
+      status?: string;
+    };
 
     if (!response.ok) {
       throw new Error(payload.message ?? "Falha ao registrar aprovacao.");
@@ -850,14 +850,14 @@ export function CurationReviewWorkbench({
     setDetail((current) =>
       current
         ? {
-            ...current,
-            document: {
-              ...current.document,
-              status: nextStatus,
-              sopPath: payload.sopPath ?? current.document.sopPath,
-            },
-            chunks: [],
-          }
+          ...current,
+          document: {
+            ...current.document,
+            status: nextStatus,
+            sopPath: payload.sopPath ?? current.document.sopPath,
+          },
+          chunks: [],
+        }
         : current,
     );
     selectQueueDocument(getQueueTabForStatus(nextStatus));
@@ -979,7 +979,7 @@ export function CurationReviewWorkbench({
       setSelectedDocumentId(nextRejectedDocumentId);
       setIsDiscardModalOpen(false);
       setRejectionReason("");
-    setMessage("Documento descartado do sistema e da area de revisao.");
+      setMessage("Documento descartado do sistema e da area de revisao.");
     } catch (error) {
       setErrorMessage(normalizeError(error, "Falha ao descartar documento."));
     } finally {
@@ -1258,11 +1258,10 @@ export function CurationReviewWorkbench({
         {/* Abas de filtro da fila */}
         <div className="mt-6 flex gap-1 rounded-xl bg-[var(--surface-muted)] p-1">
           <button
-            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
-              queueTab === "queue"
-                ? "bg-white text-[var(--foreground-strong)] shadow-sm"
-                : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
-            }`}
+            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${queueTab === "queue"
+              ? "bg-white text-[var(--foreground-strong)] shadow-sm"
+              : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
+              }`}
             onClick={() => {
               selectQueueDocument("queue");
             }}
@@ -1276,11 +1275,10 @@ export function CurationReviewWorkbench({
             )}
           </button>
           <button
-            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
-              queueTab === "approved"
-                ? "bg-white text-[var(--foreground-strong)] shadow-sm"
-                : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
-            }`}
+            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${queueTab === "approved"
+              ? "bg-white text-[var(--foreground-strong)] shadow-sm"
+              : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
+              }`}
             onClick={() => {
               selectQueueDocument("approved");
             }}
@@ -1294,11 +1292,10 @@ export function CurationReviewWorkbench({
             )}
           </button>
           <button
-            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
-              queueTab === "rejected"
-                ? "bg-white text-[var(--foreground-strong)] shadow-sm"
-                : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
-            }`}
+            className={`flex-1 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${queueTab === "rejected"
+              ? "bg-white text-[var(--foreground-strong)] shadow-sm"
+              : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
+              }`}
             onClick={() => {
               selectQueueDocument("rejected");
             }}
@@ -1331,11 +1328,10 @@ export function CurationReviewWorkbench({
 
               return (
                 <button
-                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${
-                    isSelected
-                      ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                      : "border-[var(--border)] bg-white hover:border-[var(--border-strong)]"
-                  }`}
+                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${isSelected
+                    ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                    : "border-[var(--border)] bg-white hover:border-[var(--border-strong)]"
+                    }`}
                   key={document.id}
                   onClick={() => setSelectedDocumentId(document.id)}
                   type="button"
@@ -1423,7 +1419,7 @@ export function CurationReviewWorkbench({
                     {readiness ??
                       readinessPercent(
                         selectedDocument.curationReadinessScore ??
-                          selectedDocument.sopReadinessScore,
+                        selectedDocument.sopReadinessScore,
                       ) ??
                       0}
                     %
@@ -1432,8 +1428,8 @@ export function CurationReviewWorkbench({
                     <span className="rounded bg-[var(--surface-muted)] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[var(--foreground-soft)]">
                       {
                         DOCUMENT_TYPE_LABELS[
-                          (detail?.document.documentType ??
-                            selectedDocument.documentType) as DocumentType
+                        (detail?.document.documentType ??
+                          selectedDocument.documentType) as DocumentType
                         ]
                       }
                     </span>
@@ -1502,8 +1498,8 @@ export function CurationReviewWorkbench({
                   <p className="mt-2 text-sm font-black text-[var(--foreground-strong)]">
                     {detail.document.effectiveFrom
                       ? new Date(detail.document.effectiveFrom).toLocaleDateString(
-                          "pt-BR",
-                        )
+                        "pt-BR",
+                      )
                       : "-"}
                   </p>
                 </div>
@@ -1523,16 +1519,15 @@ export function CurationReviewWorkbench({
                     {detail.correlationGate.status === "NOT_RUN"
                       ? "Aguardando comparacao com os trechos ja publicados pelo mesmo agente."
                       : detail.correlationGate.summary ??
-                        "Correlacao executada para este documento."}
+                      "Correlacao executada para este documento."}
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
                   <span
-                    className={`rounded px-3 py-2 text-xs font-bold uppercase tracking-wider ${
-                      detail.correlationGate.canApprove
-                        ? "bg-emerald-400/15 text-emerald-700"
-                        : "bg-amber-400/20 text-amber-800"
-                    }`}
+                    className={`rounded px-3 py-2 text-xs font-bold uppercase tracking-wider ${detail.correlationGate.canApprove
+                      ? "bg-emerald-400/15 text-emerald-700"
+                      : "bg-amber-400/20 text-amber-800"
+                      }`}
                   >
                     {detail.correlationGate.status}
                   </span>
@@ -1605,7 +1600,7 @@ export function CurationReviewWorkbench({
                             ) : null}
                           </div>
                           {finding.severity === "high" ||
-                          finding.severity === "critical" ? (
+                            finding.severity === "critical" ? (
                             <AlertTriangle className="h-5 w-5 shrink-0 text-amber-700" />
                           ) : null}
                         </div>
@@ -1736,22 +1731,20 @@ export function CurationReviewWorkbench({
 
               <div className="mt-5 flex flex-wrap gap-2 rounded-2xl bg-[var(--surface-muted)] p-1">
                 <button
-                  className={`rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
-                    stagingViewTab === "full"
-                      ? "bg-white text-[var(--foreground-strong)] shadow-sm"
-                      : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
-                  }`}
+                  className={`rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${stagingViewTab === "full"
+                    ? "bg-white text-[var(--foreground-strong)] shadow-sm"
+                    : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
+                    }`}
                   onClick={() => setStagingViewTab("full")}
                   type="button"
                 >
                   Conteudo completo
                 </button>
                 <button
-                  className={`rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
-                    stagingViewTab === "chunks"
-                      ? "bg-white text-[var(--foreground-strong)] shadow-sm"
-                      : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
-                  }`}
+                  className={`rounded-2xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${stagingViewTab === "chunks"
+                    ? "bg-white text-[var(--foreground-strong)] shadow-sm"
+                    : "text-[var(--foreground-soft)] hover:text-[var(--foreground-strong)]"
+                    }`}
                   onClick={() => setStagingViewTab("chunks")}
                   type="button"
                 >
@@ -1797,7 +1790,7 @@ export function CurationReviewWorkbench({
                               isSavingDocumentContent ||
                               !documentContentDraft.trim() ||
                               documentContentDraft.trim() ===
-                                detail.document.normalizedMarkdown.trim()
+                              detail.document.normalizedMarkdown.trim()
                             }
                             onClick={() => void saveDocumentContentDraft()}
                             type="button"
@@ -1903,13 +1896,12 @@ export function CurationReviewWorkbench({
 
                   return (
                     <div
-                      className={`rounded-2xl border p-4 ${
-                        isAnsweredByCurator
-                          ? "border-emerald-200 bg-emerald-50/55"
-                          : isServerDefault || isPreFilled
-                            ? "border-[var(--accent)]/40 bg-[var(--accent-soft)]"
-                            : "border-amber-200 bg-amber-50/60"
-                      }`}
+                      className={`rounded-2xl border p-4 ${isAnsweredByCurator
+                        ? "border-emerald-200 bg-emerald-50/55"
+                        : isServerDefault || isPreFilled
+                          ? "border-[var(--accent)]/40 bg-[var(--accent-soft)]"
+                          : "border-amber-200 bg-amber-50/60"
+                        }`}
                       key={question.id}
                     >
                       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -1927,13 +1919,12 @@ export function CurationReviewWorkbench({
                         </div>
                         <div className="flex shrink-0 flex-wrap items-center gap-2">
                           <span
-                            className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                              isAnsweredByCurator
-                                ? "bg-emerald-400/15 text-emerald-700"
-                                : isServerDefault || isPreFilled
-                                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                                  : "bg-amber-400/15 text-amber-700"
-                            }`}
+                            className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${isAnsweredByCurator
+                              ? "bg-emerald-400/15 text-emerald-700"
+                              : isServerDefault || isPreFilled
+                                ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                                : "bg-amber-400/15 text-amber-700"
+                              }`}
                           >
                             {isAnswered ? "respondida" : isPreFilled ? "sugestão" : "pendente"}
                           </span>
@@ -2101,11 +2092,10 @@ export function CurationReviewWorkbench({
 
                       return (
                         <div
-                          className={`rounded-2xl border p-4 ${
-                            isAnswered
-                              ? "border-cyan-200 bg-cyan-50/60"
-                              : "border-cyan-200/80 bg-cyan-50/35"
-                          }`}
+                          className={`rounded-2xl border p-4 ${isAnswered
+                            ? "border-cyan-200 bg-cyan-50/60"
+                            : "border-cyan-200/80 bg-cyan-50/35"
+                            }`}
                           key={question.id}
                         >
                           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -2121,11 +2111,10 @@ export function CurationReviewWorkbench({
                             </div>
                             <div className="flex shrink-0 flex-wrap items-center gap-2">
                               <span
-                                className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                                  isAnswered
-                                    ? "bg-cyan-200 text-cyan-800"
-                                    : "bg-cyan-100 text-cyan-700"
-                                }`}
+                                className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${isAnswered
+                                  ? "bg-cyan-200 text-cyan-800"
+                                  : "bg-cyan-100 text-cyan-700"
+                                  }`}
                               >
                                 {isAnswered ? "pergunta respondida" : "pergunta aberta"}
                               </span>
@@ -2221,11 +2210,10 @@ export function CurationReviewWorkbench({
 
                       return (
                         <div
-                          className={`rounded-2xl border p-4 ${
-                            isAnswered
-                              ? "border-violet-200 bg-violet-50/60"
-                              : "border-violet-200/80 bg-violet-50/35"
-                          }`}
+                          className={`rounded-2xl border p-4 ${isAnswered
+                            ? "border-violet-200 bg-violet-50/60"
+                            : "border-violet-200/80 bg-violet-50/35"
+                            }`}
                           key={question.id}
                         >
                           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -2241,11 +2229,10 @@ export function CurationReviewWorkbench({
                             </div>
                             <div className="flex shrink-0 flex-wrap items-center gap-2">
                               <span
-                                className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                                  isAnswered
-                                    ? "bg-violet-200 text-violet-800"
-                                    : "bg-violet-100 text-violet-700"
-                                }`}
+                                className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${isAnswered
+                                  ? "bg-violet-200 text-violet-800"
+                                  : "bg-violet-100 text-violet-700"
+                                  }`}
                               >
                                 {isAnswered ? "opcional respondida" : "opcional"}
                               </span>
@@ -2377,9 +2364,8 @@ export function CurationReviewWorkbench({
                   </div>
                   {promoteBlocker ? (
                     <p
-                      className={`mt-3 text-sm ${
-                        isPromoted ? "text-emerald-700" : "text-[var(--warn)]"
-                      }`}
+                      className={`mt-3 text-sm ${isPromoted ? "text-emerald-700" : "text-[var(--warn)]"
+                        }`}
                     >
                       {promoteBlocker}
                     </p>
@@ -2476,6 +2462,9 @@ export function CurationReviewWorkbench({
                 >
                   Motivo de rejeicao
                 </label>
+                <p className="text-sm text-[var(--foreground-strong)] mt-2">
+                  É necessario um motivo para rejeitar o documento.
+                </p>
                 <textarea
                   className="mt-3 min-h-20 w-full resize-y rounded-2xl border border-red-200 bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-red-400"
                   id="rejection-reason"
@@ -2716,11 +2705,10 @@ export function CurationReviewWorkbench({
                               return (
                                 <div
                                   key={key}
-                                  className={`flex flex-col rounded-2xl border transition-colors ${
-                                    isSelected
-                                      ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                                      : "border-[var(--border)] bg-white"
-                                  }`}
+                                  className={`flex flex-col rounded-2xl border transition-colors ${isSelected
+                                    ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                                    : "border-[var(--border)] bg-white"
+                                    }`}
                                 >
                                   {/* Card header — clickable checkbox area */}
                                   <label className="flex cursor-pointer items-start gap-3 p-4">
@@ -2740,11 +2728,10 @@ export function CurationReviewWorkbench({
                                     <div className="min-w-0 flex-1">
                                       <div className="flex flex-wrap items-center gap-1.5">
                                         <span
-                                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                                            isHighConf
-                                              ? "bg-emerald-100 text-emerald-700"
-                                              : "bg-amber-100 text-amber-700"
-                                          }`}
+                                          className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${isHighConf
+                                            ? "bg-emerald-100 text-emerald-700"
+                                            : "bg-amber-100 text-amber-700"
+                                            }`}
                                         >
                                           {Math.round(candidate.score * 100)}% sim.
                                         </span>
@@ -2904,11 +2891,10 @@ export function CurationReviewWorkbench({
                                     {src.sector}
                                   </span>
                                   <span
-                                    className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${
-                                      src.score >= 0.75
-                                        ? "bg-emerald-100 text-emerald-700"
-                                        : "bg-amber-100 text-amber-700"
-                                    }`}
+                                    className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${src.score >= 0.75
+                                      ? "bg-emerald-100 text-emerald-700"
+                                      : "bg-amber-100 text-amber-700"
+                                      }`}
                                   >
                                     {Math.round(src.score * 100)}%
                                   </span>
