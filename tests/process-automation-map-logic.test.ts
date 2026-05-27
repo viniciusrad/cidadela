@@ -26,6 +26,8 @@ describe("process automation map logic", () => {
       hasRegulations: true,
       feedbackSignalsCount: 0,
       semanticConsistency: true,
+      busFactor: 0,
+      riskProcedureCount: 0,
     });
 
     expect(result.score).toBe(65);
@@ -53,6 +55,8 @@ describe("process automation map logic", () => {
         hasRegulations: false,
         feedbackSignalsCount: 1,
         semanticConsistency: false,
+        busFactor: 0,
+        riskProcedureCount: 0,
       },
       systems: [],
       regulations: [],
@@ -154,6 +158,8 @@ describe("process automation map logic", () => {
         hasRegulations: true,
         feedbackSignalsCount: 0,
         semanticConsistency: true,
+        busFactor: 0,
+        riskProcedureCount: 0,
       },
     });
 

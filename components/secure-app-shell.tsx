@@ -12,6 +12,7 @@ import {
   LayoutDashboard,
   Network,
   ShieldCheck,
+  Users,
   Workflow,
 } from "lucide-react";
 
@@ -35,6 +36,7 @@ type ShellPage =
   | "dashboard"
   | "pendencies"
   | "notifications"
+  | "persons"
   | "chat"
   | "files"
   | "audit"
@@ -125,6 +127,15 @@ const PAGE_LINKS: Array<{
     description: "O que sua area faz, passo a passo",
     group: "knowledge",
     icon: <Workflow aria-hidden="true" className="h-4 w-4" />,
+    adminOnly: true,
+  },
+  {
+    key: "persons",
+    href: "/admin/persons",
+    label: "Pessoas",
+    description: "Quem sabe o que e executa o que",
+    group: "knowledge",
+    icon: <Users aria-hidden="true" className="h-4 w-4" />,
     adminOnly: true,
   },
   {

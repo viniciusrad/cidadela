@@ -184,11 +184,130 @@ export async function syncProcessGraphNode(input: SyncProcessGraphInput): Promis
     if (input.regulationNames && input.regulationNames.length > 0) {
       await linkProcessRegulations(input.id, input.regulationNames);
     }
+    // Derive PARTICIPATES_IN edges after procedure links are up-to-date
+    await upsertPersonProcessLinks(input.id);
   } catch (error) {
     console.warn(
       `[process-sync] Failed to sync Process ${input.id} to Neo4j:`,
       error instanceof Error ? error.message : String(error),
     );
+  }
+}
+
+/**
+ * Aggregates Document.sector occurrences per Person and creates or refreshes
+ * (:Person)-[:BELONGS_TO]->(:Sector) edges. The sector with most documents
+ * is marked as primary and written back to the Person node as `primarySector`.
+ *
+ * When sectorSlug is given, only persons mentioned in documents of that sector
+ * are processed. Pass null/undefined to run globally.
+ *
+ * Idempotent. Swallows Neo4j errors so a graph outage does not break the call site.
+ */
+export async function upsertPersonSectorLinks(sectorSlug?: string | null): Promise<number> {
+  try {
+    const sectorFilter = sectorSlug
+      ? `WHERE d.sector = '${sectorSlug.replace(/'/g, "\\'")}'`
+      : "";
+    const rows = await runQuery<{ count: number }>(
+      `MATCH (d:Document)-[:INVOLVES_PERSON]->(per:Person)
+       ${sectorFilter}
+       WITH per, d.sector AS sector, count(d) AS docCount
+       WITH per, sector, docCount
+       ORDER BY docCount DESC
+       WITH per, collect({sector: sector, docCount: docCount}) AS sectorCounts
+       WITH per, sectorCounts, sectorCounts[0].sector AS primarySector
+       UNWIND sectorCounts AS sc
+       MATCH (s:Sector {slug: sc.sector})
+       MERGE (per)-[r:BELONGS_TO]->(s)
+       SET r.confidence = 'extracted',
+           r.docCount = sc.docCount,
+           r.isPrimary = (sc.sector = primarySector),
+           r.updatedAt = datetime()
+       WITH per, primarySector
+       SET per.primarySector = primarySector
+       RETURN count(per) AS count`,
+    );
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.warn("[process-sync] upsertPersonSectorLinks failed:", error instanceof Error ? error.message : String(error));
+    return 0;
+  }
+}
+
+/**
+ * Derives (:Person)-[:PARTICIPATES_IN]->(:Process) edges by traversing the
+ * Person→PERFORMS→Procedure←COMPRISES←Process path for the given processId.
+ * Also considers the Person→INVOLVES_PERSON←Document←DESCRIBED_BY←Process path
+ * as a secondary signal when no PERFORMS edges exist yet.
+ *
+ * Roles are the union of PERFORMS roles across all procedures in the process.
+ * Confidence: 'extracted' if any role is in {executor, responsavel, owner}, else 'co_occurrence'.
+ *
+ * Idempotent. Swallows Neo4j errors.
+ */
+export async function upsertPersonProcessLinks(processId: string): Promise<number> {
+  try {
+    const rows = await runQuery<{ count: number }>(
+      `MATCH (p:Process {id: $processId})-[:COMPRISES]->(proc:Procedure)<-[perf:PERFORMS]-(per:Person)
+       WITH per, p,
+            collect(DISTINCT perf.role) AS roles,
+            collect(DISTINCT proc.name) AS viaProcedures,
+            reduce(acc=[], ids IN collect(perf.evidenceChunkIds) | acc + ids) AS evidenceChunkIds
+       MERGE (per)-[r:PARTICIPATES_IN]->(p)
+       SET r.roles = roles,
+           r.confidence = CASE
+             WHEN size([role IN roles WHERE role IN ['executor', 'responsavel', 'owner']]) > 0
+             THEN 'extracted'
+             ELSE 'co_occurrence'
+           END,
+           r.viaProcedures = viaProcedures,
+           r.evidenceChunkIds = evidenceChunkIds,
+           r.updatedAt = datetime()
+       RETURN count(r) AS count`,
+      { processId },
+    );
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    console.warn(`[process-sync] upsertPersonProcessLinks(${processId}) failed:`, error instanceof Error ? error.message : String(error));
+    return 0;
+  }
+}
+
+/**
+ * Queries the bus factor for a process: returns the minimum number of unique
+ * executors across all its procedures. busFactor=1 means at least one procedure
+ * has only one known executor — a key-person risk signal.
+ */
+export async function fetchProcessBusFactor(processId: string): Promise<{
+  busFactor: number;
+  uniqueExecutors: number;
+  riskProcedures: string[];
+}> {
+  try {
+    const rows = await runQuery<{
+      procedureName: string;
+      executorCount: number;
+    }>(
+      `MATCH (p:Process {id: $processId})-[:COMPRISES]->(proc:Procedure)
+       OPTIONAL MATCH (proc)<-[:PERFORMS {role: 'executor'}]-(per:Person)
+       WITH proc, count(DISTINCT per) AS executorCount
+       RETURN proc.name AS procedureName, executorCount
+       ORDER BY executorCount ASC`,
+      { processId },
+    );
+    if (rows.length === 0) return { busFactor: 0, uniqueExecutors: 0, riskProcedures: [] };
+
+    const executorCounts = rows.map((r) => Number(r.executorCount));
+    const busFactor = Math.min(...executorCounts);
+    const uniqueExecutors = executorCounts.reduce((a, b) => a + b, 0);
+    const riskProcedures = rows
+      .filter((r) => Number(r.executorCount) <= 1)
+      .map((r) => r.procedureName);
+
+    return { busFactor, uniqueExecutors, riskProcedures };
+  } catch {
+    return { busFactor: 0, uniqueExecutors: 0, riskProcedures: [] };
   }
 }
 

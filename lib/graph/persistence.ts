@@ -31,6 +31,8 @@ export type UpsertGraphDocumentResult = {
   ragChunksLinked: number;
   entityRelationships: number;
   coOccurrenceEdges: number;
+  typedPersonEdges: number;
+  knowsAboutEdges: number;
 };
 
 type EntityGroup = {
@@ -252,6 +254,71 @@ async function linkEntities(input: {
 }
 
 /**
+ * Derives typed PERFORMS and USES edges using Document-level edges as the bridge.
+ *
+ * PERFORMS: Person has role {executor, responsavel, owner} on a Document via
+ * INVOLVES_PERSON, and that Document DESCRIBES a Procedure.
+ * USES: Any Person linked to a Document via INVOLVES_PERSON where that Document
+ * REFERENCES_SYSTEM a System.
+ *
+ * Using Document-level edges (not same-chunk co-occurrence) is required because
+ * persons and procedures/systems typically appear in different sections of a
+ * document and therefore land in different chunks.
+ */
+export async function deriveTypedPersonEdges(documentId: string): Promise<number> {
+  const [performsRows, usesRows] = await Promise.all([
+    runQuery<{ count: number }>(
+      `MATCH (d:Document {id: $docId})-[ip:INVOLVES_PERSON]->(per:Person)
+       WHERE size([role IN coalesce(ip.roles, []) WHERE role IN ['executor', 'responsavel', 'owner']]) > 0
+       WITH per, ip.roles AS roles, d
+       MATCH (d)-[:DESCRIBES]->(proc:Procedure)
+       MERGE (per)-[r:PERFORMS]->(proc)
+       SET r.role = CASE
+             WHEN 'executor'   IN roles THEN 'executor'
+             WHEN 'responsavel' IN roles THEN 'responsavel'
+             ELSE 'owner'
+           END,
+           r.confidence = 'extracted',
+           r.updatedAt = datetime()
+       RETURN count(r) AS count`,
+      { docId: documentId },
+    ),
+    runQuery<{ count: number }>(
+      `MATCH (d:Document {id: $docId})-[:INVOLVES_PERSON]->(per:Person)
+       MATCH (d)-[:REFERENCES_SYSTEM]->(sys:System)
+       MERGE (per)-[r:USES]->(sys)
+       SET r.confidence = 'extracted',
+           r.updatedAt = datetime()
+       RETURN count(r) AS count`,
+      { docId: documentId },
+    ),
+  ]);
+  return Number(performsRows[0]?.count ?? 0) + Number(usesRows[0]?.count ?? 0);
+}
+
+/**
+ * Derives KNOWS_ABOUT edges between Person nodes and Concept nodes via the
+ * Document they share. A Person involved in a Document that HAS_CONCEPT a
+ * Concept is inferred to know about that concept.
+ *
+ * Using Document-level edges (not same-chunk co-occurrence) because persons
+ * and concepts typically appear in different sections of a document.
+ */
+export async function derivePersonKnowsAbout(documentId: string): Promise<number> {
+  const rows = await runQuery<{ count: number }>(
+    `MATCH (d:Document {id: $docId})-[:INVOLVES_PERSON]->(per:Person)
+     MATCH (d)-[:HAS_CONCEPT]->(concept:Concept)
+     MERGE (per)-[r:KNOWS_ABOUT]->(concept)
+     SET r.strength = coalesce(r.strength, 0) + 1,
+         r.confidence = 'extracted',
+         r.updatedAt = datetime()
+     RETURN count(r) AS count`,
+    { docId: documentId },
+  );
+  return Number(rows[0]?.count ?? 0);
+}
+
+/**
  * For a given document, finds all (Person, Procedure/System) pairs that share
  * at least one RagChunk via MENTIONS edges, and creates direct CO_OCCURS_WITH
  * edges between them. This makes Person→Procedure and Person→System queries
@@ -364,6 +431,10 @@ export async function upsertGraphDocument(
   );
 
   const coOccurrenceEdges = await linkPersonCoOccurrences(input.documentId);
+  const [typedPersonEdges, knowsAboutEdges] = await Promise.all([
+    deriveTypedPersonEdges(input.documentId),
+    derivePersonKnowsAbout(input.documentId),
+  ]);
 
   return {
     documentId: input.documentId,
@@ -373,5 +444,7 @@ export async function upsertGraphDocument(
       0,
     ),
     coOccurrenceEdges,
+    typedPersonEdges,
+    knowsAboutEdges,
   };
 }

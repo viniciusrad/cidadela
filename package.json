@@ -16,6 +16,7 @@
     "sync:knowledge-capabilities": "tsx scripts/sync-knowledge-capabilities.ts",
     "backfill:persons": "tsx scripts/backfill-person-entities.ts",
     "backfill:roles": "tsx scripts/backfill-person-roles.ts",
+    "backfill:person-relations": "tsx scripts/backfill-person-relations.ts",
     "backfill:unanswered": "tsx scripts/backfill-unanswered.ts",
     "measure:kpi-baseline": "tsx scripts/measure-kpi-baseline.ts",
     "weekly:digest": "tsx scripts/weekly-digest.ts",

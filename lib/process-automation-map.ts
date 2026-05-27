@@ -18,7 +18,7 @@ import { SECTORS } from "@/lib/domain";
 import { syncShareableKnowledgeCapabilities } from "@/lib/knowledge/capabilities";
 import { prepareMarkdownDocument } from "@/lib/markdown";
 import { checkNeo4jHealth, runQuery } from "@/lib/neo4j";
-import { syncProcessGraphNode } from "@/lib/graph/process-sync";
+import { fetchProcessBusFactor, syncProcessGraphNode } from "@/lib/graph/process-sync";
 import { getEmbedding } from "@/lib/ollama";
 import {
   deleteStagedDocumentChunks,
@@ -124,6 +124,10 @@ type ProcessFeatureSet = {
   hasRegulations: boolean;
   feedbackSignalsCount: number;
   semanticConsistency: boolean;
+  /** Minimum unique executors across all procedures (0 = no PERFORMS edges yet). */
+  busFactor: number;
+  /** Number of procedures with busFactor = 1 (single-executor risk). */
+  riskProcedureCount: number;
 };
 
 type ProcessComputationInput = {
@@ -322,6 +326,8 @@ function deriveFeatures(input: {
   regulations: string[];
   feedbackSignals: ProcessFeedbackSignal[];
   graphBacked: boolean;
+  busFactor?: number;
+  riskProcedureCount?: number;
 }) {
   const docs = input.documents;
   const docCount = docs.length;
@@ -392,6 +398,8 @@ function deriveFeatures(input: {
     hasRegulations: input.regulations.length > 0,
     feedbackSignalsCount: input.feedbackSignals.length,
     semanticConsistency: input.graphBacked ? docCount >= 2 : false,
+    busFactor: input.busFactor ?? 0,
+    riskProcedureCount: input.riskProcedureCount ?? 0,
   } satisfies ProcessFeatureSet;
 }
 
@@ -403,6 +411,10 @@ export function calculateAutomationReadiness(features: ProcessFeatureSet) {
   if (features.hasSystem) score += 15;
   if (features.hasClearInputs && features.hasClearOutputs) score += 10;
   if (features.hasFrequencyEvidence) score += 10;
+  // Bus factor: single-executor procedures increase automation urgency
+  if (features.busFactor === 1) score += 15;
+  else if (features.busFactor > 0 && features.busFactor <= 2) score += 5;
+  if (features.riskProcedureCount >= 2) score += 5;
   if (features.hasHumanCheckpoint) score -= 15;
   if (features.hasCriticalCorrelation) score -= 20;
   if (!features.hasOwner || !features.hasTrigger || !features.hasExceptions) score -= 15;
@@ -837,6 +849,8 @@ export function buildProcessMapDraft(input: ProcessComputationInput): ProcessMap
     regulations: input.regulations,
     concepts: input.concepts,
     docCount: input.documents.length,
+    busFactor: input.features.busFactor > 0 ? input.features.busFactor : undefined,
+    riskProcedureCount: input.features.riskProcedureCount > 0 ? input.features.riskProcedureCount : undefined,
   };
   const processSignals = uniq([
     input.graphBacked ? "procedure_neo4j" : "fallback_document",
@@ -844,6 +858,7 @@ export function buildProcessMapDraft(input: ProcessComputationInput): ProcessMap
     input.features.hasHumanCheckpoint ? "human_checkpoint" : null,
     input.features.hasCriticalCorrelation ? "critical_correlation" : null,
     input.features.hasFrequencyEvidence ? "recurring_frequency" : null,
+    input.features.busFactor === 1 ? "key_person_risk" : null,
     suggestedScriptType,
   ]);
   const status = evaluateProcessStatus({
@@ -1225,6 +1240,19 @@ async function assembleProcessDrafts() {
     });
   }
 
+  // Pre-fetch existing ProcessMap IDs so we can query bus factors from Neo4j
+  const allFingerprints = Array.from(contexts.keys()).map((key) => {
+    const [sector, ...nameParts] = key.split(":");
+    return fingerprintForProcess(sector as Sector, nameParts.join(":"));
+  });
+  const existingProcessMaps = allFingerprints.length > 0
+    ? await prisma.processMap.findMany({
+        where: { fingerprint: { in: allFingerprints } },
+        select: { id: true, fingerprint: true },
+      }).catch(() => [] as Array<{ id: string; fingerprint: string }>)
+    : [];
+  const processFingerprintToId = new Map(existingProcessMaps.map((m) => [m.fingerprint, m.id]));
+
   const drafts: ProcessMapDraft[] = [];
 
   for (const context of contexts.values()) {
@@ -1244,12 +1272,20 @@ async function assembleProcessDrafts() {
       .map((id) => context.documents.flatMap((document) => document.automationCandidates).find((candidate) => candidate.id === id))
       .filter(Boolean)
       .map((candidate) => buildCandidateRecord(candidate as AutomationCandidate));
+    const fp = fingerprintForProcess(context.sector, context.name);
+    const existingProcessId = processFingerprintToId.get(fp);
+    const personSignals = context.graphBacked && existingProcessId
+      ? await fetchProcessBusFactor(existingProcessId)
+      : { busFactor: 0, uniqueExecutors: 0, riskProcedures: [] };
+
     const features = deriveFeatures({
       documents: context.documents,
       systems: context.systems,
       regulations: context.regulations,
       feedbackSignals,
       graphBacked: context.graphBacked,
+      busFactor: personSignals.busFactor,
+      riskProcedureCount: personSignals.riskProcedures.length,
     });
     const targetDocument =
       context.documents.find((document) => document.status !== "PROMOTED" && document.status !== "REJECTED")

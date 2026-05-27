@@ -105,6 +105,12 @@ const EDGE_STROKE: Record<string, string> = {
   SUPPORTED_BY:      "#14b8a6",
   REQUIRES_CONCEPT:  "#3b82f6",
   GOVERNED_BY:       "#f59e0b",
+  // Person typed relations (Ondas 1-2)
+  PERFORMS:          "#ef4444",
+  USES:              "#0ea5e9",
+  KNOWS_ABOUT:       "#8b5cf6",
+  BELONGS_TO:        "#f97316",
+  PARTICIPATES_IN:   "#10b981",
 };
 
 const EDGE_LABELS: Record<string, string> = {
@@ -123,6 +129,11 @@ const EDGE_LABELS: Record<string, string> = {
   SUPPORTED_BY: "processo → sistema",
   REQUIRES_CONCEPT: "processo → conceito",
   GOVERNED_BY: "processo → regulamento",
+  PERFORMS: "executa",
+  USES: "utiliza",
+  KNOWS_ABOUT: "conhece",
+  BELONGS_TO: "pertence a",
+  PARTICIPATES_IN: "participa de",
 };
 
 const RELATION_FILTERS: { type: string; label: string; description: string }[] = [
@@ -200,6 +211,31 @@ const RELATION_FILTERS: { type: string; label: string; description: string }[] =
     type: "GOVERNED_BY",
     label: "Processo → Regulamento",
     description: "Regulamentos que regem o processo",
+  },
+  {
+    type: "PERFORMS",
+    label: "Pessoa → Procedimento (executa)",
+    description: "Pessoa identificada como executor ou responsável por um procedimento",
+  },
+  {
+    type: "USES",
+    label: "Pessoa → Sistema (utiliza)",
+    description: "Pessoa que utiliza um sistema — detectada por co-ocorrência",
+  },
+  {
+    type: "KNOWS_ABOUT",
+    label: "Pessoa → Conceito (conhece)",
+    description: "Pessoa com conhecimento sobre um conceito — pela frequência de co-ocorrência",
+  },
+  {
+    type: "BELONGS_TO",
+    label: "Pessoa → Setor (pertence a)",
+    description: "Setor principal da pessoa — inferido de documentos ou validado manualmente",
+  },
+  {
+    type: "PARTICIPATES_IN",
+    label: "Pessoa → Processo (participa de)",
+    description: "Pessoa que participa de um processo por executar procedimentos que o compõem",
   },
 ];
 
