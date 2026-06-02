@@ -5,6 +5,7 @@ import { appConfig } from "@/lib/config";
 import { SECTORS } from "@/lib/domain";
 import { syncShareableKnowledgeCapabilities } from "@/lib/knowledge/capabilities";
 import { startAuditConsumer } from "@/lib/bus/audit-consumer";
+import { startChatConsumer } from "@/lib/bus/chat-queue";
 import { startSectorConsumer } from "@/lib/bus/consumer";
 import { createBusChannel } from "@/lib/bus/connection";
 import { ensureBusTopology } from "@/lib/bus/publisher";
@@ -41,6 +42,10 @@ async function bootstrap() {
     startAuditConsumer(),
     ...slugs.map((sector) => startSectorConsumer(sector)),
   ]);
+
+  if (appConfig.chatQueueEnabled && !appConfig.chatWorkerExternal) {
+    await startChatConsumer();
+  }
 }
 
 export async function ensureBusBootstrapped() {

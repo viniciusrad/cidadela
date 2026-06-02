@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual do Usuário — PFRM Secure Agents</title>
+  <meta name="description" content="Guia completo de treinamento e onboarding da plataforma PFRM Secure Agents — Ecossistema de Conhecimento Setorial com IA.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --brand:        #38bdf8;
+      --brand-dim:    rgba(56,189,248,0.12);
+      --brand-border: rgba(56,189,248,0.25);
+      --purple:       #a78bfa;
+      --pink:         #f472b6;
+      --emerald:      #34d399;
+      --amber:        #fbbf24;
+      --bg:           #030712;
+      --surface:      #0f172a;
+      --surface-2:    #1e293b;
+      --border:       rgba(255,255,255,0.07);
+      --text:         #f1f5f9;
+      --text-muted:   #94a3b8;
+      --text-dim:     #475569;
+      --sidebar-w:    280px;
+      --header-h:     56px;
+      --radius:       12px;
+      --radius-sm:    8px;
+      --transition:   0.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== BACKGROUND ===== */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(56,189,248,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56,189,248,.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(circle at 10% 15%, rgba(56,189,248,.1) 0%, transparent 38%),
+        radial-gradient(circle at 90% 85%, rgba(167,139,250,.08) 0%, transparent 38%);
+      pointer-events: none;
+    }
+
+    /* ===== TOP HEADER (mobile) ===== */
+    #top-bar {
+      display: none;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--header-h);
+      background: rgba(3,7,18,.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      padding: 0 1.25rem;
+      gap: 1rem;
+    }
+    #top-bar .logo { font-size: .85rem; font-weight: 700; color: var(--text); flex: 1; }
+    #hamburger {
+      width: 36px; height: 36px; border-radius: var(--radius-sm);
+      background: var(--surface-2); border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; transition: var(--transition);
+    }
+    #hamburger:hover { color: var(--brand); border-color: var(--brand-border); }
+
+    /* ===== SIDEBAR ===== */
+    #sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0; z-index: 150;
+      width: var(--sidebar-w);
+      background: rgba(10,15,28,.97);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      overflow: hidden;
+      transition: transform var(--transition);
+    }
+
+    .sidebar-header {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: .6rem;
+      font-weight: 800; font-size: .95rem; color: var(--text);
+      text-decoration: none; margin-bottom: .5rem;
+    }
+    .sidebar-logo .logo-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+    }
+    .sidebar-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .65rem; color: var(--text-dim);
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+
+    /* Search */
+    .sidebar-search {
+      padding: .75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-search input {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit; font-size: .8rem;
+      padding: .45rem .75rem .45rem 2rem;
+      outline: none;
+      transition: var(--transition);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: .6rem center;
+    }
+    .sidebar-search input:focus { border-color: var(--brand-border); box-shadow: 0 0 0 3px rgba(56,189,248,.08); }
+    .sidebar-search input::placeholder { color: var(--text-dim); }
+
+    /* Nav */
+    .sidebar-nav {
+      flex: 1; overflow-y: auto; padding: .75rem 0;
+      scrollbar-width: thin; scrollbar-color: var(--surface-2) transparent;
+    }
+    .sidebar-nav::-webkit-scrollbar { width: 4px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 2px; }
+
+    .nav-group { margin-bottom: .5rem; }
+    .nav-group-label {
+      font-size: .6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .15em; color: var(--text-dim);
+      padding: .5rem 1.25rem .25rem;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .45rem 1.25rem;
+      font-size: .82rem; color: var(--text-muted);
+      text-decoration: none; cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: var(--transition);
+      border-radius: 0;
+      position: relative;
+    }
+    .nav-item .nav-icon {
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: .8rem;
+      border-radius: 5px;
+      background: var(--surface-2);
+      transition: var(--transition);
+    }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,.03); }
+    .nav-item:hover .nav-icon { background: var(--brand-dim); color: var(--brand); }
+    .nav-item.active {
+      color: var(--brand); border-left-color: var(--brand);
+      background: var(--brand-dim);
+    }
+    .nav-item.active .nav-icon { background: var(--brand-dim); color: var(--brand); }
+    .nav-sub-item {
+      padding-left: 3.2rem;
+      font-size: .78rem;
+      color: var(--text-dim);
+    }
+    .nav-sub-item:hover { color: var(--text-muted); }
+    .nav-sub-item.active { color: var(--brand); border-left-color: var(--brand); }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .sidebar-footer a {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .75rem; color: var(--text-dim);
+      text-decoration: none; transition: var(--transition);
+    }
+    .sidebar-footer a:hover { color: var(--brand); }
+
+    /* ===== MAIN CONTENT ===== */
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-width: 0;
+      position: relative; z-index: 1;
+    }
+
+    .content-area {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3.5rem 2.5rem 6rem;
+    }
+
+    /* ===== TYPOGRAPHY ===== */
+    h1 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 20%, var(--brand) 100%);
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    h2 {
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -.02em; margin-top: 3rem; margin-bottom: .75rem;
+      color: var(--text);
+      display: flex; align-items: center; gap: .6rem;
+    }
+    h2::before {
+      content: attr(data-anchor);
+      display: none;
+    }
+    h3 {
+      font-size: 1.1rem; font-weight: 700;
+      margin-top: 2rem; margin-bottom: .5rem;
+      color: var(--text);
+    }
+    h4 {
+      font-size: .95rem; font-weight: 700;
+      margin-top: 1.5rem; margin-bottom: .4rem;
+      color: var(--brand);
+      text-transform: uppercase; letter-spacing: .05em; font-size: .75rem;
+    }
+    p { color: var(--text-muted); margin-bottom: 1rem; }
+    strong, b { color: var(--text); font-weight: 600; }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    ul, ol {
+      padding-left: 1.5rem; margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+    ul { list-style: none; padding-left: 0; }
+    ul li {
+      padding: .2rem 0 .2rem 1.4rem;
+      position: relative;
+    }
+    ul li::before {
+      content: '›';
+      position: absolute; left: 0;
+      color: var(--brand); font-weight: 700;
+    }
+    ol { list-style: none; counter-reset: ol-counter; }
+    ol li {
+      counter-increment: ol-counter;
+      padding: .3rem 0 .3rem 2rem;
+      position: relative;
+    }
+    ol li::before {
+      content: counter(ol-counter);
+      position: absolute; left: 0;
+      width: 1.4rem; height: 1.4rem;
+      background: var(--brand-dim);
+      border: 1px solid var(--brand-border);
+      border-radius: 50%;
+      color: var(--brand);
+      font-size: .7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      top: .35rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82em;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: .1em .4em;
+      color: var(--brand);
+    }
+    pre {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      line-height: 1.8;
+      color: #e2e8f0;
+    }
+    pre code { background: none; border: none; padding: 0; color: inherit; }
+
+    hr {
+      border: none; border-top: 1px solid var(--border);
+      margin: 3rem 0;
+    }
+
+    /* ===== COMPONENTS ===== */
+
+    /* Hero section */
+    .hero {
+      position: relative;
+      background: linear-gradient(135deg, rgba(56,189,248,.06), rgba(167,139,250,.04));
+      border: 1px solid var(--brand-border);
+      border-radius: 1rem;
+      padding: 2.5rem 2rem;
+      margin-bottom: 3rem;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -60%; right: -20%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(56,189,248,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: rgba(56,189,248,.1); color: var(--brand);
+      border: 1px solid var(--brand-border);
+      border-radius: 99px;
+      font-size: .68rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .12em;
+      padding: .3rem .85rem;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 900; letter-spacing: -.03em; line-height: 1.1;
+      color: var(--text); margin-bottom: .75rem;
+      -webkit-text-fill-color: unset;
+      background: none;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, var(--brand), var(--purple));
+      -webkit-background-clip: text; background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-lead {
+      font-size: 1rem; color: var(--text-muted);
+      max-width: 600px; line-height: 1.7;
+    }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: .75rem;
+      margin-top: 1.5rem;
+    }
+    .hero-chip {
+      font-size: .72rem; color: var(--text-dim);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .2rem .6rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Callout boxes */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin: 1.25rem 0;
+      border: 1px solid;
+      display: flex; gap: .8rem; align-items: flex-start;
+    }
+    .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: .15rem; }
+    .callout-body { flex: 1; }
+    .callout-title { font-weight: 700; font-size: .85rem; margin-bottom: .25rem; }
+    .callout-text { font-size: .85rem; color: var(--text-muted); }
+    .callout.info {
+      background: rgba(56,189,248,.06);
+      border-color: rgba(56,189,248,.2);
+    }
+    .callout.info .callout-icon, .callout.info .callout-title { color: var(--brand); }
+    .callout.warning {
+      background: rgba(251,191,36,.06);
+      border-color: rgba(251,191,36,.2);
+    }
+    .callout.warning .callout-icon, .callout.warning .callout-title { color: var(--amber); }
+    .callout.danger {
+      background: rgba(239,68,68,.06);
+      border-color: rgba(239,68,68,.2);
+    }
+    .callout.danger .callout-icon, .callout.danger .callout-title { color: #f87171; }
+    .callout.success {
+      background: rgba(52,211,153,.06);
+      border-color: rgba(52,211,153,.2);
+    }
+    .callout.success .callout-icon, .callout.success .callout-title { color: var(--emerald); }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; margin: 1.25rem 0; border-radius: var(--radius); border: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    thead tr { background: var(--surface); }
+    thead th {
+      text-align: left; padding: .75rem 1rem;
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    tbody tr { border-bottom: 1px solid var(--border); transition: var(--transition); }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.02); }
+    td { padding: .7rem 1rem; color: var(--text-muted); vertical-align: top; }
+    td strong { color: var(--text); }
+    td code { font-size: .78rem; }
+
+    /* Check/Cross cells */
+    .check { color: var(--emerald); text-align: center; font-size: 1rem; }
+    .cross { color: var(--text-dim); text-align: center; font-size: .9rem; }
+
+    /* Agent cards */
+    .agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .agent-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: var(--transition);
+      cursor: default;
+    }
+    .agent-card:hover { border-color: var(--brand-border); transform: translateY(-2px); box-shadow: 0 12px 32px -12px rgba(56,189,248,.2); }
+    .agent-avatar {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1rem;
+    }
+    .agent-name { font-weight: 800; font-size: 1.05rem; margin-bottom: .25rem; }
+    .agent-sector { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; margin-bottom: .6rem; }
+    .agent-desc { font-size: .8rem; color: var(--text-muted); line-height: 1.6; }
+    .agent-forja .agent-avatar { background: rgba(56,189,248,.12); }
+    .agent-forja .agent-sector { color: var(--brand); }
+    .agent-sentinela .agent-avatar { background: rgba(244,114,182,.12); }
+    .agent-sentinela .agent-sector { color: var(--pink); }
+    .agent-contacta .agent-avatar { background: rgba(52,211,153,.12); }
+    .agent-contacta .agent-sector { color: var(--emerald); }
+
+    /* Role cards */
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .role-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .role-badge {
+      display: inline-block;
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .12em;
+      padding: .25rem .7rem;
+      border-radius: 99px;
+      margin-bottom: .8rem;
+    }
+    .role-badge.user { background: rgba(56,189,248,.12); color: var(--brand); }
+    .role-badge.key { background: rgba(251,191,36,.12); color: var(--amber); }
+    .role-badge.admin { background: rgba(167,139,250,.12); color: var(--purple); }
+    .role-title { font-weight: 800; font-size: 1rem; margin-bottom: .4rem; }
+    .role-desc { font-size: .8rem; color: var(--text-muted); }
+
+    /* Flow diagram */
+    .flow {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin: 1.25rem 0;
+    }
+    .flow-title { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--text-dim); margin-bottom: 1rem; }
+    .flow-steps { display: flex; flex-direction: column; gap: 0; }
+    .flow-step {
+      display: flex; gap: 1rem; align-items: flex-start;
+      position: relative;
+    }
+    .flow-step-left { display: flex; flex-direction: column; align-items: center; }
+    .flow-dot {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--brand-dim); color: var(--brand);
+      border: 1px solid var(--brand-border);
+      z-index: 1;
+    }
+    .flow-line {
+      width: 1px; flex: 1; min-height: 1.5rem;
+      background: linear-gradient(to bottom, var(--brand-border), transparent);
+      margin: 0 auto;
+    }
+    .flow-step:last-child .flow-line { display: none; }
+    .flow-content {
+      padding-top: .35rem;
+      padding-bottom: 1.25rem;
+      flex: 1;
+    }
+    .flow-content strong { color: var(--text); font-size: .9rem; display: block; }
+    .flow-content span { font-size: .82rem; color: var(--text-muted); }
+
+    /* Status pills */
+    .status-flow {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .5rem;
+      margin: 1rem 0;
+    }
+    .status-pill {
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: .3rem .85rem;
+      border-radius: 99px;
+      border: 1px solid;
+    }
+    .status-pill.staged { background: rgba(100,116,139,.1); color: #94a3b8; border-color: rgba(100,116,139,.25); }
+    .status-pill.review { background: rgba(251,191,36,.1); color: var(--amber); border-color: rgba(251,191,36,.25); }
+    .status-pill.approved { background: rgba(56,189,248,.1); color: var(--brand); border-color: var(--brand-border); }
+    .status-pill.promoted { background: rgba(52,211,153,.1); color: var(--emerald); border-color: rgba(52,211,153,.25); }
+    .status-arrow { color: var(--text-dim); font-size: .9rem; }
+
+    /* Chat examples */
+    .chat-example { margin: 1.25rem 0; }
+    .chat-msg {
+      display: flex; gap: .75rem; margin-bottom: .75rem;
+    }
+    .chat-msg.user { flex-direction: row-reverse; }
+    .chat-bubble {
+      max-width: 75%;
+      padding: .65rem 1rem;
+      border-radius: 14px;
+      font-size: .85rem; line-height: 1.6;
+    }
+    .chat-msg.user .chat-bubble {
+      background: var(--brand-dim);
+      border: 1px solid var(--brand-border);
+      border-top-right-radius: 4px;
+      color: var(--text);
+    }
+    .chat-msg.agent .chat-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top-left-radius: 4px;
+      color: var(--text-muted);
+    }
+    .chat-avatar {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--surface-2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; flex-shrink: 0; margin-top: .1rem;
+    }
+    .good-example { border-left: 3px solid var(--emerald); padding-left: .75rem; margin: .5rem 0; color: var(--text-muted); font-size: .875rem; }
+    .bad-example  { border-left: 3px solid #f87171; padding-left: .75rem; margin: .5rem 0; color: var(--text-dim); font-size: .875rem; text-decoration: line-through; }
+
+    /* Feature grid */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      transition: var(--transition);
+    }
+    .feature-card:hover { border-color: var(--brand-border); }
+    .feature-icon {
+      font-size: 1.4rem; margin-bottom: .6rem;
+      display: block;
+    }
+    .feature-card h4 { color: var(--text); margin-top: 0; font-size: .8rem; text-transform: none; letter-spacing: 0; }
+    .feature-card p { font-size: .78rem; margin-bottom: 0; }
+
+    /* Automation table */
+    .auto-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: .6rem;
+      display: grid; grid-template-columns: 1fr auto; gap: .5rem;
+      align-items: center;
+      transition: var(--transition);
+    }
+    .auto-item:hover { border-color: var(--brand-border); }
+    .auto-name { font-weight: 700; font-size: .9rem; color: var(--text); }
+    .auto-how { font-size: .78rem; color: var(--text-muted); margin-top: .2rem; }
+    .auto-tag {
+      font-size: .65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      padding: .25rem .65rem; border-radius: 99px;
+      background: var(--brand-dim); color: var(--brand);
+      border: 1px solid var(--brand-border);
+      white-space: nowrap;
+    }
+
+    /* KPI grid */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .8rem; margin: 1.25rem 0; }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+    .kpi-label { font-size: .72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .35rem; }
+    .kpi-value { font-size: 1.5rem; font-weight: 800; color: var(--brand); font-family: 'JetBrains Mono', monospace; }
+    .kpi-desc { font-size: .75rem; color: var(--text-dim); margin-top: .25rem; }
+
+    /* FAQ */
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: .75rem;
+      overflow: hidden;
+    }
+    .faq-q {
+      padding: 1rem 1.25rem;
+      font-weight: 700; font-size: .9rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface);
+      transition: var(--transition);
+      user-select: none;
+    }
+    .faq-q:hover { background: var(--surface-2); color: var(--brand); }
+    .faq-q.open { color: var(--brand); border-bottom: 1px solid var(--border); }
+    .faq-chevron { transition: transform .2s; color: var(--text-dim); font-size: .8rem; }
+    .faq-q.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      padding: 0 1.25rem;
+      max-height: 0; overflow: hidden;
+      transition: max-height .3s ease, padding .2s;
+    }
+    .faq-a.open { padding: 1rem 1.25rem; max-height: 500px; }
+    .faq-a p { margin-bottom: 0; font-size: .875rem; }
+
+    /* Glossary */
+    .glossary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; margin: 1.25rem 0; }
+    .gloss-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem 1rem;
+    }
+    .gloss-term { font-weight: 700; font-size: .85rem; color: var(--brand); margin-bottom: .25rem; }
+    .gloss-def { font-size: .8rem; color: var(--text-muted); }
+
+    /* Access matrix */
+    .access-ok { color: var(--emerald); font-size: 1rem; text-align: center; }
+    .access-no { color: var(--text-dim); text-align: center; font-size: .8rem; }
+
+    /* Section anchor */
+    .section-anchor {
+      display: block;
+      position: relative;
+      top: -80px;
+      visibility: hidden;
+    }
+
+    /* Progress bar */
+    #reading-bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: transparent; z-index: 300;
+    }
+    #reading-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand), var(--purple));
+      width: 0%; transition: width .1s linear;
+    }
+
+    /* Back to top */
+    #back-top {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 100;
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .9rem;
+      opacity: 0; transform: translateY(12px);
+      transition: var(--transition);
+      box-shadow: 0 8px 24px -4px rgba(0,0,0,.4);
+    }
+    #back-top.visible { opacity: 1; transform: translateY(0); }
+    #back-top:hover { color: var(--brand); border-color: var(--brand-border); }
+
+    /* Sidebar overlay (mobile) */
+    #overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 140;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(4px);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      #top-bar { display: flex; }
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.open {
+        transform: translateX(0);
+        box-shadow: 24px 0 64px rgba(0,0,0,.6);
+      }
+      #overlay { display: block; }
+      #main { margin-left: 0; padding-top: var(--header-h); }
+      .content-area { padding: 2rem 1.25rem 5rem; }
+      #back-top { bottom: 1.5rem; right: 1.25rem; }
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .content-area > * { animation: fadeInUp .5s ease backwards; }
+
+    /* ===== PRINT ===== */
+    @media print {
+      #sidebar, #top-bar, #reading-bar, #back-top { display: none !important; }
+      #main { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Reading progress -->
+<div id="reading-bar"><div id="reading-fill"></div></div>
+
+<!-- Mobile header -->
+<header id="top-bar">
+  <button id="hamburger" aria-label="Menu" onclick="toggleSidebar()">☰</button>
+  <span class="logo">PFRM Secure Agents — Manual</span>
+</header>
+
+<!-- Mobile overlay -->
+<div id="overlay" onclick="closeSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <a class="sidebar-logo" href="#">
+      <span class="logo-icon">⚡</span>
+      PFRM Secure Agents
+    </a>
+    <div class="sidebar-version">Manual do Usuário · v1.0 · Jun 2026</div>
+  </div>
+
+  <div class="sidebar-search">
+    <input type="text" id="searchInput" placeholder="Buscar no manual…" oninput="filterNav(this.value)" autocomplete="off">
+  </div>
+
+  <div class="sidebar-nav" id="sidebarNav">
+
+    <div class="nav-group">
+      <div class="nav-group-label">Introdução</div>
+      <a class="nav-item active" href="#apresentacao" onclick="navClick(this)">
+        <span class="nav-icon">🌟</span> Apresentação
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">O Sistema</div>
+      <a class="nav-item" href="#parte1" onclick="navClick(this)">
+        <span class="nav-icon">🤖</span> 1. Entendendo o Sistema
+      </a>
+      <a class="nav-item nav-sub-item" href="#agentes" onclick="navClick(this)">Os Agentes</a>
+      <a class="nav-item nav-sub-item" href="#colaboracao" onclick="navClick(this)">Colaboração Intersetorial</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Primeiros Passos</div>
+      <a class="nav-item" href="#parte2" onclick="navClick(this)">
+        <span class="nav-icon">🚀</span> 2. Primeiros Passos
+      </a>
+      <a class="nav-item nav-sub-item" href="#acesso" onclick="navClick(this)">Acesso</a>
+      <a class="nav-item nav-sub-item" href="#interface" onclick="navClick(this)">A Interface</a>
+      <a class="nav-item nav-sub-item" href="#primeiro-chat" onclick="navClick(this)">Primeiro Chat</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Perfis</div>
+      <a class="nav-item" href="#parte3" onclick="navClick(this)">
+        <span class="nav-icon">👥</span> 3. Perfis e Responsabilidades
+      </a>
+      <a class="nav-item nav-sub-item" href="#colaborador" onclick="navClick(this)">Colaborador</a>
+      <a class="nav-item nav-sub-item" href="#usuario-chave" onclick="navClick(this)">Usuário-Chave</a>
+      <a class="nav-item nav-sub-item" href="#administrador" onclick="navClick(this)">Administrador</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Conhecimento</div>
+      <a class="nav-item" href="#parte4" onclick="navClick(this)">
+        <span class="nav-icon">📄</span> 4. Ingestão de Documentos
+      </a>
+      <a class="nav-item" href="#parte5" onclick="navClick(this)">
+        <span class="nav-icon">✅</span> 5. Curadoria e Qualidade
+      </a>
+      <a class="nav-item nav-sub-item" href="#painel-curadoria" onclick="navClick(this)">Painel de Curadoria</a>
+      <a class="nav-item nav-sub-item" href="#correlacao" onclick="navClick(this)">Correlação Automática</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Administração</div>
+      <a class="nav-item" href="#parte6" onclick="navClick(this)">
+        <span class="nav-icon">⚙️</span> 6. Configuração de Agentes
+      </a>
+      <a class="nav-item" href="#parte7" onclick="navClick(this)">
+        <span class="nav-icon">⚡</span> 7. Automações
+      </a>
+      <a class="nav-item" href="#parte8" onclick="navClick(this)">
+        <span class="nav-icon">📊</span> 8. Auditoria e KPIs
+      </a>
+      <a class="nav-item" href="#parte9" onclick="navClick(this)">
+        <span class="nav-icon">🔔</span> 9. Notificações
+      </a>
+      <a class="nav-item" href="#parte10" onclick="navClick(this)">
+        <span class="nav-icon">🗺️</span> 10. Mapa de Processos
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Referência</div>
+      <a class="nav-item" href="#faq" onclick="navClick(this)">
+        <span class="nav-icon">❓</span> 11. Perguntas Frequentes
+      </a>
+      <a class="nav-item" href="#fluxos" onclick="navClick(this)">
+        <span class="nav-icon">🔄</span> 12. Fluxos de Referência
+      </a>
+      <a class="nav-item" href="#avancado" onclick="navClick(this)">
+        <span class="nav-icon">🧠</span> 13. Uso Avançado
+      </a>
+      <a class="nav-item" href="#glossario" onclick="navClick(this)">
+        <span class="nav-icon">📖</span> Glossário
+      </a>
+      <a class="nav-item" href="#acessos" onclick="navClick(this)">
+        <span class="nav-icon">🔐</span> Matriz de Acessos
+      </a>
+    </div>
+
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/">← Voltar ao portal</a>
+  </div>
+</nav>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main id="main">
+<div class="content-area">
+
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <div class="hero-tag">📘 Onboarding &amp; Treinamento</div>
+    <h1 class="hero-title">
+      Manual do Usuário<br>
+      <span>PFRM Secure Agents</span>
+    </h1>
+    <p class="hero-lead">
+      Guia completo para colaboradores, usuários-chave e administradores da plataforma de Conhecimento Setorial com Inteligência Artificial da Profarma Distribuição.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-chip">v1.0 · Jun 2026</span>
+      <span class="hero-chip">Classificação: Interno</span>
+      <span class="hero-chip">Público: Todos os usuários</span>
+    </div>
+  </div>
+
+  <!-- ======================== APRESENTAÇÃO ======================== -->
+  <a class="section-anchor" id="apresentacao"></a>
+  <h2>🌟 Apresentação</h2>
+
+  <p>Este ecossistema nasceu de uma convicção simples: <strong>conhecimento crítico não pode morar só na cabeça de uma pessoa.</strong></p>
+
+  <p>Durante anos, a Profarma conviveu com um problema silencioso e custoso. Processos inteiros dependiam de um único colaborador que sabia "como as coisas funcionam aqui". Quando essa pessoa estava ausente — de férias, em reunião, ou simplesmente ocupada —, o trabalho travava. A documentação existia, mas estava espalhada, desatualizada e raramente acessível no momento da decisão.</p>
+
+  <p>O <strong>PFRM Secure Agents</strong> foi construído para resolver exatamente isso. Não é mais um chat com IA. É um <strong>ecossistema de gestão de conhecimento corporativo</strong> que preserva o saber da empresa de forma segura, auditável, e que aprende continuamente com cada pergunta sem resposta.</p>
+
+  <div class="callout success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-body">
+      <div class="callout-title">Este guia é o seu ponto de partida</div>
+      <p class="callout-text">Use a barra lateral para navegar entre as seções. Se estiver em dúvida por onde começar, identifique seu perfil na <a href="#parte3">Parte 3 — Perfis e Responsabilidades</a> e siga as instruções específicas para você.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ======================== PARTE 1 ======================== -->
+  <a class="section-anchor" id="parte1"></a>
+  <h2>🤖 Parte 1 — Entendendo o Sistema</h2>
+
+  <h3>1.1. O que é o PFRM Secure Agents?</h3>
+
+  <p>O PFRM Secure Agents é uma plataforma multiagente de IA que organiza o conhecimento da empresa em <strong>agentes especializados por setor</strong>. Cada setor tem seu próprio agente com personalidade, base de conhecimento e capacidades específicas.</p>
+
+  <p>Diferente de ferramentas genéricas como o ChatGPT, este sistema:</p>
+
+  <ul>
+    <li><strong>Conhece os documentos reais da empresa</strong> — SOPs, manuais, políticas, procedimentos</li>
+    <li><strong>Cita as fontes</strong> de cada informação fornecida, permitindo verificação humana</li>
+    <li><strong>Isola o conhecimento por setor</strong> — informações sensíveis não cruzam fronteiras sem autorização</li>
+    <li><strong>Registra tudo</strong> — cada pergunta, resposta e delegação é auditável com trilha completa</li>
+    <li><strong>Aprende com lacunas</strong> — perguntas sem resposta viram sinais de melhoria, nunca são perdidas</li>
+  </ul>
+
+  <!-- AGENTS -->
+  <a class="section-anchor" id="agentes"></a>
+  <h3>1.2. Os Agentes do Sistema</h3>
+
+  <div class="agent-grid">
+    <div class="agent-card agent-forja">
+      <div class="agent-avatar">⚙️</div>
+      <div class="agent-name">Forja</div>
+      <div class="agent-sector">Desenvolvimento</div>
+      <div class="agent-desc">Sistemas, APIs, deploy, automações técnicas, integrações e consultas ao EDI.</div>
+    </div>
+    <div class="agent-card agent-sentinela">
+      <div class="agent-avatar">🛡️</div>
+      <div class="agent-name">Sentinela</div>
+      <div class="agent-sector">Segurança</div>
+      <div class="agent-desc">Políticas de segurança, risco, compliance, controle de acessos e governança.</div>
+    </div>
+    <div class="agent-card agent-contacta">
+      <div class="agent-avatar">💬</div>
+      <div class="agent-name">Contacta</div>
+      <div class="agent-sector">Tele-atendimento</div>
+      <div class="agent-desc">Atendimento operacional, incidentes, SLAs e processos de suporte ao cliente.</div>
+    </div>
+  </div>
+
+  <div class="callout info">
+    <span class="callout-icon">ℹ️</span>
+    <div class="callout-body">
+      <div class="callout-title">Expansão planejada</div>
+      <p class="callout-text">Novos agentes podem ser criados pela administração para atender outros setores conforme o plano de implementação evolui. A plataforma foi projetada para crescer com a organização.</p>
+    </div>
+  </div>
+
+  <!-- COLLABORATION -->
+  <a class="section-anchor" id="colaboracao"></a>
+  <h3>1.3. Como os Agentes Colaboram (sem que você perceba)</h3>
+
+  <p>Um dos aspectos mais sofisticados do sistema é a <strong>colaboração intersetorial automática</strong>. Quando seu agente não possui a resposta com confiança suficiente em sua base local, ele consulta os outros agentes nos bastidores.</p>
+
+  <div class="flow">
+    <div class="flow-title">Fluxo de uma pergunta com delegação</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-step-left"><div class="flow-dot">1</div><div class="flow-line"></div></div>
+        <div class="flow-content"><strong>Você faz a pergunta</strong><span>Enviada via interface de chat ao agente do seu setor</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-left"><div class="flow-dot">2</div><div class="flow-line"></div></div>
+        <div class="flow-content"><strong>Busca na base local</strong><span>O agente busca nos documentos curados do seu setor</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-left"><div class="flow-dot">3</div><div class="flow-line"></div></div>
+        <div class="flow-content"><strong>Avaliação de confiança</strong><span>Se a confiança for alta → responde direto. Se for baixa → delegação</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-left"><div class="flow-dot">4</div><div class="flow-line"></div></div>
+        <div class="flow-content"><strong>Consulta intersetorial</strong><span>Outros agentes são consultados via protocolo interno (apenas conteúdo público/interno)</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-left"><div class="flow-dot">5</div><div class="flow-line"></div></div>
+        <div class="flow-content"><strong>Resposta consolidada</strong><span>O agente consolida as contribuições e entrega a resposta com trilha de delegação visível</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout danger">
+    <span class="callout-icon">🔒</span>
+    <div class="callout-body">
+      <div class="callout-title">Regra inviolável de isolamento</div>
+      <p class="callout-text">Informações classificadas como <code>confidencial</code> ou <code>restrito</code> <strong>nunca cruzam a fronteira do setor</strong>. Apenas conhecimento <code>público</code> ou <code>interno</code> pode ser compartilhado entre agentes. A classificação dos documentos ingeridos é um <strong>ponto de atenção crítico</strong> para todos os usuários do sistema.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ======================== PARTE 2 ======================== -->
+  <a class="section-anchor" id="parte2"></a>
+  <h2>🚀 Parte 2 — Primeiros Passos</h2>
+
+  <a class="section-anchor" id="acesso"></a>
+  <h3>2.1. Acesso ao Sistema</h3>
+
+  <ol>
+    <li>Acesse o portal pelo endereço fornecido pelo seu administrador</li>
+    <li>Na tela de login, insira seu e-mail corporativo e senha</li>
+    <li>Você será direcionado automaticamente para o painel do seu setor</li>
+  </ol>
+
+  <div class="callout warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body">
+      <div class="callout-title">Seu setor é determinado no cadastro</div>
+      <p class="callout-text">O sistema mostrará apenas o agente e o conhecimento correspondente ao seu perfil. Se você acredita que está no setor errado, contate o administrador.</p>
+    </div>
+  </div>
+
+  <a class="section-anchor" id="interface"></a>
+  <h3>2.2. Conhecendo a Interface</h3>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🏠</span>
+      <h4>Painel Inicial <code>/</code></h4>
+      <p>Visão geral com métricas pessoais e atalhos rápidos para as funcionalidades mais usadas.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">💬</span>
+      <h4>Chat <code>/chat</code></h4>
+      <p>Interface principal de conversa com o agente do seu setor. Ponto central de uso diário.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📁</span>
+      <h4>Arquivos <code>/files</code></h4>
+      <p>Área para enviar documentos para enriquecer a base de conhecimento do seu setor.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📋</span>
+      <h4>Pendências <code>/me/pendencias</code></h4>
+      <p>Lacunas e correções atribuídas a você como dono de conhecimento.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔔</span>
+      <h4>Notificações <code>/me/notificacoes</code></h4>
+      <p>Alertas sobre perguntas respondidas, documentos aprovados e atualizações do sistema.</p>
+    </div>
+  </div>
+
+  <a class="section-anchor" id="primeiro-chat"></a>
+  <h3>2.3. Seu Primeiro Chat</h3>
+
+  <p>O chat funciona como uma conversa natural em linguagem portuguesa. Para obter as melhores respostas:</p>
+
+  <h4>Faça perguntas específicas e contextualizadas</h4>
+  <div class="good-example">✅ "Qual é o procedimento para criar um chamado no Cervello quando há problema no pedido eletrônico?"</div>
+  <div class="good-example">✅ "Quais são os requisitos de senha estabelecidos pela política de segurança?"</div>
+  <div class="bad-example">❌ "Me fale tudo sobre segurança" (muito vago)</div>
+
+  <div class="chat-example">
+    <div class="chat-msg user">
+      <div class="chat-avatar">👤</div>
+      <div class="chat-bubble">Como abro um chamado para problema no pedido eletrônico?</div>
+    </div>
+    <div class="chat-msg agent">
+      <div class="chat-avatar">⚙️</div>
+      <div class="chat-bubble">Para abrir um chamado de Pedido Eletrônico no Cervello, siga os passos: <strong>1)</strong> Acesse o portal Cervello… <strong>2)</strong> Selecione a categoria "Pedido Eletrônico"… <br><br><em>📎 Fonte: SOP-001 — Gestão de Chamados · seção 3.2</em></div>
+    </div>
+  </div>
+
+  <h4>Dicas essenciais</h4>
+  <ul>
+    <li><strong>Verifique as citações</strong> — Toda resposta baseada em documentos exibe as fontes ao final. Clique para verificar o documento original.</li>
+    <li><strong>Use o botão de feedback</strong> — 👍 se foi útil, 👎 se não foi. Esse feedback alimenta diretamente a melhoria do sistema.</li>
+    <li><strong>Observe a trilha de delegação</strong> — Se o agente consultou outro setor, você verá exatamente de onde veio cada parte da informação.</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 3 ======================== -->
+  <a class="section-anchor" id="parte3"></a>
+  <h2>👥 Parte 3 — Perfis e Responsabilidades</h2>
+
+  <div class="role-grid">
+    <div class="role-card">
+      <span class="role-badge user">Colaborador</span>
+      <div class="role-title">Usuário Comum</div>
+      <div class="role-desc">Faz perguntas, envia documentos e dá feedback sobre as respostas.</div>
+    </div>
+    <div class="role-card">
+      <span class="role-badge key">Usuário-Chave</span>
+      <div class="role-title">Dono de Conhecimento</div>
+      <div class="role-desc">Valida conteúdo, responde lacunas e garante a qualidade do conhecimento setorial.</div>
+    </div>
+    <div class="role-card">
+      <span class="role-badge admin">Administrador</span>
+      <div class="role-title">Gestão do Sistema</div>
+      <div class="role-desc">Configuração completa: agentes, usuários, protocolos, auditoria e KPIs.</div>
+    </div>
+  </div>
+
+  <a class="section-anchor" id="colaborador"></a>
+  <h3>3.1. Colaborador (Usuário Comum)</h3>
+
+  <p><strong>O que você pode fazer:</strong></p>
+  <ul>
+    <li>Conversar com o agente do seu setor</li>
+    <li>Enviar documentos para enriquecer a base de conhecimento</li>
+    <li>Dar feedback sobre a qualidade das respostas</li>
+    <li>Ver notificações quando lacunas que você abriu forem respondidas</li>
+  </ul>
+
+  <p><strong>Como usar bem:</strong></p>
+  <ol>
+    <li>Use o chat como seu <strong>primeiro ponto de consulta</strong> antes de buscar um colega</li>
+    <li>Se a resposta for incompleta ou errada, clique em 👎 e descreva o problema</li>
+    <li>Se você tiver um documento útil, faça upload em <code>/files</code></li>
+    <li>Acompanhe suas notificações — quando você pergunta algo sem resposta, o sistema trabalha para encontrá-la, notificando a autoridade responsável do tópico</li>
+  </ol>
+
+  <a class="section-anchor" id="usuario-chave"></a>
+  <h3>3.2. Usuário-Chave de Setor (Dono de Conhecimento)</h3>
+
+  <p>O <strong>Usuário-Chave</strong> é a figura mais estratégica para o sucesso do sistema. É a pessoa que:</p>
+  <ul>
+    <li>Conhece profundamente os processos do setor</li>
+    <li>Valida se o conteúdo da base de conhecimento está correto</li>
+    <li>Responde a lacunas identificadas pelo sistema</li>
+    <li>É o guardião da qualidade do conhecimento setorial</li>
+  </ul>
+
+  <h4>a) Cadastro e Configuração Inicial</h4>
+  <ol>
+    <li>Seu e-mail deve ser registrado em <strong>Admin → Donos de Conhecimento</strong> pelo administrador</li>
+    <li>Você receberá notificações automáticas via painel e/ou Teams quando perguntas sem resposta forem identificadas no seu tópico</li>
+    <li>Confirme com o administrador quais tópicos estão sob sua responsabilidade</li>
+  </ol>
+
+  <h4>b) Respondendo Lacunas</h4>
+  <p>Quando o sistema identifica uma pergunta que não conseguiu responder (e que está no seu tópico):</p>
+  <ol>
+    <li>Acesse <code>/me/pendencias</code> para ver lacunas atribuídas a você</li>
+    <li>Ou aguarde a notificação pelo Teams ou pelo sino 🔔 na barra superior</li>
+    <li>Para cada lacuna, você pode:
+      <ul>
+        <li><strong>Redigir a resposta diretamente</strong> no painel de curadoria</li>
+        <li><strong>Enviar um documento</strong> que contenha a informação (o sistema extrai e indexa automaticamente)</li>
+      </ul>
+    </li>
+    <li>A resposta passa por revisão antes de ser publicada na base produtiva</li>
+    <li>O usuário que fez a pergunta recebe uma notificação quando a resposta estiver disponível</li>
+  </ol>
+
+  <h4>c) Curadoria de Documentos</h4>
+  <div class="status-flow">
+    <span class="status-pill staged">Upload</span>
+    <span class="status-arrow">→</span>
+    <span class="status-pill staged">Staged</span>
+    <span class="status-arrow">→</span>
+    <span class="status-pill review">Em Revisão</span>
+    <span class="status-arrow">→</span>
+    <span class="status-pill approved">Aprovado</span>
+    <span class="status-arrow">→</span>
+    <span class="status-pill promoted">Promovido ✓</span>
+  </div>
+
+  <p><strong>Para revisar um documento:</strong></p>
+  <ol>
+    <li>Acesse <strong>Painel Administrativo → Curadoria</strong></li>
+    <li>Filtre pelo seu setor</li>
+    <li>Abra o documento e verifique: o conteúdo foi extraído corretamente? A classificação está certa? A sensibilidade está adequada?</li>
+    <li>Se estiver correto: clique em <strong>Aprovar</strong></li>
+    <li>Se houver problemas: clique em <strong>Rejeitar</strong> e descreva o motivo</li>
+    <li>Após aprovação, clique em <strong>Promover</strong> para publicar na base produtiva</li>
+  </ol>
+
+  <a class="section-anchor" id="administrador"></a>
+  <h3>3.3. Administrador do Sistema</h3>
+
+  <p>O Administrador tem acesso completo a todas as funcionalidades. Além do que o Usuário-Chave faz, o Admin pode:</p>
+  <ul>
+    <li>Gerenciar usuários e setores</li>
+    <li>Configurar os agentes (persona, instruções, modelo, parâmetros)</li>
+    <li>Gerenciar setores dinâmicos (criar novos agentes/setores)</li>
+    <li>Visualizar toda a auditoria do sistema</li>
+    <li>Acessar métricas e KPIs de toda a plataforma</li>
+    <li>Gerenciar protocolos de delegação entre agentes</li>
+    <li>Configurar donos de conhecimento por tópico</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 4 ======================== -->
+  <a class="section-anchor" id="parte4"></a>
+  <h2>📄 Parte 4 — Ingestão de Documentos</h2>
+
+  <h3>4.1. Quais Documentos Podem Ser Enviados?</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Formato</th><th>Extensão</th><th>Observações</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PDF</strong></td>
+          <td><code>.pdf</code></td>
+          <td>Deve ter texto selecionável (não escaneado)</td>
+        </tr>
+        <tr>
+          <td><strong>Word</strong></td>
+          <td><code>.docx</code>, <code>.doc</code></td>
+          <td>Conteúdo é extraído e convertido automaticamente</td>
+        </tr>
+        <tr>
+          <td><strong>Markdown</strong></td>
+          <td><code>.md</code></td>
+          <td>Formato nativo; ingestão mais precisa e recomendada</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body">
+      <div class="callout-title">PDFs escaneados não são suportados</div>
+      <p class="callout-text">Se o seu documento for um PDF com imagens escaneadas (sem texto selecionável), converta-o para texto antes do envio. O sistema não possui OCR na versão atual.</p>
+    </div>
+  </div>
+
+  <h3>4.2. Como Fazer o Upload</h3>
+  <ol>
+    <li>Acesse <code>/files</code> no menu lateral</li>
+    <li>Clique em <strong>Selecionar arquivo</strong> ou arraste o documento para a área indicada</li>
+    <li>O sistema fará uma <strong>pré-classificação automática</strong> do tipo de documento</li>
+    <li>Revise a classificação sugerida (você pode corrigir se necessário)</li>
+    <li>Confirme o setor de destino (para usuários comuns, será sempre o seu setor)</li>
+    <li>Clique em <strong>Enviar</strong></li>
+  </ol>
+
+  <h3>4.3. O Que Acontece Após o Upload?</h3>
+  <p>Após o envio, o documento entra no ciclo de curadoria e só chegará ao agente quando for promovido. Você não precisa acompanhar manualmente — quando promovido, o agente começa a usar automaticamente.</p>
+
+  <h3>4.4. Boas Práticas para Documentos de Qualidade</h3>
+  <ul>
+    <li><strong>Use linguagem clara e direta</strong> — evite jargões internos sem explicação</li>
+    <li><strong>Estruture com títulos e seções</strong> — o sistema usa essa estrutura para indexar</li>
+    <li><strong>Seja específico sobre procedimentos</strong> — descreva passo a passo, não apenas o resultado</li>
+    <li><strong>Inclua exemplos</strong> quando possível — facilitam a recuperação pelo agente</li>
+    <li><strong>Evite conteúdo desatualizado</strong> — documentos com informações antigas poluem a base</li>
+    <li><strong>Não envie versões parciais</strong> — envie o documento quando estiver completo</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 5 ======================== -->
+  <a class="section-anchor" id="parte5"></a>
+  <h2>✅ Parte 5 — Curadoria e Qualidade do Conhecimento</h2>
+
+  <h3>5.1. Por Que a Curadoria é Crítica?</h3>
+  <p>Um sistema de IA é tão bom quanto o conhecimento que possui. Documentos sem revisão podem conter informações desatualizadas, procedimentos incorretos, trechos ambíguos ou dados sensíveis expostos indevidamente.</p>
+  <p>A curadoria é o <strong>controle de qualidade</strong> que garante que apenas conhecimento validado chegue ao agente.</p>
+
+  <a class="section-anchor" id="painel-curadoria"></a>
+  <h3>5.2. O Painel de Curadoria</h3>
+  <p>Acesse em <strong>Admin → Curadoria</strong>. O painel tem quatro abas:</p>
+
+  <h4>Aba: Documentos</h4>
+  <p>Lista todos os documentos em staging ou aprovados, com filtros por setor, status e tipo.</p>
+  <p><strong>Ações disponíveis:</strong></p>
+  <ul>
+    <li><strong>Revisar:</strong> Abre o documento para análise detalhada</li>
+    <li><strong>Editar:</strong> Permite editar o conteúdo antes de aprovar (pequenas correções)</li>
+    <li><strong>Aprovar:</strong> Valida o documento para promoção</li>
+    <li><strong>Rejeitar:</strong> Retorna ao uploader com feedback explicativo</li>
+    <li><strong>Promover:</strong> Publica na base produtiva do agente</li>
+  </ul>
+
+  <h4>Aba: Lacunas Pendentes</h4>
+  <p>Perguntas que o agente não conseguiu responder adequadamente, ainda sem resolução.</p>
+  <p><strong>Para responder uma lacuna:</strong></p>
+  <ol>
+    <li>Clique em "Responder"</li>
+    <li>Escolha entre redigir a resposta diretamente ou enviar um documento</li>
+    <li>A resposta vai para staging e segue o fluxo normal de curadoria</li>
+    <li>Quando promovida, o usuário que perguntou recebe notificação automática</li>
+  </ol>
+
+  <h4>Aba: Lacunas Respondidas</h4>
+  <p>Histórico de lacunas já tratadas, com o status da resposta na base de conhecimento.</p>
+
+  <h4>Aba: Lacunas Operacionais</h4>
+  <p>Perguntas geradas pelo mapa de processos sobre etapas que precisam de mais documentação.</p>
+
+  <a class="section-anchor" id="correlacao"></a>
+  <h3>5.3. Correlação Automática</h3>
+  <p>Antes de um documento ser aprovado, o sistema verifica automaticamente se ele <strong>conflita ou se sobrepõe</strong> a conteúdo já existente na base produtiva.</p>
+
+  <div class="callout warning">
+    <span class="callout-icon">⚠️</span>
+    <div class="callout-body">
+      <div class="callout-title">Achados críticos bloqueiam aprovação</div>
+      <p class="callout-text">Se a correlação encontrar conflitos de alta severidade entre o novo documento e o conteúdo existente, a aprovação fica bloqueada até que o curador analise e resolva a contradição. Isso evita que o agente receba informações contraditórias.</p>
+    </div>
+  </div>
+
+  <h3>5.4. Consolidação Cross-Setor</h3>
+  <p>Para processos que envolvem múltiplos setores, o <strong>Painel de Consolidação</strong> (<code>/admin/consolidation</code>) permite:</p>
+  <ol>
+    <li>Buscar por um processo ou tema</li>
+    <li>Cruzar documentos de diferentes setores</li>
+    <li>Gerar automaticamente uma prévia de SOP ou DDP</li>
+    <li>Enviar a prévia para o ciclo de curadoria normal</li>
+  </ol>
+
+  <hr>
+
+  <!-- ======================== PARTE 6 ======================== -->
+  <a class="section-anchor" id="parte6"></a>
+  <h2>⚙️ Parte 6 — Configuração de Agentes</h2>
+
+  <div class="callout info">
+    <span class="callout-icon">🔐</span>
+    <div class="callout-body">
+      <div class="callout-title">Acesso exclusivo para Administradores</div>
+      <p class="callout-text">As configurações de agente estão disponíveis em <code>/admin/agents</code> e requerem perfil de Administrador.</p>
+    </div>
+  </div>
+
+  <h3>6.1. O que é Configurável?</h3>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Parâmetro</th><th>O que faz</th><th>Exemplo</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Persona</strong></td><td>Nome e identidade do agente</td><td>"Forja — O Engenheiro da Profarma"</td></tr>
+        <tr><td><strong>Sumário</strong></td><td>Descrição curta exibida na interface</td><td>"Especialista em sistemas e automações"</td></tr>
+        <tr><td><strong>Instruções</strong></td><td>Como o agente deve se comportar</td><td>"Sempre cite a versão do sistema ao responder"</td></tr>
+        <tr><td><strong>Capacidades</strong></td><td>Lista de habilidades declaradas</td><td>"Diagnóstico de falhas, criação de chamados"</td></tr>
+        <tr><td><strong>Modelo de Chat</strong></td><td>Qual modelo de IA usar</td><td><code>qwen2.5:7b</code></td></tr>
+        <tr><td><strong>Top-K</strong></td><td>Qtd. de trechos de documento a recuperar</td><td><code>5</code></td></tr>
+        <tr><td><strong>Limiar de Confiança</strong></td><td>Score mínimo antes de delegação</td><td><code>0.50</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.2. Configurando um Agente</h3>
+  <ol>
+    <li>Acesse <code>/admin/agents</code></li>
+    <li>Selecione o setor que deseja configurar</li>
+    <li>Clique em <strong>Editar configuração</strong></li>
+    <li>Modifique os parâmetros desejados</li>
+    <li>Clique em <strong>Salvar</strong></li>
+  </ol>
+
+  <div class="callout success">
+    <span class="callout-icon">✅</span>
+    <div class="callout-body">
+      <div class="callout-title">Sem reinicialização necessária</div>
+      <p class="callout-text">As alterações entram em vigor em até 10 segundos (cache de configuração). Não é necessário reiniciar o sistema.</p>
+    </div>
+  </div>
+
+  <h3>6.3. Criando um Novo Setor/Agente</h3>
+  <ol>
+    <li>Acesse <strong>Admin → Agentes</strong></li>
+    <li>Clique em <strong>Novo Setor</strong></li>
+    <li>Defina: <strong>Slug</strong> (ex: <code>financeiro</code>), <strong>Nome de exibição</strong> (ex: "Financeiro"), <strong>Nome do Agente</strong> (ex: "Nexus")</li>
+    <li>Configure a persona e parâmetros</li>
+    <li>O novo setor estará disponível para cadastro de usuários e upload de documentos</li>
+  </ol>
+
+  <h3>6.4. Configurando Protocolos de Delegação</h3>
+  <p>Acesse em <strong>Admin → Agentes → Protocolos</strong>:</p>
+  <ul>
+    <li><strong>Ativo/Inativo:</strong> Habilita ou desabilita a delegação para um setor específico</li>
+    <li>Os protocolos são editáveis e persistidos individualmente por par de setores</li>
+    <li>Apenas documentos <code>público</code> e <code>interno</code> de setores consultados chegam ao agente solicitante</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 7 ======================== -->
+  <a class="section-anchor" id="parte7"></a>
+  <h2>⚡ Parte 7 — Automações Integradas</h2>
+
+  <p>O sistema pode disparar automações reais diretamente do chat, sem sair da interface.</p>
+
+  <h3>7.1. Automações Disponíveis — Setor Desenvolvimento (Forja)</h3>
+
+  <div class="auto-item">
+    <div>
+      <div class="auto-name">🎫 Chamado Cervello</div>
+      <div class="auto-how">"Abrir chamado para problema no pedido eletrônico"</div>
+    </div>
+    <div class="auto-tag">Desenvolvimento</div>
+  </div>
+  <div class="auto-item">
+    <div>
+      <div class="auto-name">💊 Pesquisa de Preços</div>
+      <div class="auto-how">"Rodar pesquisa de preços de medicamentos"</div>
+    </div>
+    <div class="auto-tag">Desenvolvimento</div>
+  </div>
+  <div class="auto-item">
+    <div>
+      <div class="auto-name">💱 Coleta de Índices</div>
+      <div class="auto-how">"Coletar índices e cotações de moedas"</div>
+    </div>
+    <div class="auto-tag">Desenvolvimento</div>
+  </div>
+
+  <h3>7.2. Fluxo de Aprovação para Outros Setores</h3>
+  <p>Usuários de setores que <strong>não são donos</strong> de uma automação precisam passar por aprovação:</p>
+  <ol>
+    <li>Usuário solicita a automação em linguagem natural</li>
+    <li>O agente informa que a solicitação precisa de justificativa</li>
+    <li>Usuário confirma: <code>"sim, motivo: incidente reportado pelo time de pedidos"</code></li>
+    <li>O sistema registra a aprovação na auditoria e executa</li>
+    <li>O link de acompanhamento da automação é exibido na conversa</li>
+  </ol>
+
+  <h3>7.3. Consulta ao Sistema EDI</h3>
+  <p>O agente Forja tem integração direta com o sistema EDI. Exemplos de consultas:</p>
+  <ul>
+    <li>"Qual o status do cliente CNPJ <code>12.345.678/0001-99</code>?"</li>
+    <li>"Consulte o IDOc <code>123456</code>"</li>
+    <li>"Me mostre as informações do processo <code>789</code>"</li>
+  </ul>
+  <p>O sistema identifica automaticamente o tipo de consulta (CNPJ, IDOc, processo, cliente, nome) e busca os dados no EDI.</p>
+
+  <hr>
+
+  <!-- ======================== PARTE 8 ======================== -->
+  <a class="section-anchor" id="parte8"></a>
+  <h2>📊 Parte 8 — Auditoria e Monitoramento</h2>
+
+  <h3>8.1. Trilha de Auditoria</h3>
+  <p>Todo evento no sistema é registrado e consultável em <strong>Admin → Auditoria</strong>:</p>
+  <ul>
+    <li>Perguntas e respostas com scores de confiança e latência</li>
+    <li>Delegações entre agentes e o caminho percorrido</li>
+    <li>Uploads e promoções de documentos</li>
+    <li>Execuções de automação com justificativa</li>
+    <li>Feedback de usuários vinculado ao trecho da resposta</li>
+    <li>Ações administrativas</li>
+  </ul>
+
+  <h3>8.2. KPIs de Saúde do Sistema</h3>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Curadoria pendente</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-desc">Documentos aguardando revisão</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Lacunas abertas</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-desc">Gaps no mapa de processos</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Feedback 24h</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-desc">Interações recentes avaliadas</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Processos mapeados</div>
+      <div class="kpi-value">—</div>
+      <div class="kpi-desc">Cobertura do grafo de conhecimento</div>
+    </div>
+  </div>
+
+  <h3>8.3. Grafo de Conhecimento</h3>
+  <p>Acesse em <strong>Admin → Grafo de Conhecimento</strong>. Visualize:</p>
+  <ul>
+    <li>Documentos e suas conexões no grafo</li>
+    <li>Conceitos, procedimentos e sistemas extraídos dos textos</li>
+    <li>Pessoas mencionadas em procedimentos (responsáveis, executores)</li>
+    <li>Documentação viva por domínio de conhecimento</li>
+  </ul>
+  <p>O grafo é construído automaticamente durante a ingestão e pode ser explorado por filtros de setor, domínio e tipo de entidade.</p>
+
+  <h3>8.4. Painel de Feedback e Qualidade</h3>
+  <p>Acesse em <strong>Admin → Feedback</strong>. Use este painel para identificar <strong>pontos cegos no conhecimento</strong> — áreas onde o sistema ainda precisa de documentação.</p>
+  <ul>
+    <li>Taxa de respostas com citação relevante</li>
+    <li>Distribuição de feedback (positivo / negativo / sem resposta)</li>
+    <li>Perguntas sem resposta acumuladas por período</li>
+    <li>Detalhes expandíveis por conversa</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 9 ======================== -->
+  <a class="section-anchor" id="parte9"></a>
+  <h2>🔔 Parte 9 — Notificações e Comunicação</h2>
+
+  <h3>9.1. Sino de Notificações</h3>
+  <p>O ícone 🔔 na barra superior exibe notificações quando:</p>
+  <ul>
+    <li>Uma lacuna que você abriu foi respondida e publicada</li>
+    <li>Uma lacuna atribuída a você como dono de conhecimento foi aberta</li>
+    <li>Um documento que você enviou foi aprovado ou rejeitado</li>
+  </ul>
+
+  <h3>9.2. Notificações pelo Microsoft Teams</h3>
+  <p>Quando configurado pelo administrador, o sistema envia alertas automáticos para canais do Teams:</p>
+  <ul>
+    <li><strong>Digest diário:</strong> Resumo de lacunas abertas e pendências por owner</li>
+    <li><strong>Digest semanal:</strong> Visão agregada de KPIs e status do sistema</li>
+    <li><strong>Alerta de lacuna:</strong> Quando uma pergunta sem resposta é atribuída a um dono de conhecimento</li>
+  </ul>
+
+  <h3>9.3. Página de Pendências</h3>
+  <p>Em <code>/me/pendencias</code>, você vê de forma consolidada:</p>
+  <ul>
+    <li>Lacunas de conhecimento atribuídas ao seu e-mail</li>
+    <li>Documentos que você enviou aguardando revisão</li>
+    <li>Correções pendentes de validação</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== PARTE 10 ======================== -->
+  <a class="section-anchor" id="parte10"></a>
+  <h2>🗺️ Parte 10 — Mapa de Processos e Automação</h2>
+
+  <h3>10.1. O que é o Mapa de Processos?</h3>
+  <p>Acesse em <strong>Admin → Mapa de Processos</strong>. Esta ferramenta:</p>
+  <ul>
+    <li>Lista processos identificados automaticamente nos documentos curados</li>
+    <li>Avalia o <strong>nível de automação</strong> de cada processo</li>
+    <li>Identifica <strong>lacunas documentais</strong> (partes do processo sem documentação suficiente)</li>
+    <li>Sugere <strong>candidatos à automação</strong> baseado em critérios como repetitividade e volume</li>
+  </ul>
+
+  <h3>10.2. Abas do Mapa de Processos</h3>
+  <h4>Gaps Documentais</h4>
+  <p>Processos que o sistema identificou mas sobre os quais há pouca ou nenhuma documentação. Permite ver as perguntas específicas sem resposta e promover lacunas para a fila de curadoria com um clique.</p>
+
+  <h4>Candidatos de Automação</h4>
+  <p>Processos com alto potencial de automação, classificados por:</p>
+  <ul>
+    <li><strong>Readiness score:</strong> Quanto do processo já está documentado</li>
+    <li><strong>Cobertura:</strong> % de etapas com documentação</li>
+    <li><strong>Confiança:</strong> Qualidade das informações encontradas</li>
+    <li><strong>Recomendações:</strong> O que fazer para aumentar o readiness</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== FAQ ======================== -->
+  <a class="section-anchor" id="faq"></a>
+  <h2>❓ Parte 11 — Perguntas Frequentes</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Minha pergunta não foi respondida. O que acontece?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>O sistema registra automaticamente como uma "lacuna". Ela aparece no painel do Usuário-Chave responsável pelo tópico e no painel de curadoria. Uma notificação pode ser enviada. Quando a lacuna for respondida e publicada, você receberá uma notificação no sino e, se aplicável, pelo Teams.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      A resposta que recebi está errada. O que faço?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>Clique no 👎 e descreva o problema. O sistema abre um registro de correção vinculado ao trecho específico da resposta. O Usuário-Chave do tópico será notificado para corrigir a fonte.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Posso enviar um documento de outro setor?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>Não. O upload sempre vai para o setor do usuário autenticado. Administradores podem fazer upload para setores específicos de forma explícita, escolhendo o setor de destino antes do envio.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Posso usar o sistema para informações confidenciais?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>Sim, com ressalvas. Informações <code>confidenciais</code> e <code>restritas</code> ficam isoladas dentro do setor — elas não aparecem em buscas de outros setores. Consulte sempre as diretrizes de classificação de informação da empresa antes de enviar documentos sensíveis.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      O que é o "trace" de uma conversa?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>O trace é o registro técnico completo de uma conversa — quais documentos foram consultados, quais agentes foram acionados, os scores de confiança, latências e cada evento processado. Administradores podem ver o trace completo em <strong>Admin → Auditoria</strong>.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      A IA pode tomar decisões por mim?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>Não. O sistema é uma ferramenta de <strong>apoio à decisão</strong>. Ele pode sugerir, informar, executar automações aprovadas — mas a decisão final é sempre do humano. Para automações que afetam sistemas de produção, existe um fluxo de aprovação explícito com justificativa registrada.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      O sistema tem acesso à internet?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>Não. Por decisão arquitetural e conformidade com a LGPD, toda inferência é local. Os modelos de IA rodam na infraestrutura interna da empresa. Nenhuma pergunta, resposta ou documento é enviado para serviços externos.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Por quanto tempo as conversas ficam salvas?
+      <span class="faq-chevron">▾</span>
+    </div>
+    <div class="faq-a">
+      <p>As conversas ficam persistidas no banco de dados. A política de retenção é definida pela equipe de Compliance. Consulte o administrador para detalhes sobre prazos e política de exclusão.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ======================== FLUXOS ======================== -->
+  <a class="section-anchor" id="fluxos"></a>
+  <h2>🔄 Parte 12 — Fluxos de Referência Rápida</h2>
+
+  <h3>Fluxo: Nova Designação de Usuário-Chave</h3>
+  <div class="flow">
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">1</div><div class="flow-line"></div></div><div class="flow-content"><strong>Admin acessa Donos de Conhecimento</strong><span><code>/admin/knowledge-owners</code></span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">2</div><div class="flow-line"></div></div><div class="flow-content"><strong>Clica em "Novo dono"</strong><span>Preenche: Tópico, Setor, E-mail do colaborador</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">3</div><div class="flow-line"></div></div><div class="flow-content"><strong>Salva</strong><span>Colaborador começa a receber notificações de lacunas do tópico automaticamente</span></div></div>
+    </div>
+  </div>
+
+  <h3>Fluxo: Upload e Publicação de Documento</h3>
+  <div class="flow">
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">1</div><div class="flow-line"></div></div><div class="flow-content"><strong>Colaborador acessa /files e faz upload</strong><span>Revisa classificação automática, ajusta se necessário</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">2</div><div class="flow-line"></div></div><div class="flow-content"><strong>Documento entra em STAGING</strong><span>Usuário-Chave recebe notificação para revisar</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">3</div><div class="flow-line"></div></div><div class="flow-content"><strong>Usuário-Chave acessa Curadoria → Documentos</strong><span>Abre o documento, verifica conteúdo e Aprova</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">4</div><div class="flow-line"></div></div><div class="flow-content"><strong>Admin clica em Promover</strong><span>Documento disponível na base produtiva</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">5</div><div class="flow-line"></div></div><div class="flow-content"><strong>Agente começa a usar nas respostas</strong><span>Indexação automática concluída</span></div></div>
+    </div>
+  </div>
+
+  <h3>Fluxo: Lacuna Detectada e Respondida</h3>
+  <div class="flow">
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">1</div><div class="flow-line"></div></div><div class="flow-content"><strong>Usuário faz pergunta não respondida</strong><span>Agente informa que a pergunta foi "marcada para curadoria"</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">2</div><div class="flow-line"></div></div><div class="flow-content"><strong>Sistema cria registro de lacuna automaticamente</strong><span>Usuário-Chave do tópico recebe notificação (painel + Teams)</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">3</div><div class="flow-line"></div></div><div class="flow-content"><strong>Usuário-Chave acessa Curadoria → Perguntas sem resposta</strong><span>Redige a resposta ou envia documento</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">4</div><div class="flow-line"></div></div><div class="flow-content"><strong>Resposta vai para STAGING</strong><span>Segue o fluxo normal de curadoria</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">5</div><div class="flow-line"></div></div><div class="flow-content"><strong>Quando promovida, usuário que perguntou recebe notificação</strong><span>Pergunta respondida aparece na aba "Respondidas"</span></div></div>
+    </div>
+  </div>
+
+  <h3>Fluxo: Criação de Novo Agente/Setor</h3>
+  <div class="flow">
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">1</div><div class="flow-line"></div></div><div class="flow-content"><strong>Admin acessa Admin → Agentes</strong><span>Clica em "Novo Setor"</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">2</div><div class="flow-line"></div></div><div class="flow-content"><strong>Define identidade</strong><span>Slug (ex: <code>financeiro</code>), nome de exibição, nome do agente</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">3</div><div class="flow-line"></div></div><div class="flow-content"><strong>Configura e salva</strong><span>Persona, instruções, modelo e parâmetros</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">4</div><div class="flow-line"></div></div><div class="flow-content"><strong>Cadastra usuários e faz upload de documentos iniciais</strong><span>Documentos passam pelo fluxo de curadoria</span></div></div>
+      <div class="flow-step"><div class="flow-step-left"><div class="flow-dot">5</div><div class="flow-line"></div></div><div class="flow-content"><strong>Setor operacional</strong><span>Agente responde perguntas com a base de conhecimento inicial</span></div></div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ======================== AVANCADO ======================== -->
+  <a class="section-anchor" id="avancado"></a>
+  <h2>🧠 Parte 13 — Dicas de Uso Avançado</h2>
+
+  <h3>Usando o Modo Grafo</h3>
+  <p>Na interface de chat, é possível alternar entre modos de busca:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Modo</th><th>Como funciona</th><th>Quando usar</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>RAG + Grafo</strong> (padrão)</td><td>Combina busca vetorial semântica com contexto do grafo</td><td>Uso diário — melhor qualidade</td></tr>
+        <tr><td><strong>Apenas RAG</strong></td><td>Busca por similaridade semântica nos documentos</td><td>Quando o grafo não está atualizado</td></tr>
+        <tr><td><strong>Apenas Grafo</strong></td><td>Usa Neo4j para encontrar documentos relacionados</td><td>Diagnóstico de conexões entre temas</td></tr>
+        <tr><td><strong>Apenas Texto</strong></td><td>Busca textual simples nos documentos promovidos</td><td>Busca por termos exatos</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Identificando Tópicos Sem Cobertura</h3>
+  <p>O painel de <strong>Feedback</strong> (<code>/admin/feedback</code>) mostra padrões de perguntas sem resposta. Use-o periodicamente para identificar áreas que precisam de novos documentos — isso permite uma curadoria proativa em vez de reativa.</p>
+
+  <h3>Revisão de Documentação Viva</h3>
+  <p>O <strong>Grafo de Conhecimento → Documentação viva</strong> (<code>/admin/knowledge-graph</code>) mostra todos os conceitos, procedimentos e sistemas extraídos automaticamente. É útil para:</p>
+  <ul>
+    <li>Verificar se um procedimento está sendo reconhecido corretamente</li>
+    <li>Identificar conceitos que aparecem muito sem documentação associada</li>
+    <li>Auditar quais documentos cobrem um determinado tema</li>
+  </ul>
+
+  <hr>
+
+  <!-- ======================== GLOSSARIO ======================== -->
+  <a class="section-anchor" id="glossario"></a>
+  <h2>📖 Apêndice A — Glossário</h2>
+
+  <div class="glossary-grid">
+    <div class="gloss-item"><div class="gloss-term">Agente</div><div class="gloss-def">IA especializada de um setor, com base de conhecimento e persona própria.</div></div>
+    <div class="gloss-item"><div class="gloss-term">RAG</div><div class="gloss-def">Retrieval-Augmented Generation — técnica de buscar informação real antes de gerar resposta.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Staging</div><div class="gloss-def">Área temporária onde documentos ficam antes de serem aprovados para produção.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Promoção</div><div class="gloss-def">Ato de publicar um documento aprovado na base produtiva do agente.</div></div>
+    <div class="gloss-item"><div class="gloss-term">SOP</div><div class="gloss-def">Standard Operating Procedure — Procedimento Operacional Padrão.</div></div>
+    <div class="gloss-item"><div class="gloss-term">DDP</div><div class="gloss-def">Descrição Detalhada de Processo — documento estruturado de processo.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Lacuna</div><div class="gloss-def">Pergunta que o sistema não conseguiu responder adequadamente, que vira demanda de curadoria.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Fanout</div><div class="gloss-def">Quando um agente consulta outros agentes por não ter resposta local suficiente.</div></div>
+    <div class="gloss-item"><div class="gloss-term">TraceId</div><div class="gloss-def">Identificador único de uma conversa, usado para auditoria completa e rastreabilidade.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Score de confiança</div><div class="gloss-def">Medida de relevância entre a pergunta e o trecho de documento recuperado (0 a 1).</div></div>
+    <div class="gloss-item"><div class="gloss-term">Embedding</div><div class="gloss-def">Representação matemática de texto que permite busca por similaridade semântica.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Dono de conhecimento</div><div class="gloss-def">Colaborador responsável por validar e manter o conhecimento de um tópico.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Correlação</div><div class="gloss-def">Verificação automática de conflito entre um documento novo e o conteúdo existente.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Sensibilidade</div><div class="gloss-def">Classificação de confidencialidade: público, interno, confidencial, restrito.</div></div>
+  </div>
+
+  <hr>
+
+  <!-- ======================== ACESSOS ======================== -->
+  <a class="section-anchor" id="acessos"></a>
+  <h2>🔐 Apêndice B — Matriz de Acessos</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Funcionalidade</th>
+          <th style="text-align:center">Colaborador</th>
+          <th style="text-align:center">Usuário-Chave</th>
+          <th style="text-align:center">Administrador</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Chat com agente do setor</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Upload de documentos</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Ver notificações pessoais</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Ver pendências pessoais</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Revisar documentos em staging</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Aprovar documentos</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Responder lacunas</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Promover documentos</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Configurar agentes</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Gerenciar usuários e setores</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Ver auditoria completa</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Criar novos agentes/setores</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Configurar donos de conhecimento</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Acessar mapa de processos</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Acessar grafo de conhecimento</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+        <tr><td>Gerenciar protocolos de delegação</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info" style="margin-top:2rem">
+    <span class="callout-icon">📬</span>
+    <div class="callout-body">
+      <div class="callout-title">Suporte e dúvidas</div>
+      <p class="callout-text">Para dúvidas sobre uso, consulte primeiro este manual e o agente do seu setor. Para problemas técnicos ou de acesso, contate o administrador do sistema. Para sugestões de melhoria, use o botão de feedback 👎 com comentário dentro do próprio chat.</p>
+    </div>
+  </div>
+
+  <footer style="margin-top:4rem; padding-top:2rem; border-top:1px solid var(--border); text-align:center; color:var(--text-dim); font-size:.78rem; font-family:'JetBrains Mono',monospace;">
+    PFRM Secure Agents · Manual do Usuário v1.0 · Junho de 2026 · Classificação: Interno<br>
+    Revisão recomendada a cada nova fase de lançamento
+  </footer>
+
+</div>
+</main>
+
+<!-- Back to top -->
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
+
+<script>
+  // ===== READING PROGRESS =====
+  window.addEventListener('scroll', () => {
+    const el = document.documentElement;
+    const scrolled = el.scrollTop;
+    const total = el.scrollHeight - el.clientHeight;
+    const pct = total > 0 ? (scrolled / total) * 100 : 0;
+    document.getElementById('reading-fill').style.width = pct + '%';
+
+    // Back to top
+    const btn = document.getElementById('back-top');
+    if (scrolled > 400) btn.classList.add('visible');
+    else btn.classList.remove('visible');
+
+    // Active nav highlight
+    updateActiveNav();
+  });
+
+  // ===== ACTIVE NAV =====
+  function updateActiveNav() {
+    const anchors = document.querySelectorAll('.section-anchor');
+    const navLinks = document.querySelectorAll('.nav-item');
+    let current = '';
+    anchors.forEach(anchor => {
+      const top = anchor.getBoundingClientRect().top;
+      if (top <= 100) current = anchor.id;
+    });
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && href.substring(1) === current) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
+  }
+
+  // ===== NAV CLICK =====
+  function navClick(el) {
+    const href = el.getAttribute('href');
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    // Mobile: close sidebar
+    if (window.innerWidth <= 900) closeSidebar();
+    event.preventDefault();
+  }
+
+  // ===== SIDEBAR MOBILE =====
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    if (sidebar.classList.contains('open')) {
+      closeSidebar();
+    } else {
+      sidebar.classList.add('open');
+      overlay.style.display = 'block';
+    }
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').style.display = 'none';
+  }
+
+  // ===== SEARCH =====
+  function filterNav(query) {
+    const q = query.toLowerCase();
+    const items = document.querySelectorAll('.nav-item');
+    const groups = document.querySelectorAll('.nav-group');
+    if (!q) {
+      items.forEach(i => i.style.display = '');
+      groups.forEach(g => g.style.display = '');
+      return;
+    }
+    groups.forEach(group => {
+      const groupItems = group.querySelectorAll('.nav-item');
+      let any = false;
+      groupItems.forEach(item => {
+        const txt = item.textContent.toLowerCase();
+        if (txt.includes(q)) { item.style.display = ''; any = true; }
+        else item.style.display = 'none';
+      });
+      group.querySelector('.nav-group-label').style.display = any ? '' : 'none';
+    });
+  }
+
+  // ===== FAQ =====
+  function toggleFaq(el) {
+    const answer = el.nextElementSibling;
+    const isOpen = el.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-q.open').forEach(q => {
+      q.classList.remove('open');
+      q.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      el.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  // ===== KEYBOARD NAV =====
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+    if (e.key === 'Escape') {
+      document.getElementById('searchInput').blur();
+      closeSidebar();
+    }
+  });
+
+  // ===== INIT =====
+  updateActiveNav();
+</script>
+</body>
+</html>

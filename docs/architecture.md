@@ -49,6 +49,18 @@ O estado de um documento vive simultaneamente em Postgres, Qdrant e Neo4j; mutac
 
 Eventos do stream: `stage`, `matches`, `chunk`, `error`, `metrics`, alem dos eventos de automacao e MCP-EDI.
 
+## Fila de geracao de chat (backpressure)
+
+Implementado em 2026-06-02 (plano `docs/allByQueue.md`, Fase 0+1). Apenas a parte pesada do passo 6 acima — a execucao de `runSectorAgent` (embedding + rerank + grafo + fanout + geracao Ollama) — e desviada para uma fila produtor/consumidor sobre o RabbitMQ; tudo o mais (auth, conversa, persistencia, auditoria, branches de automacao/MCP-EDI/farmacia) permanece **no produtor** (`app/api/chat/route.ts`), no contexto autenticado.
+
+- **Topologia:** exchange dedicado `chat.direct` + fila de trabalho `chat.requests` (`durable`), **separados** das filas de delegacao `agent.<setor>` em `agents.direct`. Essa separacao e o que evita deadlock: um worker de chat nunca espera por um slot de worker de chat.
+- **`lib/bus/chat-queue.ts`:** `enqueueChatJob(job, onEvent)` (produtor — espelha o RPC de `requestAgent`, mas streama varios `ChatStreamEvent` de volta por uma reply queue exclusiva; resolve no `done`/`error`, rejeita em `CHAT_QUEUE_TIMEOUT_MS`) e `startChatConsumer()` (consumidor — `prefetch(CHAT_QUEUE_CONCURRENCY)` como teto global de Ollama, coalesce chunks do LLM numa janela `CHAT_QUEUE_CHUNK_FLUSH_MS`, `ack` manual no `finally`, publica `error` em caso de excecao).
+- **`lib/bus/queue-stats.ts`:** posicao/profundidade da fila via Management API do RabbitMQ, best-effort (retorna `null` em qualquer falha → degrada para status textual).
+- **Flags (`lib/config.ts`):** `CHAT_QUEUE_ENABLED` (default `true`; `false` = caminho inline byte-a-byte, rollback instantaneo), `CHAT_QUEUE_CONCURRENCY=1` (alinhar com `OLLAMA_NUM_PARALLEL`; so subir apos medir a GPU dedicada do servidor-alvo — os 3 modelos do pipeline ~5,24 GB nao coexistem com folga em 6 GB), `CHAT_QUEUE_TIMEOUT_MS=180000`, `CHAT_QUEUE_CHUNK_FLUSH_MS=75`, `CHAT_WORKER_EXTERNAL` (placeholder Fase 2). Consumidor iniciado em `lib/bus/bootstrap.ts` apos os consumidores de setor.
+- **Contrato de UI inalterado:** o produtor repassa os eventos da reply queue verbatim. Tipos `ChatJob`/`ChatStreamEvent` em `lib/agents/types.ts`.
+- **Fase 2 (worker dedicado, 2026-06-02):** `scripts/chat-worker.ts` (`npm run chat:worker`) roda `startChatConsumer()` em processo isolado do Next.js. No `docker-compose.local.yml`, o servico `chat-worker` (profile `chat-worker`) reusa o ambiente do app via ancora YAML `&app_env` e forca `CHAT_WORKER_EXTERNAL=true`. O gate em `lib/bus/bootstrap.ts` (`chatQueueEnabled && !chatWorkerExternal`) garante que, com `CHAT_WORKER_EXTERNAL=true`, o app NAO inicie o consumidor in-process — evitando consumo duplicado de `chat.requests`. Ganho: isolamento de recurso (HTTP nao disputa event loop com a geracao) e fim da divida "bootstrap no trafego".
+- **Limite conhecido:** quem persiste a resposta e o produtor (a rota), no `done`; numa desconexao do cliente a persistencia da resposta pode se perder (a pergunta ja foi persistida). Fase 3 (jobId+SSE) — resiliencia a desconexao / multiplas instancias — fica adiada.
+
 ## Ingestao curada por setor
 
 1. Usuario autenticado abre `/files`.

@@ -78,6 +78,17 @@ const envSchema = z.object({
     .string()
     .optional()
     .transform((value) => value !== "false"),
+  CHAT_QUEUE_ENABLED: z
+    .string()
+    .optional()
+    .transform((value) => value !== "false"),
+  CHAT_QUEUE_CONCURRENCY: z.coerce.number().int().positive().default(1),
+  CHAT_QUEUE_TIMEOUT_MS: z.coerce.number().int().positive().default(180000),
+  CHAT_QUEUE_CHUNK_FLUSH_MS: z.coerce.number().int().positive().default(75),
+  CHAT_WORKER_EXTERNAL: z
+    .string()
+    .optional()
+    .transform((value) => value === "true"),
   ROUTER_MODE: z.enum(["rules-first"]).default("rules-first"),
   HUMAN_CAPTCHA_API_URL: z.string().url().default("http://127.0.0.1:3001"),
   HUMAN_CAPTCHA_INTERNAL_TOKEN: z.string().optional(),
@@ -186,6 +197,11 @@ export const appConfig = {
   chatLocalConfidenceThreshold: env.CHAT_LOCAL_CONFIDENCE_THRESHOLD,
   busRpcTimeoutMs: env.BUS_RPC_TIMEOUT_MS,
   busBootstrapEnabled: env.BUS_BOOTSTRAP_ENABLED,
+  chatQueueEnabled: env.CHAT_QUEUE_ENABLED,
+  chatQueueConcurrency: env.CHAT_QUEUE_CONCURRENCY,
+  chatQueueTimeoutMs: env.CHAT_QUEUE_TIMEOUT_MS,
+  chatQueueChunkFlushMs: env.CHAT_QUEUE_CHUNK_FLUSH_MS,
+  chatWorkerExternal: env.CHAT_WORKER_EXTERNAL,
   routerMode: env.ROUTER_MODE,
   humanCaptchaApiUrl: env.HUMAN_CAPTCHA_API_URL,
   humanCaptchaInternalToken: env.HUMAN_CAPTCHA_INTERNAL_TOKEN,
