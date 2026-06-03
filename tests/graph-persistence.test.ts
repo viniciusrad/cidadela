@@ -82,6 +82,8 @@ describe("graph persistence RAG provenance", () => {
       ragChunksLinked: 2,
       entityRelationships: 3,
       coOccurrenceEdges: 0,
+      typedPersonEdges: 0,
+      knowsAboutEdges: 0,
     });
     expect(mocks.runQuery).toHaveBeenCalledWith(
       expect.stringContaining("MERGE (c:RagChunk"),

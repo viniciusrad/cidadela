@@ -114,12 +114,46 @@ const TYPE_RULES: Array<{
     ],
   },
   {
+    type: "conversa",
+    weight: 1.5,
+    patterns: [
+      { pattern: /^#{1,3}\s*(?:pergunta|questão|question)\b/im, signal: "qa_heading_pergunta", weight: 2 },
+      { pattern: /^#{1,3}\s*(?:resposta|answer)\b/im, signal: "qa_heading_resposta", weight: 2 },
+      { pattern: /^\s*(?:p|q|pergunta)\s*:\s+/im, signal: "qa_inline_p", weight: 1.5 },
+      { pattern: /^\s*(?:r|a|resposta)\s*:\s+/im, signal: "qa_inline_r", weight: 1.5 },
+      { pattern: /\b(?:lacuna de conhecimento|pergunta não respondida|unanswered|whatsapp|teams|slack|chat)\b/i, signal: "conversa_keyword", weight: 1 },
+      { pattern: /^type:\s*conversa/im, signal: "conversa_frontmatter", weight: 4 },
+    ],
+  },
+  {
     type: "sop",
     weight: 1,
     patterns: [
       { pattern: /\bsop\b|\bprocedimento\b|\bpasso a passo\b/i, signal: "procedimento/sop" },
       { pattern: /^\s*\d+\.\s+\S+/im, signal: "passos numerados", weight: 2 },
       { pattern: /\bpre-?requisito\b|\bentrada\b|\bsaida\b|\bevidencia\b/i, signal: "entradas/saidas/evidencias" },
+    ],
+  },
+  {
+    type: "person",
+    weight: 1.5,
+    patterns: [
+      { pattern: /\bperfil\s+funcional\b|\bperfil\s+profissional\b/i, signal: "perfil funcional", weight: 3 },
+      { pattern: /\bcargo\b|\bfuncao\b|\bsenioridade\b|\bsenior\b|\bpleno\b|\bjunior\b/i, signal: "cargo/funcao", weight: 2 },
+      { pattern: /\bcompetencias?\b|\bhabilidades?\b|\bespecialidades?\b/i, signal: "competencias" },
+      { pattern: /\bquando\s+acionar\b|\bquando\s+contatar\b|\bprocurar\s+para\b|\bponto\s+focal\b/i, signal: "quando acionar", weight: 3 },
+      { pattern: /\bnao\s+acionar\b|\bnao\s+e\s+referencia\b|\bnao\s+e\s+responsavel\b/i, signal: "nao acionar", weight: 2 },
+    ],
+  },
+  {
+    type: "org_chart",
+    weight: 1.5,
+    patterns: [
+      { pattern: /\borganograma\b/i, signal: "organograma", weight: 4 },
+      { pattern: /\bestrutura\s+organizacional\b|\bhierarquia\b|\bligacoes\s+hierarquicas\b/i, signal: "hierarquia/estrutura", weight: 3 },
+      { pattern: /\breporta\s+(a|ao|para)\b|\bsubordinado\b|\bgestor\b|\bdirigido\s+por\b/i, signal: "relacao de reporte", weight: 2 },
+      { pattern: /\bcentros?\s+de\s+decisao\b|\bcomite\b|\bcolegiado\b/i, signal: "centros de decisao" },
+      { pattern: /\bvigencia\b|\bvalidade\b|\bultima\s+revisao\b/i, signal: "vigencia/validade" },
     ],
   },
 ];

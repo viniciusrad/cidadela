@@ -7,6 +7,7 @@ import { syncShareableKnowledgeCapabilities } from "@/lib/knowledge/capabilities
 import { startAuditConsumer } from "@/lib/bus/audit-consumer";
 import { startChatConsumer } from "@/lib/bus/chat-queue";
 import { startSectorConsumer } from "@/lib/bus/consumer";
+import { startMemoryEpisodeConsumer } from "@/lib/bus/consumers/memory-episode.consumer";
 import { createBusChannel } from "@/lib/bus/connection";
 import { ensureBusTopology } from "@/lib/bus/publisher";
 
@@ -40,6 +41,7 @@ async function bootstrap() {
   
   await Promise.all([
     startAuditConsumer(),
+    startMemoryEpisodeConsumer(),
     ...slugs.map((sector) => startSectorConsumer(sector)),
   ]);
 

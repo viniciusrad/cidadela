@@ -866,6 +866,7 @@ export async function createConsolidationDraft(input: {
   const questionsWithDefaults = applyQuestionDefaults(readinessInput.questions, {
     sector: input.sector,
     title: prepared.metadata.title,
+    documentType,
   });
   const inferredQuestions = await inferAdditionalQuestions({
     documentType,

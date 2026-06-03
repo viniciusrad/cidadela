@@ -19,6 +19,18 @@ import type {
 } from "@/lib/agents/types";
 import { searchDatabaseDocuments } from "@/lib/agents/database-search";
 import { searchGraphDocuments } from "@/lib/agents/graph-search";
+import {
+  buildPersonalityBlock,
+  getAgentPersonality,
+} from "@/lib/agents/personality";
+import {
+  buildEpisodesBlock,
+  retrieveRelevantEpisodes,
+} from "@/lib/memory/episodic";
+import {
+  buildFewShotBlock,
+  retrieveFewShotExamples,
+} from "@/lib/memory/procedural";
 import { requestAgent, safePublishAuditEvent } from "@/lib/bus/publisher";
 import { createAgentCall } from "@/lib/db/audit-repo";
 import type { ChatCitation, DelegationTrace, Sector, GenerationMetrics } from "@/lib/domain";
@@ -304,9 +316,15 @@ async function buildPrompt({
       return `- Setor ${c.target} (Agente ${targetPersona.name}):\n${exposedCaps}`;
     }));
   const collaboratorsList = collaboratorsListBlocks.filter(Boolean).join("\n\n");
+  const personality = await getAgentPersonality(sector);
+  const episodes = await retrieveRelevantEpisodes(sector, question, { topK: 3 });
+  const fewShots = await retrieveFewShotExamples(sector, question, { topK: 2 });
 
   return [
     persona.instructions,
+    personality ? buildPersonalityBlock(personality) : "",
+    episodes.length > 0 ? buildEpisodesBlock(episodes) : "",
+    fewShots.length > 0 ? buildFewShotBlock(fewShots) : "",
     "",
     "Suas CAPACIDADES EXPLICITAS sao:",
     capabilitiesList,

@@ -79,6 +79,7 @@ model Conversation {
   user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages            Message[]
   unansweredQuestions UnansweredQuestion[]
+  memoryEpisodes      MemoryEpisode[]
 
   @@index([userId, updatedAt])
   @@map("conversations")
@@ -470,4 +471,53 @@ model Notification {
 
   @@index([userId, readAt])
   @@map("notifications")
+}
+
+model AgentPersonality {
+  sector              String   @id
+  tone                Int      @default(3)
+  verbosity           Int      @default(3)
+  formality           Int      @default(3)
+  proactivity         Int      @default(3)
+  escalationThreshold Float    @default(0.40) @map("escalation_threshold")
+  domainEmphasis      Json     @default("[]") @map("domain_emphasis")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  updatedBy           String?  @map("updated_by")
+
+  @@map("agent_personalities")
+}
+
+model MemoryEpisode {
+  id             String       @id @default(cuid())
+  conversationId String       @map("conversation_id")
+  sector         String
+  summary        String       @db.Text
+  feedbackScore  Float?       @map("feedback_score")
+  reviewStatus   String       @default("pending") @map("review_status")
+  reviewedBy     String?      @map("reviewed_by")
+  qdrantPointId  String?      @map("qdrant_point_id")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([sector, reviewStatus])
+  @@index([conversationId])
+  @@map("memory_episodes")
+}
+
+model FewShotExample {
+  id            String   @id @default(cuid())
+  sector        String
+  inputPattern  String   @db.Text
+  agentResponse String   @db.Text
+  domainTags    String[]
+  score         Float    @default(1.0)
+  approvedBy    String?  @map("approved_by")
+  promotedAt    DateTime @default(now()) @map("promoted_at")
+  active        Boolean  @default(true)
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([sector, active])
+  @@map("few_shot_examples")
 }

@@ -49,6 +49,7 @@ import {
   type HumanCaptchaAutomationLaunchResponse,
 } from "@/lib/integrations/human-captcha";
 import { prisma } from "@/lib/db/client";
+import { publishMemoryEpisodeJob } from "@/lib/bus/consumers/memory-episode.consumer";
 
 export const runtime = "nodejs";
 
@@ -943,6 +944,39 @@ export async function POST(request: Request) {
             metrics: finalMetrics,
           },
         });
+
+        // Auto-sinaliza candidatos a few-shot quando qualidade é alta
+        {
+          const citations = finalCitations as { score?: number }[];
+          if (finalAnswered && citations.some((c) => (c.score ?? 0) >= 0.75)) {
+            void safePublishAuditEvent({
+              traceId: randomUUID(),
+              actorType: "agent",
+              actorId: selectedSector,
+              targetType: "few_shot",
+              targetId: conversation.id,
+              eventType: "few_shot.candidate_flagged",
+              payload: {
+                sector: selectedSector,
+                bestCitationScore: Math.max(
+                  ...citations.map((c) => c.score ?? 0),
+                ),
+              },
+            });
+          }
+        }
+
+        // Trigger episodic memory if conversation is long enough
+        try {
+          const msgCount = await prisma.message.count({
+            where: { conversationId: conversation.id },
+          });
+          if (msgCount >= 5) {
+            await publishMemoryEpisodeJob(conversation.id, selectedSector);
+          }
+        } catch {
+          // memory job failure is non-fatal
+        }
 
         if (!finalAnswered) {
           await safePublishAuditEvent({
