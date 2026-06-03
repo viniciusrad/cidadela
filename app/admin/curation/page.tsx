@@ -194,7 +194,7 @@ export default async function CurationPage({
           sector: gap.processMap.sector,
           targetCurationDocumentId: gap.targetCurationDocument?.id ?? null,
           targetDocumentId:
-            gap.targetCurationDocument?.documentId ?? gap.targetDocumentId ?? null,
+            gap.targetCurationDocument?.sourceDocumentId ?? gap.targetDocumentId ?? null,
           targetDocumentTitle: gap.targetCurationDocument?.documentTitle ?? null,
           targetFileName: gap.targetCurationDocument?.fileName ?? null,
           targetStatus: gap.targetCurationDocument?.status ?? null,

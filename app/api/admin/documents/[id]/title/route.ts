@@ -39,7 +39,7 @@ export async function PATCH(
     sourceDocumentId: string | null;
   }>(
     `MATCH (d:Document)
-     WHERE d.id = $id OR d.sourceDocumentId = $id OR elementId(d) = $id
+     WHERE d.id = $id OR d.sourceDocumentId = $id OR d.legacyDocumentId = $id OR elementId(d) = $id
      RETURN d.id AS id, d.sector AS sector, d.title AS title,
             d.sourceDocumentId AS sourceDocumentId
      LIMIT 1`,
@@ -62,7 +62,7 @@ export async function PATCH(
   // 3. Update Neo4j Document.title.
   await runQuery(
     `MATCH (d:Document)
-     WHERE d.id = $id OR d.sourceDocumentId = $id OR elementId(d) = $id
+     WHERE d.id = $id OR d.sourceDocumentId = $id OR d.legacyDocumentId = $id OR elementId(d) = $id
      SET d.title = $newTitle, d.titleUpdatedAt = datetime()`,
     { id, newTitle },
   );
