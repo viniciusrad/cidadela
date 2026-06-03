@@ -25,8 +25,10 @@ import {
   callMcpEdiTool,
   formatMcpEdiPayloadAsMarkdown,
 } from "@/lib/integrations/mcp-edi";
-import type { ExternalAgentContext } from "@/lib/agents/types";
+import type { AgentStreamEvent, ExternalAgentContext } from "@/lib/agents/types";
 import { ensureBusBootstrapped } from "@/lib/bus/bootstrap";
+import { enqueueChatJob } from "@/lib/bus/chat-queue";
+import { getChatQueueStats } from "@/lib/bus/queue-stats";
 import { safePublishAuditEvent } from "@/lib/bus/publisher";
 import { appConfig } from "@/lib/config";
 import {
@@ -47,6 +49,7 @@ import {
   type HumanCaptchaAutomationLaunchResponse,
 } from "@/lib/integrations/human-captcha";
 import { prisma } from "@/lib/db/client";
+import { publishMemoryEpisodeJob } from "@/lib/bus/consumers/memory-episode.consumer";
 
 export const runtime = "nodejs";
 
@@ -825,35 +828,77 @@ export async function POST(request: Request) {
         let finalMetrics: unknown = undefined;
         let finalAnswered = true;
 
-        await runSectorAgent({
-          traceId,
-          sector: selectedSector,
-          question,
-          conversationId: conversation.id,
-          useRag,
-          useGraph,
-          allowDelegation:
-            pharmacyContext === undefined && mcpEdiContext === undefined,
-          externalContext: pharmacyContext ?? mcpEdiContext,
-          emit: (event) => {
-            if (event.type === "message") {
-              finalAnswer += event.data.chunk;
-            }
+        // Shared event handler: identical for the inline fallback and the
+        // queued path. Accumulates the final answer/citations/metrics and
+        // proxies every other event straight to the HTTP stream.
+        const handleAgentEvent = (event: AgentStreamEvent) => {
+          if (event.type === "message") {
+            finalAnswer += event.data.chunk;
+          }
 
-            if (event.type === "done") {
-              finalCitations = event.data.citations;
-              // Fall back to the citation count only if the agent did not emit
-              // an explicit signal (older callers / partial streams).
-              finalAnswered = event.data.answered ?? finalCitations.length > 0;
-              if ("metrics" in event.data) {
-                finalMetrics = event.data.metrics;
-              }
-              return;
+          if (event.type === "done") {
+            finalCitations = event.data.citations;
+            // Fall back to the citation count only if the agent did not emit
+            // an explicit signal (older callers / partial streams).
+            finalAnswered = event.data.answered ?? finalCitations.length > 0;
+            if ("metrics" in event.data) {
+              finalMetrics = event.data.metrics;
             }
+            return;
+          }
 
-            emit(controller, encoder, event);
-          },
-        });
+          emit(controller, encoder, event);
+        };
+
+        const allowDelegation =
+          pharmacyContext === undefined && mcpEdiContext === undefined;
+
+        if (appConfig.chatQueueEnabled) {
+          // Backpressure path (docs/allByQueue.md): only the heavy
+          // runSectorAgent execution is queued; auth/persistence/audit stay
+          // here in the authenticated producer. Reply events are proxied
+          // verbatim by handleAgentEvent, so the UI contract is unchanged.
+          emit(controller, encoder, {
+            type: "status",
+            data: { message: "Sua pergunta entrou na fila de processamento..." },
+          });
+
+          const stats = await getChatQueueStats().catch(() => null);
+          if (stats && stats.depth > 0) {
+            emit(controller, encoder, {
+              type: "status",
+              data: {
+                message: `Voce esta na fila de atendimento (aprox. ${stats.depth} a frente). Aguardando processamento...`,
+              },
+            });
+          }
+
+          await enqueueChatJob(
+            {
+              traceId,
+              sector: selectedSector,
+              question,
+              conversationId: conversation.id,
+              useRag,
+              useGraph,
+              allowDelegation,
+              externalContext: pharmacyContext ?? mcpEdiContext,
+            },
+            handleAgentEvent,
+          );
+        } else {
+          await runSectorAgent({
+            traceId,
+            sector: selectedSector,
+            question,
+            conversationId: conversation.id,
+            useRag,
+            useGraph,
+            allowDelegation,
+            externalContext: pharmacyContext ?? mcpEdiContext,
+            emit: handleAgentEvent,
+          });
+        }
 
         if (pharmacyPortalLink) {
           emit(controller, encoder, {
@@ -899,6 +944,39 @@ export async function POST(request: Request) {
             metrics: finalMetrics,
           },
         });
+
+        // Auto-sinaliza candidatos a few-shot quando qualidade é alta
+        {
+          const citations = finalCitations as { score?: number }[];
+          if (finalAnswered && citations.some((c) => (c.score ?? 0) >= 0.75)) {
+            void safePublishAuditEvent({
+              traceId: randomUUID(),
+              actorType: "agent",
+              actorId: selectedSector,
+              targetType: "few_shot",
+              targetId: conversation.id,
+              eventType: "few_shot.candidate_flagged",
+              payload: {
+                sector: selectedSector,
+                bestCitationScore: Math.max(
+                  ...citations.map((c) => c.score ?? 0),
+                ),
+              },
+            });
+          }
+        }
+
+        // Trigger episodic memory if conversation is long enough
+        try {
+          const msgCount = await prisma.message.count({
+            where: { conversationId: conversation.id },
+          });
+          if (msgCount >= 5) {
+            await publishMemoryEpisodeJob(conversation.id, selectedSector);
+          }
+        } catch {
+          // memory job failure is non-fatal
+        }
 
         if (!finalAnswered) {
           await safePublishAuditEvent({

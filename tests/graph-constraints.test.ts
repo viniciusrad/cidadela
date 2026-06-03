@@ -19,9 +19,9 @@ describe("ensureGraphConstraints", () => {
 
     const result = await ensureGraphConstraints();
 
-    expect(result.applied).toBe(9);
+    expect(result.applied).toBe(10);
     expect(result.failed).toEqual([]);
-    expect(mocks.runQuery).toHaveBeenCalledTimes(9);
+    expect(mocks.runQuery).toHaveBeenCalledTimes(10);
 
     const statements = mocks.runQuery.mock.calls.map((call) => call[0] as string);
     for (const label of [
@@ -34,6 +34,7 @@ describe("ensureGraphConstraints", () => {
       "Person",
       "Sector",
       "Process",
+      "Topic",
     ]) {
       expect(statements.some((s) => s.includes(`:${label})`))).toBe(true);
     }
@@ -55,15 +56,16 @@ describe("ensureGraphConstraints", () => {
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])
       .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([])
       .mockResolvedValueOnce([]);
 
     const { ensureGraphConstraints } = await import("@/lib/graph/persistence");
 
     const result = await ensureGraphConstraints();
 
-    expect(result.applied).toBe(8);
+    expect(result.applied).toBe(9);
     expect(result.failed).toHaveLength(1);
     expect(result.failed[0].error).toContain("duplicate values");
-    expect(mocks.runQuery).toHaveBeenCalledTimes(9);
+    expect(mocks.runQuery).toHaveBeenCalledTimes(10);
   });
 });

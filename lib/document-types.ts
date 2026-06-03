@@ -10,6 +10,9 @@ export const DOCUMENT_TYPES = [
   "contrato",
   "conversa",
   "generico",
+  // TODO: mover para document-types.ts na Fase 1 (novos tipos de documento)
+  "person",
+  "org_chart",
 ] as const;
 
 export type DocumentType = (typeof DOCUMENT_TYPES)[number];
@@ -30,6 +33,8 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
   contrato: "Contrato",
   conversa: "Conversa (Teams/WhatsApp)",
   generico: "Generico",
+  person: "Perfil Funcional",
+  org_chart: "Organograma",
 };
 
 export const DOCUMENT_SOURCE_TYPES: Record<DocumentType, string> = {
@@ -44,6 +49,8 @@ export const DOCUMENT_SOURCE_TYPES: Record<DocumentType, string> = {
   contrato: "contract_reference",
   conversa: "conversation",
   generico: "knowledge_note",
+  person: "person_profile",
+  org_chart: "org_chart",
 };
 
 export function isDocumentType(value: unknown): value is DocumentType {

@@ -110,6 +110,7 @@ const GRAPH_CONSTRAINTS: ReadonlyArray<string> = [
   "CREATE CONSTRAINT person_name_unique IF NOT EXISTS FOR (n:Person) REQUIRE n.name IS UNIQUE",
   "CREATE CONSTRAINT sector_slug_unique IF NOT EXISTS FOR (n:Sector) REQUIRE n.slug IS UNIQUE",
   "CREATE CONSTRAINT process_id_unique IF NOT EXISTS FOR (n:Process) REQUIRE n.id IS UNIQUE",
+  "CREATE CONSTRAINT topic_label_unique IF NOT EXISTS FOR (n:Topic) REQUIRE n.label IS UNIQUE",
 ];
 
 export type SectorNodeInput = {
@@ -342,6 +343,76 @@ export async function linkPersonCoOccurrences(documentId: string): Promise<numbe
     { documentId },
   );
   return Number(rows[0]?.count ?? 0);
+}
+
+/**
+ * Creates (:Topic) nodes and (:Person)-[:IS_GO_TO_FOR]->(:Topic) edges from
+ * the structured `person_goto_what` JSON produced by RelationTagInput.
+ * Each situation can have multiple tags; each tag becomes a Topic label.
+ * Idempotent: uses MERGE and increments strength on each curator confirmation.
+ */
+export async function upsertPersonGoToRelations(input: {
+  personName: string;
+  situations: Array<{ when: string; tags: string[] }>;
+  confirmedBy: string;
+  sector: string;
+}): Promise<number> {
+  if (!input.situations.length) return 0;
+
+  let count = 0;
+  for (const situation of input.situations) {
+    const topics = situation.tags.length > 0
+      ? situation.tags.map((t) => t.toLowerCase().trim())
+      : [situation.when.slice(0, 50).toLowerCase().trim()];
+
+    for (const topicLabel of topics) {
+      if (!topicLabel) continue;
+      await runQuery(
+        `MERGE (p:Person {name: $name})
+         MERGE (t:Topic {label: $label})
+         ON CREATE SET t.createdAt = datetime(), t.sector = $sector
+         MERGE (p)-[r:IS_GO_TO_FOR]->(t)
+         SET r.situation = $situation,
+             r.isTribal = true,
+             r.confirmedBy = $confirmedBy,
+             r.strength = coalesce(r.strength, 0) + 1,
+             r.updatedAt = datetime()`,
+        {
+          name: input.personName,
+          label: topicLabel,
+          situation: situation.when,
+          confirmedBy: input.confirmedBy,
+          sector: input.sector,
+        },
+      );
+      count++;
+    }
+  }
+  return count;
+}
+
+/**
+ * Creates (:Person)-[:COVERS_FOR]->(:Person) edges from the person_network field.
+ * The list is expected to contain canonical person names already resolved by the
+ * caller (e.g., extracted from free text with best-effort regex).
+ */
+export async function upsertPersonCoversFor(input: {
+  personName: string;
+  coversForNames: string[];
+}): Promise<number> {
+  if (!input.coversForNames.length) return 0;
+
+  await runQuery(
+    `MATCH (p:Person {name: $name})
+     UNWIND $coversFor AS coverName
+     MERGE (other:Person {name: coverName})
+     ON CREATE SET other.createdAt = datetime()
+     MERGE (p)-[r:COVERS_FOR]->(other)
+     SET r.confidence = 'human_validated',
+         r.updatedAt = datetime()`,
+    { name: input.personName, coversFor: input.coversForNames },
+  );
+  return input.coversForNames.length;
 }
 
 export async function upsertGraphDocument(

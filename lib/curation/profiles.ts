@@ -13,6 +13,7 @@ type ProfileQuestion = {
   id: string;
   type: CurationQuestion["type"];
   prompt: string;
+  neverInfer?: boolean; // quando true, inferTemplateAnswers deve pular este campo
 };
 
 const PROFILE_QUESTIONS: Record<DocumentType, ProfileQuestion[]> = {
@@ -187,6 +188,65 @@ const PROFILE_QUESTIONS: Record<DocumentType, ProfileQuestion[]> = {
       prompt: "Quais lacunas impedem uma classificacao mais especifica?",
     },
   ],
+  person: [
+    {
+      id: "person_expertise",
+      type: "summary",
+      prompt: "Quais sao as principais competencias tecnicas ou funcionais desta pessoa?",
+    },
+    {
+      id: "person_scope",
+      type: "scope",
+      prompt: "De quais processos, sistemas ou areas esta pessoa e referencia formal?",
+    },
+    {
+      id: "person_goto_what",
+      type: "gaps",
+      prompt: "Para qual tipo de situacao ou duvida as pessoas recorrem a esta pessoa? (Descreva cada situacao e os dominios envolvidos)",
+      neverInfer: true, // conhecimento tribal — so quem trabalha com ela sabe
+    },
+    {
+      id: "person_goto_not",
+      type: "gaps",
+      prompt: "Para o que NAO acionar esta pessoa, mesmo que o cargo sugira que ela seria o contato certo?",
+      neverInfer: true,
+    },
+    {
+      id: "person_network",
+      type: "gaps",
+      prompt: "Com quem esta pessoa tem conexao direta que complementa sua area de atuacao? Cite cargo ou nome.",
+      neverInfer: true,
+    },
+  ],
+  org_chart: [
+    {
+      id: "orgchart_scope",
+      type: "scope",
+      prompt: "Qual area, unidade de negocio ou setor este organograma cobre?",
+    },
+    {
+      id: "orgchart_top",
+      type: "authority",
+      prompt: "Quem esta no topo desta estrutura? Informe cargo e, se disponivel no documento, o nome.",
+    },
+    {
+      id: "orgchart_decision_centers",
+      type: "rules",
+      prompt: "Quais sao os centros formais de decisao nesta estrutura? Quem aprova o que?",
+    },
+    {
+      id: "orgchart_vacancies",
+      type: "gaps",
+      prompt: "Ha posicoes em aberto ou em transicao que afetam quem deve ser consultado?",
+      neverInfer: true, // so quem esta dentro da org sabe
+    },
+    {
+      id: "orgchart_validity",
+      type: "validity",
+      prompt: "Ate quando esta estrutura e valida? Ha revisao agendada?",
+      neverInfer: true, // informacao administrativa, nao esta no documento
+    },
+  ],
 };
 
 const TYPE_EVIDENCE: Record<DocumentType, RegExp[]> = {
@@ -201,6 +261,8 @@ const TYPE_EVIDENCE: Record<DocumentType, RegExp[]> = {
   contrato: [/\bpartes\b/i, /\bsla\b|\bobrigacoes\b/i, /\bvigencia\b/i],
   conversa: [/\b(teams|whatsapp)\b/i, /^\s*\*\*[^*]+\([0-9]{1,2}:[0-9]{2}\)\*\*:/m, /\bmensagens?\b/i],
   generico: [/\S/],
+  person: [/\bcargo\b|\bfuncao\b/i, /\bcompetencia\b|\bhabilidade\b|\bexpertise\b/i, /\bresponsavel\b|\brefer(e|ê)ncia\b/i],
+  org_chart: [/\borganograma\b/i, /\bhierarquia\b|\bestrutura\b|\bsubordinado\b/i, /\bgerente\b|\bdiret[oa]r\b|\bcoordenad[oa]r\b/i],
 };
 
 function hasText(value: unknown) {

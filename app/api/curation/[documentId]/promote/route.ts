@@ -17,6 +17,7 @@ import { createAuditEvent } from "@/lib/db/audit-repo";
 import { prisma } from "@/lib/db/client";
 import { syncShareableKnowledgeCapabilities } from "@/lib/knowledge/capabilities";
 import { notifyAskersOnPromotion } from "@/lib/notifications/unanswered";
+import { upsertPersonGoToRelations, upsertPersonCoversFor } from "@/lib/graph/persistence";
 import { prepareMarkdownDocument } from "@/lib/markdown";
 import { getEmbedding } from "@/lib/ollama";
 import {
@@ -126,6 +127,40 @@ export async function POST(_request: Request, context: RouteContext) {
     },
   });
   await syncShareableKnowledgeCapabilities();
+
+  // Best-effort: enrich person knowledge graph when promoting a person profile.
+  if (rendered.documentType === "person") {
+    const gotoAnswer = questions.find((q) => q.id === "person_goto_what")?.response?.trim();
+    const networkAnswer = questions.find((q) => q.id === "person_network")?.response?.trim();
+    const personName = document.documentTitle;
+
+    if (gotoAnswer) {
+      try {
+        const situations = JSON.parse(gotoAnswer) as Array<{ when: string; tags: string[] }>;
+        if (Array.isArray(situations) && situations.length > 0) {
+          await upsertPersonGoToRelations({
+            personName,
+            situations,
+            confirmedBy: session.user.email ?? session.user.id,
+            sector: document.sector,
+          });
+        }
+      } catch {
+        // malformed JSON from old textarea fallback — skip silently
+      }
+    }
+
+    if (networkAnswer) {
+      // Best-effort: extract capitalized name tokens separated by commas or slashes
+      const namePattern = /\b([A-ZÁÉÍÓÚÂÊÎÔÛÃÕÜÇ][a-záéíóúâêîôûãõüç]+(?:\s+[A-ZÁÉÍÓÚÂÊÎÔÛÃÕÜÇ][a-záéíóúâêîôûãõüç]+)*)\b/g;
+      const names = Array.from(new Set(Array.from(networkAnswer.matchAll(namePattern), (m) => m[1]))).filter(
+        (n) => n !== personName && n.length > 2,
+      );
+      if (names.length > 0) {
+        await upsertPersonCoversFor({ personName, coversForNames: names }).catch(() => undefined);
+      }
+    }
+  }
 
   // Best-effort: notify the authors of any unanswered questions this document
   // resolves. A failure here must never block the promotion result.

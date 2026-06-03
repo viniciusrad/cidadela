@@ -23,6 +23,7 @@
     "test:teams": "tsx scripts/test-teams.ts",
     "pilot:snapshot": "tsx scripts/pilot-snapshot.ts",
     "seed:automations": "tsx scripts/seed-implemented-automations.ts",
+    "chat:worker": "tsx scripts/chat-worker.ts",
     "demo": "tsx scripts/demo.ts"
   },
   "prisma": {

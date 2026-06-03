@@ -4,6 +4,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   FileText,
+  Network,
   Pencil,
   RefreshCw,
   Send,
@@ -11,6 +12,7 @@ import {
   Sparkles,
   Trash2,
   UploadCloud,
+  User,
   XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -21,6 +23,8 @@ import {
   DOCUMENT_TYPE_LABELS,
   type DocumentType,
 } from "@/lib/document-types";
+import { RelationTagInput } from "./relation-tag-input";
+import { TypeBadge } from "./type-badge";
 import { getSectorLabel, SECTOR_LABELS } from "@/lib/labels";
 
 type InitialCurationDocument = {
@@ -133,20 +137,6 @@ type CurationChunk = {
 };
 
 type QueueTab = "queue" | "approved" | "rejected";
-
-const SENSITIVITY_OPTIONS = [
-  { value: "internal", label: "Interno — uso restrito ao time" },
-  { value: "public", label: "Público — pode ser compartilhado externamente" },
-  { value: "confidential", label: "Confidencial — acesso controlado" },
-  { value: "restricted", label: "Restrito — alta sensibilidade" },
-] as const;
-
-const SENSITIVITY_LABELS: Record<string, string> = {
-  internal: "Interno",
-  public: "Público",
-  confidential: "Confidencial",
-  restricted: "Restrito",
-};
 
 type ImprovementSource = {
   sector: string;
@@ -313,6 +303,10 @@ export function CurationReviewWorkbench({
   const [isEditingDocumentContent, setIsEditingDocumentContent] = useState(false);
   const [documentContentDraft, setDocumentContentDraft] = useState("");
   const [isSavingDocumentContent, setIsSavingDocumentContent] = useState(false);
+  const [isInferringAnswers, setIsInferringAnswers] = useState(false);
+  const [inferredAnswers, setInferredAnswers] = useState<Array<{ id: string; prompt: string; answer: string }>>([]);
+  const autoInferIdsRef = useRef<Record<string, boolean>>({});
+  const [isChangingType] = useState(false);
   const availableSectorOptions = useMemo(
     () =>
       sectorOptions.length > 0
@@ -381,10 +375,6 @@ export function CurationReviewWorkbench({
   );
 
   const stagingChunks = detail?.chunks;
-  const templateQuestions =
-    detail?.questions.filter(
-      (question) => !question.source || question.source === "template",
-    ) ?? [];
   const inferredQuestions =
     detail?.questions.filter((question) => question.source === "inferred") ?? [];
   const processGapQuestions =
@@ -404,12 +394,6 @@ export function CurationReviewWorkbench({
       })
       .join("\n\n");
   }, [stagingChunks]);
-  const answeredQuestionCount = templateQuestions.filter((question) =>
-    question.response?.trim(),
-  ).length;
-  const defaultAnswerCount = templateQuestions.filter(
-    (question) => question.isDefault && question.response?.trim(),
-  ).length;
   const readiness = readinessPercent(
     detail?.document.curationReadinessScore ?? detail?.document.sopReadinessScore,
   );
@@ -502,6 +486,7 @@ export function CurationReviewWorkbench({
       setStagingViewTab("full");
       setIsEditingDocumentContent(false);
       setDocumentContentDraft(payload.document.normalizedMarkdown);
+      setInferredAnswers([]);
 
       const baseAnswers = Object.fromEntries(
         payload.questions.map((question) => [question.id, question.response ?? ""]),
@@ -635,6 +620,58 @@ export function CurationReviewWorkbench({
     void runCorrelation(detail.document.id, true);
   }, [detail, pendingAction, runCorrelation]);
 
+  const runInferAnswers = useCallback(async (documentId: string) => {
+    setIsInferringAnswers(true);
+    try {
+      const response = await fetch(`/api/curation/${documentId}/infer-answers`, {
+        method: "POST",
+      });
+      const payload = (await response.json()) as {
+        answeredQuestions?: Array<{ id: string; prompt: string; answer: string }>;
+        status?: string;
+        questions?: CurationQuestion[];
+        approvalGate?: ApprovalGate;
+      };
+      if (response.ok && payload.answeredQuestions) {
+        setInferredAnswers(payload.answeredQuestions);
+        if (payload.questions) {
+          setDetail((current) =>
+            current ? {
+              ...current,
+              document: { ...current.document, status: payload.status ?? current.document.status },
+              questions: payload.questions ?? current.questions,
+              approvalGate: payload.approvalGate ?? current.approvalGate,
+            } : current,
+          );
+        }
+      }
+    } catch {
+      // best-effort — silêncio aceitável
+    } finally {
+      setIsInferringAnswers(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      !detail ||
+      detail.document.status === "PROMOTED" ||
+      detail.document.status === "REJECTED" ||
+      autoInferIdsRef.current[detail.document.id]
+    ) {
+      return;
+    }
+    const hasUnansweredTemplate = detail.questions.some(
+      (q) => (!q.source || q.source === "template") && !q.response?.trim(),
+    );
+    if (!hasUnansweredTemplate) return;
+    autoInferIdsRef.current[detail.document.id] = true;
+    const timeoutId = window.setTimeout(() => {
+      void runInferAnswers(detail.document.id);
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [detail, runInferAnswers]);
+
   const submitAnswer = async (questionId: string) => {
     if (!selectedDocumentId) return;
 
@@ -717,9 +754,10 @@ export function CurationReviewWorkbench({
   ) => {
     if (!selectedDocumentId) return;
 
-    const answer = correlationAnswers[findingId]?.trim() ?? "";
+    const typed = correlationAnswers[findingId]?.trim() ?? "";
+    const answer = typed || (decision === "dismissed" ? "Dispensado pelo curador." : "");
     if (!answer) {
-      setErrorMessage("Responda o achado de correlacao antes de resolver.");
+      setErrorMessage("Descreva como este achado deve ser resolvido antes de validar.");
       return;
     }
 
@@ -1206,6 +1244,63 @@ export function CurationReviewWorkbench({
     router.push(`/admin/curation?sector=${sector}`);
   };
 
+  const handleTypeChange = useCallback(async (newType: string) => {
+    if (!selectedDocumentId || !detail) return;
+    setPendingAction("change-type");
+    setErrorMessage("");
+    setMessage("");
+    try {
+      const response = await fetch(`/api/curation/${selectedDocumentId}/type`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ documentType: newType }),
+      });
+      const payload = (await response.json()) as {
+        message?: string;
+        documentType?: string;
+        status?: string;
+        questions?: CurationQuestion[];
+        approvalGate?: ApprovalGate;
+        approvalsInvalidated?: boolean;
+      };
+      if (!response.ok) throw new Error(payload.message ?? "Falha ao alterar tipo.");
+
+      setDetail((current) =>
+        current
+          ? {
+              ...current,
+              document: {
+                ...current.document,
+                documentType: (payload.documentType ?? newType) as DocumentType,
+                status: payload.status ?? current.document.status,
+                classificationSource: "human",
+                classificationConfidence: 1.0,
+              },
+              questions: payload.questions ?? current.questions,
+              approvals: payload.approvalsInvalidated ? [] : current.approvals,
+              approvalGate: payload.approvalGate ?? current.approvalGate,
+            }
+          : current,
+      );
+
+      autoInferIdsRef.current[selectedDocumentId] = false;
+      setInferredAnswers([]);
+      setAnswers({});
+
+      setMessage(
+        payload.approvalsInvalidated
+          ? `Tipo alterado para ${newType}. Perguntas atualizadas. Aprovações anteriores invalidadas.`
+          : `Tipo alterado para ${newType}. Perguntas atualizadas.`,
+      );
+    } catch (error) {
+      setErrorMessage(normalizeError(error, "Falha ao alterar tipo do documento."));
+    } finally {
+      setPendingAction("");
+    }
+  }, [selectedDocumentId, detail]);
+
+  void isChangingType; // satisfies lint (controlled via TypeBadge dropdown)
+
   return (
     <div className="grid gap-6 xl:grid-cols-[420px_minmax(0,1fr)]">
       <section className="premium-panel rounded-[2rem] p-6">
@@ -1424,16 +1519,13 @@ export function CurationReviewWorkbench({
                       0}
                     %
                   </span>
-                  {(detail?.document.documentType ?? selectedDocument.documentType) ? (
-                    <span className="rounded bg-[var(--surface-muted)] px-3 py-2 text-xs font-bold uppercase tracking-wider text-[var(--foreground-soft)]">
-                      {
-                        DOCUMENT_TYPE_LABELS[
-                        (detail?.document.documentType ??
-                          selectedDocument.documentType) as DocumentType
-                        ]
-                      }
-                    </span>
-                  ) : null}
+                  <TypeBadge
+                    documentType={detail?.document.documentType ?? selectedDocument.documentType}
+                    classificationSource={detail?.document.classificationSource}
+                    classificationConfidence={detail?.document.classificationConfidence}
+                    canEdit={canEditAnswers && !isPromoted}
+                    onTypeChange={(newType) => void handleTypeChange(newType)}
+                  />
                 </div>
               </div>
             </div>
@@ -1477,10 +1569,10 @@ export function CurationReviewWorkbench({
                 </div>
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
                   <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--muted)]">
-                    Perguntas
+                    Contexto IA
                   </p>
                   <p className="mt-2 text-xl font-black text-[var(--foreground-strong)]">
-                    {answeredQuestionCount}/{templateQuestions.length}
+                    {isInferringAnswers ? "..." : inferredAnswers.length > 0 ? `${inferredAnswers.length} campo${inferredAnswers.length > 1 ? "s" : ""}` : "—"}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-soft)] p-4">
@@ -1505,6 +1597,44 @@ export function CurationReviewWorkbench({
                 </div>
               </div>
             </div>
+
+            {(() => {
+              const typeHeaders: Partial<Record<string, { icon: React.ReactNode; title: string; subtitle: string }>> = {
+                person: {
+                  icon: <User className="h-5 w-5 text-violet-600" />,
+                  title: "Perfil Funcional",
+                  subtitle: "Capture quem é esta pessoa no contexto de trabalho: cargo, competências e — o mais importante — para qual situação recorrer a ela.",
+                },
+                org_chart: {
+                  icon: <Network className="h-5 w-5 text-cyan-600" />,
+                  title: "Organograma / Estrutura",
+                  subtitle: "Estrutura hierárquica formal com data de validade. Vagas e transições em aberto só você sabe — registre.",
+                },
+                sop: {
+                  icon: <FileText className="h-5 w-5 text-[var(--accent)]" />,
+                  title: "Procedimento Operacional",
+                  subtitle: "Fluxo passo a passo com gatilhos e responsáveis. Garanta clareza para quem vai operar.",
+                },
+                ddp: {
+                  icon: <FileText className="h-5 w-5 text-amber-600" />,
+                  title: "Desenho de Processo",
+                  subtitle: "Fluxo de ponta a ponta com atores, handoffs e sistemas. Capture dependências e regras de negócio.",
+                },
+              };
+              const header = typeHeaders[detail.document.documentType ?? ""];
+              if (!header) return null;
+              return (
+                <div className="premium-panel rounded-[2rem] p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-0.5 shrink-0">{header.icon}</div>
+                    <div>
+                      <p className="text-sm font-black text-[var(--foreground-strong)]">{header.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-[var(--foreground-soft)]">{header.subtitle}</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
 
             <div className="premium-panel rounded-[2rem] p-6">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -1862,212 +1992,46 @@ export function CurationReviewWorkbench({
             </div>
 
             <div className="premium-panel rounded-[2rem] p-6">
-              <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
-                Validacao SOP
-              </p>
-              <h3 className="mt-1 text-xl font-black text-[var(--foreground-strong)]">
-                Perguntas opcionais de curadoria
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-[var(--foreground-soft)]">
-                {canEditAnswers
-                  ? "As perguntas ajudam a enriquecer o artefato curado, mas nao bloqueiam a aprovacao final. Itens respondidos ficam recolhidos e podem ser editados antes de uma nova aprovacao."
-                  : "Documento publicado: respostas ficam somente para consulta nesta revisao."}
-              </p>
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
+                    Contexto inferido
+                  </p>
+                  <h3 className="mt-1 text-xl font-black text-[var(--foreground-strong)]">
+                    Enriquecimento automatico
+                  </h3>
+                </div>
+                {isInferringAnswers ? (
+                  <span className="inline-flex items-center gap-2 rounded-2xl bg-[var(--accent-soft)] px-3 py-2 text-xs font-bold text-[var(--accent)]">
+                    <Sparkles className="h-3.5 w-3.5 animate-pulse" />
+                    Analisando com IA...
+                  </span>
+                ) : inferredAnswers.length > 0 ? (
+                  <span className="inline-flex items-center gap-2 rounded-2xl bg-emerald-100 px-3 py-2 text-xs font-bold text-emerald-700">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    {inferredAnswers.length} campo{inferredAnswers.length > 1 ? "s" : ""} inferido{inferredAnswers.length > 1 ? "s" : ""}
+                  </span>
+                ) : null}
+              </div>
 
-              {defaultAnswerCount > 0 ? (
-                <div className="mt-4 rounded-2xl border border-[var(--accent)]/40 bg-[var(--accent-soft)] px-4 py-3 text-sm text-[var(--accent)]">
-                  {defaultAnswerCount} resposta{defaultAnswerCount > 1 ? "s" : ""} preenchida
-                  {defaultAnswerCount > 1 ? "s" : ""} automaticamente. Revise antes de aprovar.
+              {!isInferringAnswers && inferredAnswers.length === 0 ? (
+                <p className="mt-4 rounded-2xl border border-dashed border-[var(--border)] p-5 text-sm text-[var(--foreground-soft)]">
+                  Nenhum campo de contexto foi inferido automaticamente a partir do conteudo deste documento.
+                </p>
+              ) : inferredAnswers.length > 0 ? (
+                <div className="mt-5 space-y-3">
+                  {inferredAnswers.map((item) => (
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50/55 p-4" key={item.id}>
+                      <span className="rounded bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                        inferido por IA
+                      </span>
+                      <p className="mt-2 text-xs font-bold text-[var(--foreground-soft)]">{item.prompt}</p>
+                      <p className="mt-1 whitespace-pre-wrap text-sm text-[var(--foreground-strong)]">{item.answer}</p>
+                    </div>
+                  ))}
                 </div>
               ) : null}
 
-              <div className="mt-6 space-y-4">
-                {templateQuestions.map((question) => {
-                  const response = question.response?.trim() ?? "";
-                  const isServerDefault =
-                    question.isDefault === true && response.length > 0;
-                  const isAnsweredByCurator =
-                    question.isDefault !== true && response.length > 0;
-                  const isAnswered = isServerDefault || isAnsweredByCurator;
-                  const isEditing = editingQuestionIds[question.id] === true;
-                  const isOpen = !isAnswered || isEditing;
-                  const currentValue = answers[question.id] ?? "";
-                  const isPreFilled = !isAnswered && currentValue.length > 0;
-
-                  return (
-                    <div
-                      className={`rounded-2xl border p-4 ${isAnsweredByCurator
-                        ? "border-emerald-200 bg-emerald-50/55"
-                        : isServerDefault || isPreFilled
-                          ? "border-[var(--accent)]/40 bg-[var(--accent-soft)]"
-                          : "border-amber-200 bg-amber-50/60"
-                        }`}
-                      key={question.id}
-                    >
-                      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                        <div className="min-w-0">
-                          <p className="text-sm font-bold text-[var(--foreground-strong)]">
-                            {question.prompt}
-                          </p>
-                          <p className="mt-1 text-xs text-[var(--foreground-soft)]">
-                            {isAnsweredByCurator
-                              ? "Resposta registrada na curadoria."
-                              : isServerDefault || isPreFilled
-                                ? "Valor sugerido automaticamente. Confirme ou ajuste antes de prosseguir."
-                                : "Resposta opcional para enriquecer a curadoria."}
-                          </p>
-                        </div>
-                        <div className="flex shrink-0 flex-wrap items-center gap-2">
-                          <span
-                            className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${isAnsweredByCurator
-                              ? "bg-emerald-400/15 text-emerald-700"
-                              : isServerDefault || isPreFilled
-                                ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                                : "bg-amber-400/15 text-amber-700"
-                              }`}
-                          >
-                            {isAnswered ? "respondida" : isPreFilled ? "sugestão" : "pendente"}
-                          </span>
-                          {isServerDefault ? (
-                            <span className="rounded bg-[var(--accent)] px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
-                              Sugestao automatica
-                            </span>
-                          ) : null}
-                          {isAnswered && canEditAnswers ? (
-                            <button
-                              className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-xs font-bold text-[var(--foreground-strong)] transition-colors hover:border-[var(--accent)] disabled:opacity-50"
-                              disabled={pendingAction === `answer:${question.id}`}
-                              onClick={() => {
-                                setEditingQuestionIds((current) => ({
-                                  ...current,
-                                  [question.id]: !isEditing,
-                                }));
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: question.response ?? "",
-                                }));
-                              }}
-                              type="button"
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                              {isEditing ? "Cancelar" : "Editar"}
-                            </button>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      {!isOpen || !canEditAnswers ? (
-                        <p className="mt-4 max-h-24 overflow-hidden whitespace-pre-wrap rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm leading-6 text-[var(--foreground-soft)]">
-                          {question.id === "metadata_sensitivity"
-                            ? (SENSITIVITY_LABELS[response] ?? response) || "Documento publicado sem resposta editavel."
-                            : response || "Documento publicado sem resposta editavel."}
-                        </p>
-                      ) : (
-                        <>
-                          <label
-                            className="sr-only"
-                            htmlFor={`question-${question.id}`}
-                          >
-                            {question.prompt}
-                          </label>
-
-                          {question.id === "metadata_sensitivity" ? (
-                            <select
-                              className="mt-3 w-full rounded-2xl border border-[var(--border)] bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-[var(--accent)]"
-                              id={`question-${question.id}`}
-                              name={`question-${question.id}`}
-                              onChange={(event) =>
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: event.target.value,
-                                }))
-                              }
-                              value={answers[question.id] ?? "internal"}
-                            >
-                              {SENSITIVITY_OPTIONS.map((opt) => (
-                                <option key={opt.value} value={opt.value}>
-                                  {opt.label}
-                                </option>
-                              ))}
-                            </select>
-                          ) : question.id === "metadata_effective_from" ? (
-                            <input
-                              className="mt-3 w-full rounded-2xl border border-[var(--border)] bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-[var(--accent)]"
-                              id={`question-${question.id}`}
-                              name={`question-${question.id}`}
-                              onChange={(event) =>
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: event.target.value,
-                                }))
-                              }
-                              type="date"
-                              value={answers[question.id] ?? ""}
-                            />
-                          ) : question.id === "metadata_owner" ? (
-                            <input
-                              className="mt-3 w-full rounded-2xl border border-[var(--border)] bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-[var(--accent)]"
-                              id={`question-${question.id}`}
-                              name={`question-${question.id}`}
-                              onChange={(event) =>
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: event.target.value,
-                                }))
-                              }
-                              placeholder="email@empresa.com"
-                              type="email"
-                              value={answers[question.id] ?? ""}
-                            />
-                          ) : question.id === "metadata_title" ? (
-                            <input
-                              className="mt-3 w-full rounded-2xl border border-[var(--border)] bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-[var(--accent)]"
-                              id={`question-${question.id}`}
-                              name={`question-${question.id}`}
-                              onChange={(event) =>
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: event.target.value,
-                                }))
-                              }
-                              placeholder="Titulo canônico do SOP"
-                              type="text"
-                              value={answers[question.id] ?? ""}
-                            />
-                          ) : (
-                            <textarea
-                              className="mt-3 min-h-24 w-full resize-y rounded-2xl border border-[var(--border)] bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-[var(--accent)]"
-                              id={`question-${question.id}`}
-                              name={`question-${question.id}`}
-                              onChange={(event) =>
-                                setAnswers((current) => ({
-                                  ...current,
-                                  [question.id]: event.target.value,
-                                }))
-                              }
-                              value={answers[question.id] ?? ""}
-                            />
-                          )}
-
-                          <button
-                            className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-[var(--accent)] px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-[var(--accent-strong)] disabled:opacity-50"
-                            disabled={pendingAction === `answer:${question.id}`}
-                            onClick={() => void submitAnswer(question.id)}
-                            type="button"
-                          >
-                            <Send className="h-4 w-4" />
-                            {pendingAction === `answer:${question.id}`
-                              ? "Validando..."
-                              : isAnswered
-                                ? "Salvar ajuste"
-                                : "Confirmar"}
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
 
               {processGapQuestions.length > 0 ? (
                 <div className="mt-8 border-t border-[var(--border)] pt-6">
@@ -2304,6 +2268,107 @@ export function CurationReviewWorkbench({
                   </div>
                 </div>
               ) : null}
+
+              {(() => {
+                const neverInferQuestions = detail?.questions.filter(
+                  (q) => (q as { neverInfer?: boolean }).neverInfer === true && (!q.source || q.source === "template"),
+                ) ?? [];
+
+                if (!neverInferQuestions.length || !canEditAnswers) return null;
+
+                return (
+                  <div className="mt-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-5">
+                    <div className="mb-4 flex items-center gap-3">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-[var(--muted)]">
+                        Conhecimento humano
+                      </p>
+                      <span className="rounded bg-amber-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                        A IA não preenche este bloco
+                      </span>
+                    </div>
+                    <p className="mb-5 text-sm leading-6 text-[var(--foreground-soft)]">
+                      Estes campos exigem conhecimento que só existe na sua experiência com esta pessoa ou estrutura — não está em nenhum documento. São os que tornam este perfil realmente útil no chat.
+                    </p>
+                    <div className="space-y-4">
+                      {neverInferQuestions.map((question) => {
+                        const response = question.response?.trim() ?? "";
+                        const isAnswered = response.length > 0;
+                        const isEditing = editingQuestionIds[question.id] === true;
+                        const isOpen = !isAnswered || isEditing;
+
+                        const isGoToField = question.id === "person_goto_what";
+
+                        return (
+                          <div
+                            className={`rounded-2xl border p-4 ${isAnswered ? "border-amber-200 bg-amber-50/50" : "border-amber-200/70 bg-amber-50/25"}`}
+                            key={question.id}
+                          >
+                            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold text-[var(--foreground-strong)]">{question.prompt}</p>
+                                <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+                                  {isAnswered ? "Registrado — você pode editar se algo mudou." : "Só você sabe isso."}
+                                </p>
+                              </div>
+                              <div className="flex shrink-0 flex-wrap items-center gap-2">
+                                <span className={`rounded px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${isAnswered ? "bg-amber-200 text-amber-800" : "bg-amber-100 text-amber-700"}`}>
+                                  {isAnswered ? "registrado" : "aguardando você"}
+                                </span>
+                                {isAnswered && canEditAnswers && !isGoToField ? (
+                                  <button
+                                    className="inline-flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-xs font-bold transition-colors hover:border-amber-400 disabled:opacity-50"
+                                    disabled={pendingAction === `answer:${question.id}`}
+                                    onClick={() => {
+                                      setEditingQuestionIds((c) => ({ ...c, [question.id]: !isEditing }));
+                                      setAnswers((c) => ({ ...c, [question.id]: question.response ?? "" }));
+                                    }}
+                                    type="button"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                    {isEditing ? "Cancelar" : "Editar"}
+                                  </button>
+                                ) : null}
+                              </div>
+                            </div>
+
+                            {isGoToField ? (
+                              <div className="mt-4">
+                                <RelationTagInput
+                                  disabled={!canEditAnswers || pendingAction === `answer:${question.id}`}
+                                  onChange={(json) => setAnswers((c) => ({ ...c, [question.id]: json }))}
+                                  onSave={() => void submitAnswer(question.id)}
+                                  value={answers[question.id] ?? question.response ?? ""}
+                                />
+                              </div>
+                            ) : !isOpen || !canEditAnswers ? (
+                              <p className="mt-4 max-h-24 overflow-hidden whitespace-pre-wrap rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm leading-6 text-[var(--foreground-soft)]">
+                                {response || "Sem resposta registrada."}
+                              </p>
+                            ) : (
+                              <>
+                                <textarea
+                                  className="mt-3 min-h-24 w-full resize-y rounded-2xl border border-amber-200 bg-white p-3 text-sm text-[var(--foreground-strong)] outline-none focus:border-amber-400"
+                                  onChange={(e) => setAnswers((c) => ({ ...c, [question.id]: e.target.value }))}
+                                  value={answers[question.id] ?? ""}
+                                />
+                                <button
+                                  className="mt-3 inline-flex items-center gap-2 rounded-2xl bg-amber-600 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-amber-700 disabled:opacity-50"
+                                  disabled={pendingAction === `answer:${question.id}`}
+                                  onClick={() => void submitAnswer(question.id)}
+                                  type="button"
+                                >
+                                  <Send className="h-4 w-4" />
+                                  {pendingAction === `answer:${question.id}` ? "Salvando..." : isAnswered ? "Salvar ajuste" : "Registrar"}
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="premium-panel rounded-[2rem] p-6">

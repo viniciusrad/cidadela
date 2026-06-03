@@ -85,3 +85,28 @@ export type AgentStreamEvent =
       };
     }
   | { type: "error"; message: string };
+
+/**
+ * Events streamed back from the chat-generation consumer to the producer over
+ * the RabbitMQ reply queue. Mirrors what `runSectorAgent` emits — see
+ * docs/allByQueue.md. Reused rather than duplicated so the contract stays in
+ * lock-step with the in-process emit path.
+ */
+export type ChatStreamEvent = AgentStreamEvent;
+
+/**
+ * Serializable job published to the `chat.requests` queue (see docs/allByQueue.md).
+ * The consumer reconstructs a `runSectorAgent` call from these fields and wires
+ * its own `emit` that publishes each `ChatStreamEvent` to the reply queue.
+ */
+export type ChatJob = {
+  traceId: string;
+  parentTraceId?: string;
+  sector: string;
+  question: string;
+  conversationId?: string;
+  allowDelegation: boolean;
+  useRag: boolean;
+  useGraph: boolean;
+  externalContext?: ExternalAgentContext;
+};

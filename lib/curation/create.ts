@@ -129,6 +129,7 @@ export async function createStagedCurationDocument(
   const questionsWithDefaults = applyQuestionDefaults(readinessInput.questions, {
     sector: targetSector,
     title: metadata.title,
+    documentType,
   });
   const inferredQuestions = await inferAdditionalQuestions({
     documentType,

@@ -666,7 +666,7 @@ function AgentEditor({
         />
       ) : null}
 
-      {tab === "memory" ? <MemoryPlaceholder /> : null}
+      {tab === "memory" ? <MemoryTab sector={agent.sector} /> : null}
       {tab === "telemetry" ? <TelemetryPlaceholder /> : null}
     </>
   );
@@ -1030,50 +1030,575 @@ function ProtocolCard({
   );
 }
 
-function MemoryPlaceholder() {
+type PersonalityData = {
+  tone: number;
+  verbosity: number;
+  formality: number;
+  proactivity: number;
+  escalationThreshold: number;
+  domainEmphasis: string;
+};
+
+function MemoryTab({ sector }: { sector: string }) {
+  const [personality, setPersonality] = useState<PersonalityData>({
+    tone: 3,
+    verbosity: 3,
+    formality: 3,
+    proactivity: 3,
+    escalationThreshold: 0.4,
+    domainEmphasis: "[]",
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const loadPersonality = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/agents/${sector}/personality`, { cache: "no-store" });
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { message?: string };
+        throw new Error(payload.message ?? `Falha ao carregar perfil (${res.status})`);
+      }
+      const data = (await res.json()) as Partial<PersonalityData>;
+      setPersonality((prev) => ({
+        tone: typeof data.tone === "number" ? data.tone : prev.tone,
+        verbosity: typeof data.verbosity === "number" ? data.verbosity : prev.verbosity,
+        formality: typeof data.formality === "number" ? data.formality : prev.formality,
+        proactivity: typeof data.proactivity === "number" ? data.proactivity : prev.proactivity,
+        escalationThreshold:
+          typeof data.escalationThreshold === "number"
+            ? data.escalationThreshold
+            : prev.escalationThreshold,
+        domainEmphasis:
+          typeof data.domainEmphasis === "string" ? data.domainEmphasis : prev.domainEmphasis,
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao carregar perfil");
+    } finally {
+      setLoading(false);
+    }
+  }, [sector]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadPersonality();
+  }, [loadPersonality]);
+
+  async function save() {
+    setSaving(true);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      const res = await fetch(`/api/admin/agents/${sector}/personality`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(personality),
+      });
+      if (!res.ok) {
+        const payload = (await res.json().catch(() => ({}))) as { message?: string };
+        throw new Error(payload.message ?? `Falha ao salvar (${res.status})`);
+      }
+      setSuccessMsg("Perfil salvo com sucesso.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao salvar perfil");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const sliders: Array<{
+    key: keyof Pick<PersonalityData, "tone" | "verbosity" | "formality" | "proactivity">;
+    label: string;
+    leftLabel: string;
+    rightLabel: string;
+  }> = [
+    { key: "tone", label: "Tom", leftLabel: "Formal", rightLabel: "Informal" },
+    { key: "verbosity", label: "Verbosidade", leftLabel: "Conciso", rightLabel: "Detalhado" },
+    { key: "formality", label: "Formalidade", leftLabel: "Casual", rightLabel: "Protocolar" },
+    { key: "proactivity", label: "Proatividade", leftLabel: "Reativo", rightLabel: "Proativo" },
+  ];
+
+  const escalationPct = Math.round(personality.escalationThreshold * 100);
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-lg border border-[var(--border)] bg-white p-4">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
+          Perfil de personalidade
+        </p>
+        <p className="mt-1 text-xs text-[var(--foreground-soft)]">
+          Ajuste o comportamento comunicativo do agente para este setor.
+        </p>
+
+        {loading ? (
+          <p className="mt-4 text-xs text-[var(--muted)]">Carregando perfil...</p>
+        ) : (
+          <div className="mt-4 space-y-5">
+            {sliders.map(({ key, label, leftLabel, rightLabel }) => (
+              <div key={key}>
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                    {label}
+                  </span>
+                  <span className="text-xs font-black text-[var(--foreground-strong)]">
+                    {personality[key]}
+                  </span>
+                </div>
+                <input
+                  className="mt-1 w-full accent-[var(--accent)]"
+                  max={5}
+                  min={1}
+                  onChange={(e) =>
+                    setPersonality((prev) => ({ ...prev, [key]: Number(e.target.value) }))
+                  }
+                  step={1}
+                  type="range"
+                  value={personality[key]}
+                />
+                <div className="flex justify-between text-[10px] text-[var(--muted)]">
+                  <span>1 — {leftLabel}</span>
+                  <span>{rightLabel} — 5</span>
+                </div>
+              </div>
+            ))}
+
+            <div>
+              <label className="block py-1">
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                  Limiar de escalonamento — {escalationPct}%
+                </span>
+                <span className="mt-1 block text-[11px] text-[var(--muted)]">
+                  Score de confianca abaixo deste valor dispara escalonamento. (0–100%)
+                </span>
+                <input
+                  className="mt-1 w-32 rounded-md border border-[var(--border)] bg-white px-3 py-1.5 text-sm"
+                  max={100}
+                  min={0}
+                  onChange={(e) =>
+                    setPersonality((prev) => ({
+                      ...prev,
+                      escalationThreshold: Number(e.target.value) / 100,
+                    }))
+                  }
+                  type="number"
+                  value={escalationPct}
+                />
+              </label>
+            </div>
+
+            <div>
+              <label className="block py-1">
+                <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--muted)]">
+                  Enfase tematica (JSON)
+                </span>
+                <span className="mt-1 block text-[11px] text-[var(--muted)]">
+                  Ex.: {`[{"topic":"compliance","weight":0.8}]`}
+                </span>
+                <textarea
+                  className="mt-1 min-h-[80px] w-full rounded-md border border-[var(--border)] bg-white px-3 py-2 font-mono text-xs leading-relaxed"
+                  onChange={(e) =>
+                    setPersonality((prev) => ({ ...prev, domainEmphasis: e.target.value }))
+                  }
+                  value={personality.domainEmphasis}
+                />
+              </label>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {error ? (
+        <p className="rounded-md border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-800">
+          {error}
+        </p>
+      ) : null}
+
+      {successMsg ? (
+        <p className="rounded-md border border-green-300 bg-green-50 px-3 py-2 text-xs text-green-800">
+          {successMsg}
+        </p>
+      ) : null}
+
+      <div className="flex justify-end">
+        <button
+          className="inline-flex items-center gap-2 rounded-md bg-[var(--accent)] px-4 py-2 text-xs font-black text-white shadow-sm shadow-[var(--accent-soft)] disabled:opacity-50"
+          disabled={loading || saving}
+          onClick={save}
+          type="button"
+        >
+          <Save className="h-3.5 w-3.5" />
+          {saving ? "Salvando..." : "Salvar perfil"}
+        </button>
+      </div>
+
+      <div className="border-t border-[var(--border)] pt-4">
+        <EpisodesSection sector={sector} />
+      </div>
+      <div className="border-t border-[var(--border)] pt-4">
+        <FewShotSection sector={sector} />
+      </div>
+    </div>
+  );
+}
+
+type Episode = {
+  id: string;
+  summary: string;
+  reviewStatus: string;
+  createdAt: string;
+  feedbackScore: number | null;
+};
+
+function EpisodesSection({ sector }: { sector: string }) {
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loadingEp, setLoadingEp] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [actioning, setActioning] = useState<string | null>(null);
+
+  const loadEpisodes = useCallback(async () => {
+    setLoadingEp(true);
+    try {
+      const params = statusFilter !== "all" ? `?status=${statusFilter}` : "";
+      const res = await fetch(
+        `/api/admin/agents/${sector}/memory/episodes${params}`,
+        { cache: "no-store" },
+      );
+      if (res.ok) {
+        const data = (await res.json()) as {
+          episodes: Episode[];
+          total: number;
+        };
+        setEpisodes(data.episodes);
+        setTotal(data.total);
+      }
+    } finally {
+      setLoadingEp(false);
+    }
+  }, [sector, statusFilter]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadEpisodes();
+  }, [loadEpisodes]);
+
+  async function review(id: string, reviewStatus: "approved" | "rejected") {
+    setActioning(id);
+    try {
+      await fetch(`/api/admin/agents/${sector}/memory/episodes/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviewStatus }),
+      });
+      await loadEpisodes();
+    } finally {
+      setActioning(null);
+    }
+  }
+
+  const statusBadge: Record<string, string> = {
+    pending: "bg-yellow-100 text-yellow-800",
+    approved: "bg-green-100 text-green-800",
+    rejected: "bg-red-100 text-red-800",
+  };
+
   return (
     <div className="space-y-3">
-      <div className="rounded-lg border border-dashed border-[var(--border)] bg-[var(--surface-soft)] p-5">
-        <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[var(--accent-soft)] text-[var(--accent)]">
-            <Brain className="h-5 w-5" />
-          </span>
-          <div>
-            <p className="text-sm font-black text-[var(--foreground-strong)]">
-              Memoria do agente
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">
+          Episódios de memória{" "}
+          <span className="text-[var(--muted)]">({total})</span>
+        </p>
+        <select
+          className="rounded border border-[var(--border)] bg-transparent px-2 py-1 text-xs"
+          onChange={(e) => setStatusFilter(e.target.value)}
+          value={statusFilter}
+        >
+          <option value="all">Todos</option>
+          <option value="pending">Pendentes</option>
+          <option value="approved">Aprovados</option>
+          <option value="rejected">Rejeitados</option>
+        </select>
+      </div>
+
+      {loadingEp && (
+        <p className="text-xs text-[var(--muted)]">Carregando episódios...</p>
+      )}
+
+      {!loadingEp && episodes.length === 0 && (
+        <p className="text-xs text-[var(--muted)]">
+          Nenhum episódio encontrado. Episódios são criados automaticamente
+          após conversas com 5 ou mais mensagens.
+        </p>
+      )}
+
+      <div className="space-y-2">
+        {episodes.map((ep) => (
+          <div
+            key={ep.id}
+            className="rounded-md border border-[var(--border)] p-3 text-xs"
+          >
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <span
+                className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${statusBadge[ep.reviewStatus] ?? "bg-gray-100 text-gray-800"}`}
+              >
+                {ep.reviewStatus}
+              </span>
+              <span className="text-[var(--muted)]">
+                {new Date(ep.createdAt).toLocaleDateString("pt-BR")}
+              </span>
+            </div>
+            <p className="mb-2 line-clamp-3 text-[var(--foreground)]">
+              {ep.summary}
             </p>
-            <p className="text-xs text-[var(--foreground-soft)]">
-              Em desenvolvimento. Permitira manter historico relevante de conversas, licoes do feedback e fatos consolidados por setor.
+            {ep.reviewStatus === "pending" && (
+              <div className="flex gap-2">
+                <button
+                  className="rounded bg-green-600 px-2 py-0.5 text-[10px] font-medium text-white disabled:opacity-50"
+                  disabled={actioning === ep.id}
+                  onClick={() => void review(ep.id, "approved")}
+                  type="button"
+                >
+                  Aprovar
+                </button>
+                <button
+                  className="rounded bg-red-600 px-2 py-0.5 text-[10px] font-medium text-white disabled:opacity-50"
+                  disabled={actioning === ep.id}
+                  onClick={() => void review(ep.id, "rejected")}
+                  type="button"
+                >
+                  Rejeitar
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type FewShot = {
+  id: string;
+  inputPattern: string;
+  agentResponse: string;
+  domainTags: string[];
+  score: number;
+  active: boolean;
+  approvedBy: string | null;
+  promotedAt: string;
+};
+
+function FewShotSection({ sector }: { sector: string }) {
+  const [examples, setExamples] = useState<FewShot[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [actioning, setActioning] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    inputPattern: "",
+    agentResponse: "",
+    domainTags: "",
+    score: "1.0",
+  });
+  const [formError, setFormError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/admin/agents/${sector}/memory/fewshots?active=false`,
+        { cache: "no-store" },
+      );
+      if (res.ok) {
+        const data = (await res.json()) as { examples: FewShot[] };
+        setExamples(data.examples);
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [sector]);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { void load(); }, [load]);
+
+  async function create() {
+    setSaving(true);
+    setFormError(null);
+    try {
+      const res = await fetch(`/api/admin/agents/${sector}/memory/fewshots`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          inputPattern: form.inputPattern,
+          agentResponse: form.agentResponse,
+          domainTags: form.domainTags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          score: parseFloat(form.score) || 1.0,
+        }),
+      });
+      if (!res.ok) {
+        const err = (await res.json()) as { error?: string };
+        setFormError(err.error ?? "Erro ao salvar.");
+        return;
+      }
+      setForm({ inputPattern: "", agentResponse: "", domainTags: "", score: "1.0" });
+      setShowForm(false);
+      await load();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function toggleActive(id: string, active: boolean) {
+    setActioning(id);
+    try {
+      await fetch(`/api/admin/agents/${sector}/memory/fewshots/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ active }),
+      });
+      await load();
+    } finally {
+      setActioning(null);
+    }
+  }
+
+  async function remove(id: string) {
+    setActioning(id);
+    try {
+      await fetch(`/api/admin/agents/${sector}/memory/fewshots/${id}`, {
+        method: "DELETE",
+      });
+      await load();
+    } finally {
+      setActioning(null);
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">
+          Exemplos de referência{" "}
+          <span className="text-[var(--muted)]">({examples.length})</span>
+        </p>
+        <button
+          className="rounded-md border border-[var(--border)] px-2 py-1 text-xs hover:bg-[var(--accent-soft)]"
+          onClick={() => setShowForm((v) => !v)}
+          type="button"
+        >
+          {showForm ? "Cancelar" : "+ Novo exemplo"}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="space-y-2 rounded-md border border-[var(--border)] p-3">
+          <textarea
+            className="w-full rounded border border-[var(--border)] bg-transparent p-2 text-xs"
+            onChange={(e) => setForm((f) => ({ ...f, inputPattern: e.target.value }))}
+            placeholder="Padrão de pergunta / input..."
+            rows={2}
+            value={form.inputPattern}
+          />
+          <textarea
+            className="w-full rounded border border-[var(--border)] bg-transparent p-2 text-xs"
+            onChange={(e) => setForm((f) => ({ ...f, agentResponse: e.target.value }))}
+            placeholder="Resposta modelo do agente..."
+            rows={4}
+            value={form.agentResponse}
+          />
+          <div className="flex gap-2">
+            <input
+              className="flex-1 rounded border border-[var(--border)] bg-transparent px-2 py-1 text-xs"
+              onChange={(e) => setForm((f) => ({ ...f, domainTags: e.target.value }))}
+              placeholder="Tags separadas por vírgula: compliance, risco"
+              value={form.domainTags}
+            />
+            <input
+              className="w-20 rounded border border-[var(--border)] bg-transparent px-2 py-1 text-xs"
+              max="1"
+              min="0"
+              onChange={(e) => setForm((f) => ({ ...f, score: e.target.value }))}
+              placeholder="Score"
+              step="0.1"
+              type="number"
+              value={form.score}
+            />
+          </div>
+          {formError && <p className="text-xs text-red-500">{formError}</p>}
+          <button
+            className="rounded-md bg-[var(--accent)] px-3 py-1 text-xs font-black text-white disabled:opacity-50"
+            disabled={saving || !form.inputPattern || !form.agentResponse}
+            onClick={() => void create()}
+            type="button"
+          >
+            {saving ? "Salvando..." : "Salvar exemplo"}
+          </button>
+        </div>
+      )}
+
+      {loading && (
+        <p className="text-xs text-[var(--muted)]">Carregando exemplos...</p>
+      )}
+
+      {!loading && examples.length === 0 && !showForm && (
+        <p className="text-xs text-[var(--muted)]">
+          Nenhum exemplo cadastrado. Adicione exemplos de boas respostas para
+          usar como referência no prompt do agente.
+        </p>
+      )}
+
+      <div className="space-y-2">
+        {examples.map((ex) => (
+          <div
+            key={ex.id}
+            className={`rounded-md border p-3 text-xs ${ex.active ? "border-[var(--border)]" : "border-dashed border-[var(--border)] opacity-60"}`}
+          >
+            <div className="mb-1 flex items-start justify-between gap-2">
+              <div className="flex flex-wrap gap-1">
+                {ex.domainTags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded bg-[var(--accent-soft)] px-1.5 py-0.5 text-[10px]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                <span className="text-[var(--muted)]">score {ex.score.toFixed(1)}</span>
+              </div>
+              <div className="flex shrink-0 gap-1">
+                <button
+                  className="rounded border border-[var(--border)] px-2 py-0.5 text-[10px] disabled:opacity-50"
+                  disabled={actioning === ex.id}
+                  onClick={() => void toggleActive(ex.id, !ex.active)}
+                  type="button"
+                >
+                  {ex.active ? "Desativar" : "Ativar"}
+                </button>
+                <button
+                  className="rounded border border-red-300 px-2 py-0.5 text-[10px] text-red-600 disabled:opacity-50"
+                  disabled={actioning === ex.id}
+                  onClick={() => void remove(ex.id)}
+                  type="button"
+                >
+                  Excluir
+                </button>
+              </div>
+            </div>
+            <p className="mb-1 line-clamp-2 font-medium">
+              Q: {ex.inputPattern}
+            </p>
+            <p className="line-clamp-2 text-[var(--muted)]">
+              A: {ex.agentResponse}
             </p>
           </div>
-        </div>
-        <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <button
-            className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-xs font-bold text-[var(--muted)] opacity-70"
-            disabled
-            type="button"
-          >
-            Configurar politica de retencao
-          </button>
-          <button
-            className="rounded-md border border-[var(--border)] bg-white px-3 py-2 text-xs font-bold text-[var(--muted)] opacity-70"
-            disabled
-            type="button"
-          >
-            Vincular store vetorial
-          </button>
-        </div>
-      </div>
-      <div className="rounded-lg border border-dashed border-[var(--border)] bg-white p-4">
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--muted)]">
-          Roadmap planejado
-        </p>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-[var(--foreground-soft)]">
-          <li>Memoria de curto prazo: ultimos turnos da conversa em cache.</li>
-          <li>Memoria episodica: trilhas relevantes promovidas a partir de auditoria.</li>
-          <li>Memoria semantica: extracao de fatos validados via curadoria.</li>
-          <li>Memoria de feedback: lessons-learned acumuladas por setor.</li>
-        </ul>
+        ))}
       </div>
     </div>
   );

@@ -77,6 +77,7 @@ export async function POST(request: Request, context: RouteContext) {
     `title: "${escapeFrontmatter(title)}"`,
     `sector: ${question.sector}`,
     `sensitivity: ${sensitivity}`,
+    `type: conversa`,
   ];
   if (topic) {
     frontmatterLines.push(`topic: "${escapeFrontmatter(topic)}"`);
@@ -122,6 +123,7 @@ export async function POST(request: Request, context: RouteContext) {
     uploadedById: session.user.id,
     fileSizeBytes: Buffer.byteLength(markdown, "utf8"),
     traceId: randomUUID(),
+    rawDocumentType: "conversa",
   });
 
   await linkUnansweredToCuration({

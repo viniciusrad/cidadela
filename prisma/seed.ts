@@ -91,6 +91,78 @@ async function seedSectorDefinitions(db: PrismaClient) {
   console.log("  ✓ Seeded sector definitions and access rules");
 }
 
+async function seedAgentPersonalities() {
+  const defaults: Array<{
+    sector: string;
+    tone: number;
+    verbosity: number;
+    formality: number;
+    proactivity: number;
+    escalationThreshold: number;
+    domainEmphasis: { topic: string; weight: number }[];
+  }> = [
+    {
+      sector: "desenvolvimento",
+      tone: 3,
+      verbosity: 4,
+      formality: 2,
+      proactivity: 4,
+      escalationThreshold: 0.35,
+      domainEmphasis: [
+        { topic: "arquitetura", weight: 0.8 },
+        { topic: "deploy", weight: 0.7 },
+        { topic: "codigo", weight: 0.9 },
+      ],
+    },
+    {
+      sector: "seguranca",
+      tone: 2,
+      verbosity: 3,
+      formality: 4,
+      proactivity: 3,
+      escalationThreshold: 0.45,
+      domainEmphasis: [
+        { topic: "compliance", weight: 0.9 },
+        { topic: "risco", weight: 0.85 },
+        { topic: "controle-de-acesso", weight: 0.8 },
+      ],
+    },
+    {
+      sector: "suporte",
+      tone: 4,
+      verbosity: 3,
+      formality: 3,
+      proactivity: 4,
+      escalationThreshold: 0.4,
+      domainEmphasis: [
+        { topic: "incidentes", weight: 0.85 },
+        { topic: "usuario", weight: 0.9 },
+        { topic: "sla", weight: 0.75 },
+      ],
+    },
+    {
+      sector: "desktop",
+      tone: 3,
+      verbosity: 3,
+      formality: 3,
+      proactivity: 3,
+      escalationThreshold: 0.4,
+      domainEmphasis: [
+        { topic: "hardware", weight: 0.85 },
+        { topic: "sistema-operacional", weight: 0.8 },
+      ],
+    },
+  ];
+
+  for (const p of defaults) {
+    await prisma.agentPersonality.upsert({
+      where: { sector: p.sector },
+      create: p,
+      update: {},
+    });
+  }
+  console.log("Personalities seeded.");
+}
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -147,6 +219,7 @@ async function main() {
 
   // Seed native sector definitions and access rules
   await seedSectorDefinitions(prisma);
+  await seedAgentPersonalities();
 }
 
 main()

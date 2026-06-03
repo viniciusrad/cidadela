@@ -3,6 +3,14 @@ import { getSectorLabel } from "@/lib/labels";
 import { generateJson } from "@/lib/ollama";
 import type { CurationQuestion } from "@/lib/sop-readiness";
 
+type AnswerResult = {
+  answers?: Array<{
+    id?: unknown;
+    answer?: unknown;
+    found?: unknown;
+  }>;
+};
+
 type InferenceResult = {
   questions?: Array<{
     prompt?: unknown;
@@ -73,6 +81,76 @@ export async function inferAdditionalQuestions(input: {
       }, []);
   } catch (error) {
     console.warn("Falha ao inferir perguntas adicionais de curadoria.", error);
+    return [];
+  }
+}
+
+export async function inferTemplateAnswers(input: {
+  questions: CurationQuestion[];
+  markdown: string;
+  title?: string;
+  sector: string;
+}): Promise<Array<{ questionId: string; answer: string }>> {
+  const unanswered = input.questions.filter((q) => !q.response?.trim());
+  if (!unanswered.length) {
+    return [];
+  }
+
+  // Perguntas marcadas com neverInfer=true exigem conhecimento humano/tribal
+  // e nao devem ser enviadas ao LLM para inferencia automatica
+  const inferableQuestions = unanswered.filter(
+    (q) => !(q as { neverInfer?: boolean }).neverInfer,
+  );
+  if (!inferableQuestions.length) {
+    return [];
+  }
+
+  const markdownExcerpt = input.markdown.trim().slice(0, MAX_MARKDOWN_CHARS);
+  if (!markdownExcerpt) {
+    return [];
+  }
+
+  const sectorLabel = getSectorLabel(input.sector);
+  const questionList = inferableQuestions
+    .map((q) => `{"id":"${q.id}","prompt":${JSON.stringify(q.prompt)}}`)
+    .join(",\n");
+
+  const prompt = [
+    "Voce e um assistente de curadoria de documentos empresariais.",
+    `Setor: ${sectorLabel} | Titulo: ${input.title?.trim() || "Sem titulo"}`,
+    "",
+    "Analise o documento abaixo e tente responder as perguntas listadas APENAS com informacoes presentes no proprio documento.",
+    "Para cada pergunta:",
+    '  - Se a resposta estiver claramente no documento, defina "found": true e "answer" com uma resposta concisa.',
+    '  - Se a resposta NAO estiver no documento, defina "found": false e omita "answer".',
+    "",
+    `PERGUNTAS: [${questionList}]`,
+    "",
+    'Responda SOMENTE em JSON: {"answers":[{"id":"<id>","found":true,"answer":"..."},...]}',
+    "Inclua SOMENTE entradas onde found=true.",
+    "",
+    `DOCUMENTO (${MAX_MARKDOWN_CHARS} chars):`,
+    markdownExcerpt,
+  ].join("\n");
+
+  try {
+    const result = await generateJson<AnswerResult>(prompt, { temperature: 0 });
+    const answers = Array.isArray(result.answers) ? result.answers : [];
+
+    return answers.reduce<Array<{ questionId: string; answer: string }>>(
+      (acc, item) => {
+        const id = typeof item.id === "string" ? item.id.trim() : "";
+        const answer = typeof item.answer === "string" ? item.answer.trim() : "";
+        if (id && answer && item.found === true) {
+          acc.push({ questionId: id, answer });
+        }
+
+        return acc;
+      },
+      [],
+    );
+  } catch (error) {
+    console.warn("Falha ao inferir respostas das perguntas template.", error);
     return [];
   }
 }

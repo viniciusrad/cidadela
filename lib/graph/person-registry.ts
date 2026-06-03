@@ -150,6 +150,94 @@ export async function listPersonProfiles(sectorFilter?: string | null): Promise<
   }));
 }
 
+export type GoToPerson = {
+  personName: string;
+  email: string | null;
+  situation: string;
+  topicLabel: string;
+  strength: number;
+};
+
+/**
+ * Returns persons who are the go-to reference for topics matching the domain
+ * keyword. Results are sorted by IS_GO_TO_FOR strength descending.
+ */
+export async function listGoToPersonsByDomain(
+  domain: string,
+  sector?: string | null,
+): Promise<GoToPerson[]> {
+  const normalized = domain.toLowerCase().trim();
+  const sectorFilter = sector
+    ? `AND (p.primarySector = $sector OR exists { (p)-[:BELONGS_TO]->(:Sector {slug: $sector}) })`
+    : "";
+
+  const rows = await runQuery<{
+    personName: string;
+    email: string | null;
+    situation: string;
+    topicLabel: string;
+    strength: number;
+  }>(
+    `MATCH (p:Person)-[r:IS_GO_TO_FOR]->(t:Topic)
+     WHERE t.label CONTAINS $domain ${sectorFilter}
+     RETURN p.name AS personName,
+            p.email AS email,
+            r.situation AS situation,
+            t.label AS topicLabel,
+            r.strength AS strength
+     ORDER BY r.strength DESC, p.name ASC
+     LIMIT 20`,
+    { domain: normalized, ...(sector ? { sector } : {}) },
+  ).catch(() => []);
+
+  return rows.map((row) => ({
+    personName: row.personName,
+    email: row.email ?? null,
+    situation: row.situation ?? "",
+    topicLabel: row.topicLabel,
+    strength: Number(row.strength ?? 1),
+  }));
+}
+
+export type BusFactorRisk = {
+  personName: string;
+  email: string | null;
+  uniqueProcedures: number;
+  riskLevel: "high" | "medium";
+};
+
+/**
+ * Returns persons who are the sole executor for at least one procedure in the
+ * sector, indicating a bus-factor risk. high = single owner of 2+ procedures;
+ * medium = single owner of 1 procedure.
+ */
+export async function getBusFactorRisk(sector: string): Promise<BusFactorRisk[]> {
+  const rows = await runQuery<{
+    personName: string;
+    email: string | null;
+    uniqueProcedures: number;
+  }>(
+    `MATCH (p:Person)-[r:PERFORMS]->(proc:Procedure)
+     WHERE (p.primarySector = $sector OR exists { (p)-[:BELONGS_TO]->(:Sector {slug: $sector}) })
+       AND r.role IN ['executor', 'responsavel', 'owner']
+     WITH proc, collect(DISTINCT p) AS owners
+     WHERE size(owners) = 1
+     WITH owners[0] AS p, count(proc) AS uniqueProcedures
+     RETURN p.name AS personName,
+            p.email AS email,
+            uniqueProcedures
+     ORDER BY uniqueProcedures DESC`,
+    { sector },
+  ).catch(() => []);
+
+  return rows.map((row) => ({
+    personName: row.personName,
+    email: row.email ?? null,
+    uniqueProcedures: Number(row.uniqueProcedures ?? 1),
+    riskLevel: Number(row.uniqueProcedures ?? 1) >= 2 ? "high" : "medium",
+  }));
+}
+
 /**
  * Returns the full profile plus relation details for a single person.
  */
