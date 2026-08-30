@@ -1,7 +1,7 @@
-import { appConfig } from "@/lib/config";
+﻿import { appConfig } from "@/lib/config";
 
 const globalForNotifications = globalThis as typeof globalThis & {
-  __pfrmNotificationsStarted?: boolean;
+  __cidadelaNotificationsStarted?: boolean;
 };
 
 function runSafely(label: string, work: () => Promise<unknown>) {
@@ -18,10 +18,10 @@ export function startNotificationSchedules() {
     return;
   }
 
-  if (globalForNotifications.__pfrmNotificationsStarted) {
+  if (globalForNotifications.__cidadelaNotificationsStarted) {
     return;
   }
-  globalForNotifications.__pfrmNotificationsStarted = true;
+  globalForNotifications.__cidadelaNotificationsStarted = true;
 
   setInterval(() => {
     runSafely("daily-owner-digest", async () => {

@@ -1,6 +1,6 @@
-# Containers, homologacao e sustentacao
+﻿# Containers, homologacao e sustentacao
 
-Este documento define o contrato inicial para rodar `pfrm-secure-agents` em
+Este documento define o contrato inicial para rodar `cidadela-agents` em
 desenvolvimento local e homologacao com infraestrutura intercambiavel. Ele nao
 substitui runbooks do provedor, politicas de seguranca ou definicoes formais de
 RPO/RTO da empresa.

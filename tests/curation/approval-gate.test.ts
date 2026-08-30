@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
   approvalGateFromApprovals,
@@ -63,11 +63,11 @@ describe("canApproveAsOwner", () => {
         {
           sector: "desktop",
           topic: "seguranca",
-          owner: "owner@pfrm.local",
+          owner: "owner@cidadela.local",
         },
         {
           id: "admin-1",
-          email: "admin@pfrm.local",
+          email: "admin@cidadela.local",
           role: "admin",
           sector: "desenvolvimento",
         },

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * scripts/seed-implemented-automations.ts
  *
  * Cadastra (ou atualiza) um AutomationCandidate para cada um dos 3 fluxos
@@ -54,7 +54,7 @@ const IMPLEMENTED_AUTOMATIONS = [
         "Disparada a partir do chat quando o agente detecta intenção de abertura de chamado. " +
         "Implementada via human-in-captcha (lib/integrations/human-captcha.ts).",
       implementedAt: new Date().toISOString(),
-      implementedBy: "pfrm-secure-agents seed",
+      implementedBy: "cidadela-agents seed",
     },
   },
   {
@@ -78,10 +78,10 @@ const IMPLEMENTED_AUTOMATIONS = [
       processKey: "medication-price-survey",
       description:
         "Automação de pesquisa de preços de medicamentos em farmácias parceiras. " +
-        "Executada via launchPfrmAutomationScript com processKey medication-price-survey. " +
+        "Executada via launchCidadelaAutomationScript com processKey medication-price-survey. " +
         "Implementada via human-in-captcha (lib/integrations/human-captcha.ts).",
       implementedAt: new Date().toISOString(),
-      implementedBy: "pfrm-secure-agents seed",
+      implementedBy: "cidadela-agents seed",
     },
   },
   {
@@ -105,10 +105,10 @@ const IMPLEMENTED_AUTOMATIONS = [
       processKey: "coleta-indices-moedas",
       description:
         "Automação de coleta de índices econômicos e cotações de moedas. " +
-        "Executada via launchPfrmAutomationScript com processKey coleta-indices-moedas. " +
+        "Executada via launchCidadelaAutomationScript com processKey coleta-indices-moedas. " +
         "Implementada via human-in-captcha (lib/integrations/human-captcha.ts).",
       implementedAt: new Date().toISOString(),
-      implementedBy: "pfrm-secure-agents seed",
+      implementedBy: "cidadela-agents seed",
     },
   },
 ] as const;

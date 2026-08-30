@@ -208,12 +208,12 @@ async function main() {
       },
     },
     update: {
-      userEmail: "admin@pfrm.local",
+      userEmail: "admin@cidadela.local",
     },
     create: {
       topic: "piloto",
       sector: "desenvolvimento",
-      userEmail: "admin@pfrm.local",
+      userEmail: "admin@cidadela.local",
     },
   });
 

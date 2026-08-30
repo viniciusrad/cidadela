@@ -40,7 +40,7 @@ export function LoginForm() {
           className="mt-2 w-full rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm outline-none focus:border-[var(--accent)]"
           id="email"
           name="email"
-          placeholder="dev@pfrm.local"
+          placeholder="dev@cidadela.local"
           type="email"
           required
         />

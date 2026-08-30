@@ -217,7 +217,7 @@ export async function POST(request: NextRequest) {
 
   const instruction = meta.instruction.replaceAll("{{conceito}}", itemName);
 
-  const prompt = `Você é um redator técnico sênior produzindo documentação corporativa de alto padrão para a Profarma.
+  const prompt = `Você é um redator técnico sênior produzindo documentação corporativa de alto padrão.
 Use APENAS as informações dos documentos fornecidos. Quando os documentos forem insuficientes para um item, escreva "informação não coberta pelos documentos" em vez de inventar.
 Linguagem: português do Brasil, tom executivo, frases curtas, sem floreio.
 Saída: somente markdown, sem preâmbulos, sem comentários sobre a tarefa.

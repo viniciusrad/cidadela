@@ -60,7 +60,7 @@ export async function runWeeklyTeamsDigest() {
 
   const fallbackRate = percentage(fallback, agentCalls);
   const sendResult = await sendTeamsCard(appConfig.teamsWebhookDigest, {
-    title: "Digest semanal - Secure Agents",
+    title: "Digest semanal - Cidadela",
     summary: "Resumo semanal de uso, curadoria e qualidade",
     facts: [
       { name: "Mensagens", value: String(messages) },

@@ -1,4 +1,4 @@
-services:
+﻿services:
   app:
     profiles: ["container-app"]
     build:
@@ -13,7 +13,7 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:-troque-esta-chave-local}
       AUTH_TRUST_HOST: "true"
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3030}
-      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://pfrm:pfrm@postgres:5432/pfrm_agents}
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://cidadela:cidadela@postgres:5432/cidadela_agents}
       QDRANT_URL: ${CONTAINER_QDRANT_URL:-http://qdrant:6333}
       QDRANT_API_KEY: ${QDRANT_API_KEY:-}
       QDRANT_COLLECTION_SECURITY: ${QDRANT_COLLECTION_SECURITY:-rag_security}
@@ -34,7 +34,7 @@ services:
       OLLAMA_URL: ${CONTAINER_OLLAMA_URL:-http://ollama-cpu:11434}
       OLLAMA_EMBED_MODEL: ${OLLAMA_EMBED_MODEL:-bge-m3:latest}
       OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-qwen3.5:4b}
-      RABBITMQ_URL: ${CONTAINER_RABBITMQ_URL:-amqp://pfrm:pfrm@rabbitmq:5672}
+      RABBITMQ_URL: ${CONTAINER_RABBITMQ_URL:-amqp://cidadela:cidadela@rabbitmq:5672}
       RABBITMQ_MANAGEMENT_URL: ${CONTAINER_RABBITMQ_MANAGEMENT_URL:-http://rabbitmq:15672}
       CHAT_TOP_K: ${CHAT_TOP_K:-5}
       CHAT_LOCAL_CONFIDENCE_THRESHOLD: ${CHAT_LOCAL_CONFIDENCE_THRESHOLD:-0.50}
@@ -86,7 +86,7 @@ services:
         condition: service_started
     networks:
       - default
-      - pfrm-local-internal
+      - cidadela-internal
 
   # Worker dedicado de geracao de chat (Fase 2 de docs/allByQueue.md).
   # Consome `chat.requests` em um processo isolado do Next.js, evitando que
@@ -127,7 +127,7 @@ services:
         condition: service_started
     networks:
       - default
-      - pfrm-local-internal
+      - cidadela-internal
 
   migrate:
     profiles: ["ops"]
@@ -136,7 +136,7 @@ services:
       dockerfile: Dockerfile
       target: migrator
     environment:
-      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://pfrm:pfrm@postgres:5432/pfrm_agents}
+      DATABASE_URL: ${CONTAINER_DATABASE_URL:-postgresql://cidadela:cidadela@postgres:5432/cidadela_agents}
     depends_on:
       postgres:
         condition: service_healthy
@@ -147,15 +147,15 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${LOCAL_POSTGRES_DB:-pfrm_agents}
-      POSTGRES_USER: ${LOCAL_POSTGRES_USER:-pfrm}
-      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:-pfrm}
+      POSTGRES_DB: ${LOCAL_POSTGRES_DB:-cidadela_agents}
+      POSTGRES_USER: ${LOCAL_POSTGRES_USER:-cidadela}
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_PASSWORD:-cidadela}
     ports:
       - "${LOCAL_POSTGRES_PORT:-5544}:5432"
     volumes:
       - postgres_agents_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${LOCAL_POSTGRES_USER:-pfrm} -d ${LOCAL_POSTGRES_DB:-pfrm_agents}"]
+      test: ["CMD-SHELL", "pg_isready -U ${LOCAL_POSTGRES_USER:-cidadela} -d ${LOCAL_POSTGRES_DB:-cidadela_agents}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -186,8 +186,8 @@ services:
     image: rabbitmq:3.13-management-alpine
     restart: unless-stopped
     environment:
-      RABBITMQ_DEFAULT_USER: ${LOCAL_RABBITMQ_USER:-pfrm}
-      RABBITMQ_DEFAULT_PASS: ${LOCAL_RABBITMQ_PASSWORD:-pfrm}
+      RABBITMQ_DEFAULT_USER: ${LOCAL_RABBITMQ_USER:-cidadela}
+      RABBITMQ_DEFAULT_PASS: ${LOCAL_RABBITMQ_PASSWORD:-cidadela}
     ports:
       - "${LOCAL_RABBITMQ_AMQP_PORT:-5673}:5672"
       - "${LOCAL_RABBITMQ_MANAGEMENT_PORT:-15673}:15672"
@@ -268,6 +268,6 @@ volumes:
   neo4j_logs:
 
 networks:
-  pfrm-local-internal:
-    name: pfrm-local-internal
+  cidadela-internal:
+    name: cidadela-internal
     external: true

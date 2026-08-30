@@ -15,10 +15,10 @@ export default async function LoginPage() {
       <div className="grid w-full gap-8 lg:grid-cols-[1.15fr_0.85fr]">
         <section className="premium-panel rounded-[2rem] p-8 lg:p-12">
           <p className="text-xs font-bold uppercase tracking-[0.28em] text-[var(--accent)]">
-            Profarma Secure Agents
+            Cidadela
           </p>
           <h1 className="mt-4 text-4xl font-black leading-tight text-[var(--foreground-strong)]">
-            A inteligencia operacional da Profarma, por setor e com auditoria.
+            A inteligencia operacional da sua empresa, por setor e com auditoria.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--foreground-soft)]">
             Cada setor tem seu agente, todo conhecimento importante fica rastreavel
@@ -84,10 +84,10 @@ export default async function LoginPage() {
               Credenciais seed
             </p>
             <div className="mt-3 space-y-2 text-sm text-[var(--foreground-soft)]">
-              <p>`dev@pfrm.local` / `dev123`</p>
-              <p>`sec@pfrm.local` / `sec123`</p>
-              <p>`suporte@pfrm.local` / `sup123`</p>
-              <p>`admin@pfrm.local` / `admin123`</p>
+              <p>`dev@cidadela.local` / `dev123`</p>
+              <p>`sec@cidadela.local` / `sec123`</p>
+              <p>`suporte@cidadela.local` / `sup123`</p>
+              <p>`admin@cidadela.local` / `admin123`</p>
             </div>
           </div>
         </section>

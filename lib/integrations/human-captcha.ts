@@ -34,6 +34,9 @@ async function readJson(response: Response) {
   return (await response.json().catch(() => null)) as unknown;
 }
 
+// Nota: os paths `/integrations/pfrm/...` espelham o contrato exposto pelo
+// serviço externo human-automation-api (sidecar). Mantidos como estão para não
+// quebrar a integração; renomeá-los exige alterar o serviço de destino também.
 export async function launchCervelloElectronicOrderTicket(
   input: LaunchRequest,
 ): Promise<HumanCaptchaAutomationLaunchResponse> {
@@ -43,7 +46,7 @@ export async function launchCervelloElectronicOrderTicket(
   );
 }
 
-export async function launchPfrmAutomationScript(
+export async function launchCidadelaAutomationScript(
   scriptKey: string,
   input: LaunchRequest,
 ): Promise<HumanCaptchaAutomationLaunchResponse> {
@@ -82,7 +85,7 @@ async function launchHumanCaptchaAutomation(
           conversationId: input.conversationId,
           requestedBy: input.requestedBy,
           userSector: input.userSector,
-          sourceSystem: "pfrm-secure-agents",
+          sourceSystem: "cidadela-agents",
           message: input.message,
           approvalReason: input.approvalReason,
           requestedByAgent: input.requestedByAgent,

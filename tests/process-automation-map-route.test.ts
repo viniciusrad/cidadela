@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { authMock, listProcessAutomationMapsMock, refreshProcessAutomationMapMock } =
   vi.hoisted(() => ({
@@ -25,7 +25,7 @@ describe("process automation map admin routes", () => {
     authMock.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         name: "Admin",
         role: "admin",
         sector: "desenvolvimento",
@@ -84,7 +84,7 @@ describe("process automation map admin routes", () => {
     authMock.mockResolvedValue({
       user: {
         id: "user-1",
-        email: "user@pfrm.local",
+        email: "user@cidadela.local",
         name: "User",
         role: "user",
         sector: "suporte",

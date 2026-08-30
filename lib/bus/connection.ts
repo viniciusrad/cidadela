@@ -1,17 +1,17 @@
-import amqp, { type Channel, type ChannelModel } from "amqplib";
+﻿import amqp, { type Channel, type ChannelModel } from "amqplib";
 
 import { appConfig } from "@/lib/config";
 
 const globalForBus = globalThis as typeof globalThis & {
-  __pfrmBusConnection?: Promise<ChannelModel>;
+  __cidadelaBusConnection?: Promise<ChannelModel>;
 };
 
 export async function getBusConnection() {
-  if (!globalForBus.__pfrmBusConnection) {
-    globalForBus.__pfrmBusConnection = amqp.connect(appConfig.rabbitmqUrl);
+  if (!globalForBus.__cidadelaBusConnection) {
+    globalForBus.__cidadelaBusConnection = amqp.connect(appConfig.rabbitmqUrl);
   }
 
-  return globalForBus.__pfrmBusConnection;
+  return globalForBus.__cidadelaBusConnection;
 }
 
 export async function createBusChannel(): Promise<Channel> {

@@ -1,4 +1,4 @@
-Squad WEB
+﻿Squad WEB
 
 Chat
 
@@ -11,244 +11,244 @@ Reunir agora
 8
 
 Lista de Mensagens
-e acabamos de fazer mais um pra validar aqu... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+e acabamos de fazer mais um pra validar aqu... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 09:52
 
 e acabamos de fazer mais um pra validar aqui os nossos processos tbm se quiserem avaliar...
 
 image
 
-{"triggerCondition":null,"products":[{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":697431,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":188366,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":27.33,"type":null,"pnvName":"PEX PROCTER HB","margin":7.48,"discount":null,"condition":"RM62"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":19054,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":693887,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":25221,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":24352,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":48.2,"type":null,"pnvName":"PEX DANONE","margin":0.49,"discount":null,"condition":"RM52"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":687863,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":491164,"apiGsk":{"type":"07","margin":6.0,"discount":16.7,"condition":" "}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":680994,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":22452,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":22557,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":670051,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":8056,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":11.74,"type":null,"pnvName":"PEX PROCTER HB","margin":2.07,"discount":null,"condition":"RM62"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":698954,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":677415,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":"02","pnvName":null,"margin":0.0,"discount":7.0,"condition":"NEGC"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":16018,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":"02","pnvName":null,"margin":0.0,"discount":7.0,"condition":"NEGC"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":706512,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":2,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":701273,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":690222,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":2,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":690223,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}}],"paymentSettings":{"typeOfTicket":"0002","orderPaymentDeadline":33},"orderSettings":{"systemOrderNumber":"02009196","requestDate":"2026-05-15","orderType":"ZP20","orderTime":"09:46:07","orderCondition":"FI01","customerOrderNumber":null},"orderOwner":"dreamxp@profarma.com.br.uat","donationAmount":null,"discountCoupon":{"couponNumber":null,"couponDiscount":null},"clientCode":"0000209631","bloqueio":"Z5","billingBranch":"RJ01"}
+{"triggerCondition":null,"products":[{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":697431,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":188366,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":27.33,"type":null,"pnvName":"PEX PROCTER HB","margin":7.48,"discount":null,"condition":"RM62"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":19054,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":693887,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":25221,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":24352,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":48.2,"type":null,"pnvName":"PEX DANONE","margin":0.49,"discount":null,"condition":"RM52"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":687863,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":491164,"apiGsk":{"type":"07","margin":6.0,"discount":16.7,"condition":" "}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":680994,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":22452,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":22557,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":670051,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":8056,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":11.74,"type":null,"pnvName":"PEX PROCTER HB","margin":2.07,"discount":null,"condition":"RM62"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":698954,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":677415,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":"02","pnvName":null,"margin":0.0,"discount":7.0,"condition":"NEGC"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":16018,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":"02","pnvName":null,"margin":0.0,"discount":7.0,"condition":"NEGC"},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":706512,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":2,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":701273,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":690222,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}},{"quantity":2,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":690223,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}}],"paymentSettings":{"typeOfTicket":"0002","orderPaymentDeadline":33},"orderSettings":{"systemOrderNumber":"02009196","requestDate":"2026-05-15","orderType":"ZP20","orderTime":"09:46:07","orderCondition":"FI01","customerOrderNumber":null},"orderOwner":"dreamxp@cidadela.com.br.uat","donationAmount":null,"discountCoupon":{"couponNumber":null,"couponDiscount":null},"clientCode":"0000209631","bloqueio":"Z5","billingBranch":"RJ01"}
 
-Gabriel Ferreira Cardoso , por algum mo... por Adriano Boldi
-Adriano Boldi
+Rafael Teixeira Lopes , por algum mo... por Rodrigo Bastos
+Rodrigo Bastos
 09:56
 
-Gabriel Ferreira Cardoso, por algum motivo o que está sendo enviado nesse ambiente não está nem batendo na api de pedidos...
+Rafael Teixeira Lopes, por algum motivo o que está sendo enviado nesse ambiente não está nem batendo na api de pedidos...
 
-o pedido inteiro nao ta batendo? por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+o pedido inteiro nao ta batendo? por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 09:56
 
 o pedido inteiro nao ta batendo?
 
-o payload que vc me mandou no privado eu fi... por Adriano Boldi
-Adriano Boldi
+o payload que vc me mandou no privado eu fi... por Rodrigo Bastos
+Rodrigo Bastos
 09:56
 
 o payload que vc me mandou no privado eu fiz o envio como se fosse o salesforce enviando, e foi normal
 
-Início da citação, Gabriel Ferreira Cardoso... por Adriano Boldi
-Adriano Boldi
+Início da citação, Rafael Teixeira Lopes... por Rodrigo Bastos
+Rodrigo Bastos
 09:56
 
-Gabriel Ferreira Cardoso
+Rafael Teixeira Lopes
 15/05/2026 09:56
 o pedido inteiro nao ta batendo?
 isso
 
-blz, vamos dar um check aqui por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+blz, vamos dar um check aqui por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 09:56
 
 blz, vamos dar um check aqui
 
-Início da citação, Adriano Boldi, 15/05/202... por Adriano Boldi
-Adriano Boldi
+Início da citação, Rodrigo Bastos, 15/05/202... por Rodrigo Bastos
+Rodrigo Bastos
 09:57
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 09:56
 o payload que vc me mandou no privado eu fiz o envio como se fosse o salesforce enviando, e foi normal
 imagem
 
-pode ser o endereço da api no ambiente de d... por Adriano Boldi
-Adriano Boldi
+pode ser o endereço da api no ambiente de d... por Rodrigo Bastos
+Rodrigo Bastos
 09:57
 
 pode ser o endereço da api no ambiente de desenvolvimento, uat eu acho que está normal
 
-Início da citação, Adriano Boldi, 15/05/202... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Início da citação, Rodrigo Bastos, 15/05/202... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:00
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 09:57
 pode ser o endereço da api no ambiente de desenvolvimento, uat eu acho que está normal
-https://apim-dc.profarma.com.br/rfc/1/order-pel ?
+https://apim-dc.cidadela.com.br/rfc/1/order-pel ?
 
-isso é produção... por Adriano Boldi
-Adriano Boldi
+isso é produção... por Rodrigo Bastos
+Rodrigo Bastos
 10:00
 
 isso é produção...
 
-Link https://apim-dc.profarma.com.br/rfc-qa... por Adriano Boldi
-Adriano Boldi
+Link https://apim-dc.cidadela.com.br/rfc-qa... por Rodrigo Bastos
+Rodrigo Bastos
 10:00
 
-https://apim-dc.profarma.com.br/rfc-qa/1/order-pel
+https://apim-dc.cidadela.com.br/rfc-qa/1/order-pel
 
-mandei a apikey no privado por Adriano Boldi
-Adriano Boldi
+mandei a apikey no privado por Rodrigo Bastos
+Rodrigo Bastos
 10:01
 
 mandei a apikey no privado
 
-os pedidos caíram na produção imagem por Adriano Boldi
-Adriano Boldi
+os pedidos caíram na produção imagem por Rodrigo Bastos
+Rodrigo Bastos
 10:02
 
 os pedidos caíram na produção
 
 imagem
 
-sim to falando aqui com a teresa por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+sim to falando aqui com a renata por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:03
 
-sim to falando aqui com a teresa
+sim to falando aqui com a renata
 
-Início da citação, Adriano Boldi, 15/05/202... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Início da citação, Rodrigo Bastos, 15/05/202... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:38
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 10:02
 os pedidos caíram na produção 📷
 cancelados ja com sucesso.
 
-{"triggerCondition":null,"products":[{"quan... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+{"triggerCondition":null,"products":[{"quan... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:38
 
-{"triggerCondition":null,"products":[{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":670051,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}}],"paymentSettings":{"typeOfTicket":"0002","orderPaymentDeadline":7},"orderSettings":{"systemOrderNumber":"02009198","requestDate":"2026-05-15","orderType":"ZP20","orderTime":"10:33:22","orderCondition":"VT01","customerOrderNumber":null},"orderOwner":"dreamxp@profarma.com.br.uat","donationAmount":null,"discountCoupon":{"couponNumber":null,"couponDiscount":null},"clientCode":"0000209631","bloqueio":"Z5","billingBranch":"RJ01"}
+{"triggerCondition":null,"products":[{"quantity":1,"progressiveDiscount":{"typeOfDiscount":null,"type":null,"term":null,"margin":null,"discount":null,"condition":null},"discountOverlay":{"value":null,"type":null,"pnvName":null,"margin":null,"discount":null,"condition":null},"combo":{"typeOfDiscount":null,"type":null,"margin":null,"discount":null,"condition":null},"code":670051,"apiGsk":{"type":null,"margin":null,"discount":null,"condition":null}}],"paymentSettings":{"typeOfTicket":"0002","orderPaymentDeadline":7},"orderSettings":{"systemOrderNumber":"02009198","requestDate":"2026-05-15","orderType":"ZP20","orderTime":"10:33:22","orderCondition":"VT01","customerOrderNumber":null},"orderOwner":"dreamxp@cidadela.com.br.uat","donationAmount":null,"discountCoupon":{"couponNumber":null,"couponDiscount":null},"clientCode":"0000209631","bloqueio":"Z5","billingBranch":"RJ01"}
 
-Adriano Boldi esse foi certinho msm ne? por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Rodrigo Bastos esse foi certinho msm ne? por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:39
 
-Adriano Boldi esse foi certinho msm ne?
+Rodrigo Bastos esse foi certinho msm ne?
 
-sim por Adriano Boldi
-Adriano Boldi
+sim por Rodrigo Bastos
+Rodrigo Bastos
 10:39
 
 sim
 
-precisa de alguma validação do Rossi direto... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+precisa de alguma validação do Ramos direto... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:39
 
-precisa de alguma validação do Rossi direto no sap?
+precisa de alguma validação do Ramos direto no sap?
 
-acho importante por Adriano Boldi
-Adriano Boldi
+acho importante por Rodrigo Bastos
+Rodrigo Bastos
 10:40
 
 acho importante
 
-idoc com flag Z5: 996239274 por Adriano Boldi
-Adriano Boldi
+idoc com flag Z5: 996239274 por Rodrigo Bastos
+Rodrigo Bastos
 10:40
 
 idoc com flag Z5: 996239274
 
-sem flag: 996239276 por Adriano Boldi
-Adriano Boldi
+sem flag: 996239276 por Rodrigo Bastos
+Rodrigo Bastos
 10:40
 
 sem flag: 996239276
 
-Marcos Rossi por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Paulo Ramos por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:41
 
-Marcos Rossi
+Paulo Ramos
 
-Gabriel Ferreira Cardoso , a live será ... por Adriano Boldi
-Adriano Boldi
+Rafael Teixeira Lopes , a live será ... por Rodrigo Bastos
+Rodrigo Bastos
 10:53
 
-Gabriel Ferreira Cardoso, a live será quando?
+Rafael Teixeira Lopes, a live será quando?
 
-o Cledson queria subir a parte do SF hoje, ... por Adriano Boldi
-Adriano Boldi
+o Everton queria subir a parte do SF hoje, ... por Rodrigo Bastos
+Rodrigo Bastos
 10:54
 
-o Cledson queria subir a parte do SF hoje, mas não é uma boa ideia... segundas e sextas não subimos nada para prd
+o Everton queria subir a parte do SF hoje, mas não é uma boa ideia... segundas e sextas não subimos nada para prd
 
-Início da citação, Adriano Boldi, 15/05/202... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Início da citação, Rodrigo Bastos, 15/05/202... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:55
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 10:53
-Gabriel Ferreira Cardoso, a live será quando?
+Rafael Teixeira Lopes, a live será quando?
 terça 15h
 
-Início da citação, Adriano Boldi, 15/05/202... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+Início da citação, Rodrigo Bastos, 15/05/202... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:55
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 10:54
-o Cledson queria subir a parte do SF hoje, mas não é uma boa ideia... segundas e sextas não subimos nada para prd
+o Everton queria subir a parte do SF hoje, mas não é uma boa ideia... segundas e sextas não subimos nada para prd
 blz, vamos subir tudo na segunda entao, os dois lados
 
-pois precisaremos validar na segunda msm, m... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+pois precisaremos validar na segunda msm, m... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:55
 
 pois precisaremos validar na segunda msm, mas sem problemas
 
-blz, preciso que o Rossi aprove a subida do... por Adriano Boldi
-Adriano Boldi
+blz, preciso que o Ramos aprove a subida do... por Rodrigo Bastos
+Rodrigo Bastos
 10:55
 
-blz, preciso que o Rossi aprove a subida do nosso lado, pois será segunda feira...
+blz, preciso que o Ramos aprove a subida do nosso lado, pois será segunda feira...
 
-sim, vamos precisar entender isso por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+sim, vamos precisar entender isso por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:56
 
 sim, vamos precisar entender isso
 
-mas deixa ele validar ai 100% tbm o fluxo d... por Gabriel Ferreira Cardoso
-Gabriel Ferreira Cardoso
+mas deixa ele validar ai 100% tbm o fluxo d... por Rafael Teixeira Lopes
+Rafael Teixeira Lopes
 10:56
 
 mas deixa ele validar ai 100% tbm o fluxo dele em QA
 
-Marcos Rossi ajuda aqui pfv por Thiago Siqueira Anacleto
-Thiago Siqueira Anacleto
+Paulo Ramos ajuda aqui pfv por Henrique Siqueira Andrade
+Henrique Siqueira Andrade
 12:05
 
-Marcos Rossiajuda aqui pfv
+Paulo Ramosajuda aqui pfv
 
-😬 por Thiago Siqueira Anacleto
-Thiago Siqueira Anacleto
+😬 por Henrique Siqueira Andrade
+Henrique Siqueira Andrade
 12:05
 
 😬
-Gabriel Ferreira Cardoso poderia envia... por Marcos Rossi
-Marcos Rossi
+Rafael Teixeira Lopes poderia envia... por Paulo Ramos
+Paulo Ramos
 12:06
 
-Gabriel Ferreira Cardoso poderia enviar um pedido com o valor maior para não cair na Z6 ?
+Rafael Teixeira Lopes poderia enviar um pedido com o valor maior para não cair na Z6 ?
 
-sobre subida em produção faremos na terça d... por Marcos Rossi
-Marcos Rossi
+sobre subida em produção faremos na terça d... por Paulo Ramos
+Paulo Ramos
 12:06
 
 sobre subida em produção faremos na terça de manha
 
-Pessoal, mudando de assunto rapidinho... o ... por Adriano Boldi
-Adriano Boldi
+Pessoal, mudando de assunto rapidinho... o ... por Rodrigo Bastos
+Rodrigo Bastos
 12:07
 
-Pessoal, mudando de assunto rapidinho... o Alesson respondeu um e-mail sobre o ZRAD, mas eu não consigo responder...
+Pessoal, mudando de assunto rapidinho... o Wallace respondeu um e-mail sobre o ZRAD, mas eu não consigo responder...
 
 imagem
 
@@ -256,44 +256,44 @@ alguém explica pra ele que isso é um cache baseado em respostas de pedidos, e 
 
 Notas foram criadas nesse chat.
 Notas
-Início da citação, Adriano Boldi, 15/05/202... por Marcos Rossi
-Marcos Rossi
+Início da citação, Rodrigo Bastos, 15/05/202... por Paulo Ramos
+Paulo Ramos
 12:09
 
-Adriano Boldi
+Rodrigo Bastos
 15/05/2026 12:07
-Pessoal, mudando de assunto rapidinho... o Alesson respondeu um e-mail sobre o ZRAD, mas eu não consigo responder... 📷 alguém explica pra ele que isso é um cache baseado em respostas de pedidos, e q…
+Pessoal, mudando de assunto rapidinho... o Wallace respondeu um e-mail sobre o ZRAD, mas eu não consigo responder... 📷 alguém explica pra ele que isso é um cache baseado em respostas de pedidos, e q…
 respondido
 
-valeu por Adriano Boldi
-Adriano Boldi
+valeu por Rodrigo Bastos
+Rodrigo Bastos
 12:09
 
 valeu
 
-Gabriel Ferreira Cardoso para adiantar... por Marcos Rossi
-Marcos Rossi
+Rafael Teixeira Lopes para adiantar... por Paulo Ramos
+Paulo Ramos
 12:10
 
-Gabriel Ferreira Cardoso para adiantar eu peguei o mesmo idoc e coloquei 10 unidades, pedido caiu em z5
+Rafael Teixeira Lopes para adiantar eu peguei o mesmo idoc e coloquei 10 unidades, pedido caiu em z5
 
-imagem por Marcos Rossi
-Marcos Rossi
+imagem por Paulo Ramos
+Paulo Ramos
 12:10
 
 imagem
 
-a informação veio corretamente no IDOC por Marcos Rossi
-Marcos Rossi
+a informação veio corretamente no IDOC por Paulo Ramos
+Paulo Ramos
 12:11
 
 a informação veio corretamente no IDOC
 
-Início da citação, Marcos Rossi, 15/05/2026... por Adriano Boldi
-Adriano Boldi
+Início da citação, Paulo Ramos, 15/05/2026... por Rodrigo Bastos
+Rodrigo Bastos
 12:11
 
-Marcos Rossi
+Paulo Ramos
 15/05/2026 12:06
 sobre subida em produção faremos na terça de manha
 vou programar a release para terça as 07:30

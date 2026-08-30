@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import { getReferenceUsers } from "../lib/reference-users";
 
@@ -8,7 +8,7 @@ describe("reference users", () => {
 
     expect(users).toHaveLength(4);
     expect(new Set(users.map((user) => user.email)).size).toBe(users.length);
-    expect(users.find((user) => user.email === "dev@pfrm.local")?.sector).toBe(
+    expect(users.find((user) => user.email === "dev@cidadela.local")?.sector).toBe(
       "desenvolvimento",
     );
   });

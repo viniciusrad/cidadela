@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import {
   calculateCurationReadiness,
@@ -9,7 +9,7 @@ describe("curation profiles", () => {
   it("gera perguntas de ata sem exigir passos de SOP", () => {
     const questions = requiredCurationQuestions(
       "ata",
-      { title: "Ata", sector: "desenvolvimento", owner: "dev@pfrm.local" },
+      { title: "Ata", sector: "desenvolvimento", owner: "dev@cidadela.local" },
       [],
     );
 
@@ -27,7 +27,7 @@ describe("curation profiles", () => {
       {
         title: "API",
         sector: "desenvolvimento",
-        owner: "dev@pfrm.local",
+        owner: "dev@cidadela.local",
       },
       [
         {
@@ -59,7 +59,7 @@ describe("curation profiles", () => {
       metadata: {
         title: "API",
         sector: "desenvolvimento",
-        owner: "dev@pfrm.local",
+        owner: "dev@cidadela.local",
       },
       markdown: "Endpoint recebe payload JSON para integracao.",
       questions,
@@ -75,7 +75,7 @@ describe("curation profiles", () => {
       metadata: {
         title: "FAQ",
         sector: "suporte",
-        owner: "suporte@pfrm.local",
+        owner: "suporte@cidadela.local",
       },
       markdown: "FAQ com perguntas e respostas oficiais.",
       questions: [

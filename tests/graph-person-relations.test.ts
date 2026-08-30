@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   runQuery: vi.fn(async () => [] as unknown[]),
@@ -137,7 +137,7 @@ describe("upsertPersonProfile", () => {
 
     await upsertPersonProfile({
       name: "João Silva",
-      email: "joao@profarma.com.br",
+      email: "joao@cidadela.com.br",
       manualSector: "seguranca",
     });
 
@@ -152,7 +152,7 @@ describe("upsertPersonProfile", () => {
   it("only updates the node (no BELONGS_TO query) when no manualSector given", async () => {
     mocks.runQuery.mockResolvedValue([]);
 
-    await upsertPersonProfile({ name: "Maria Santos", email: "maria@profarma.com.br" });
+    await upsertPersonProfile({ name: "Maria Santos", email: "maria@cidadela.com.br" });
 
     expect(mocks.runQuery).toHaveBeenCalledTimes(1);
   });

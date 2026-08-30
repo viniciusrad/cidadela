@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   answerProcessGapQuestionMock,
@@ -39,7 +39,7 @@ describe("process gap promotion and candidate triage routes", () => {
     authMock.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         name: "Admin",
         role: "admin",
         sector: "desenvolvimento",

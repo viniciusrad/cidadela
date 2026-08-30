@@ -1,6 +1,6 @@
-import { appConfig } from "@/lib/config";
+﻿import { appConfig } from "@/lib/config";
 
-const PHARMACY_SEARCH_ORIGIN = "pfrm_agent";
+const PHARMACY_SEARCH_ORIGIN = "cidadela_agent";
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 20;
 

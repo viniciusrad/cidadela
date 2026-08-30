@@ -75,7 +75,7 @@ export function DashboardStartHere({
   const intro =
     role === "admin"
       ? "Tres acoes que costumam mover a barra: validar conteudo novo, mapear o que falta e reagir ao feedback dos usuarios."
-      : "Tres formas rapidas de extrair valor do Secure Agents no dia a dia.";
+      : "Tres formas rapidas de extrair valor da Cidadela no dia a dia.";
 
   return (
     <section className="premium-panel mb-6 rounded-lg p-5 sm:p-6">

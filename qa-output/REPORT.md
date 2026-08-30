@@ -1,4 +1,4 @@
-# Relatorio QA - http://localhost:3030/admin/corrections
+﻿# Relatorio QA - http://localhost:3030/admin/corrections
 Data: 2026-05-04
 Agente: Codex Frontend QA Tester
 Status geral: OK
@@ -44,7 +44,7 @@ Status geral: Parcial
 
 ## Resultado
 
-- A rota autenticada `/admin/content` carregou com HTTP 200 para `admin@pfrm.local`.
+- A rota autenticada `/admin/content` carregou com HTTP 200 para `admin@cidadela.local`.
 - O HTML renderizado contem os controles `Arquivos` e `Chunks`.
 - A API `/api/admin/chunks?sector=todos&mode=text&limit=50` retornou 40 chunks carregados, agrupaveis em 15 arquivos por `sector + sourceDocumentId`.
 - A API `/api/admin/chunks?sector=desenvolvimento&mode=text&limit=50` retornou somente rows do setor `desenvolvimento`, confirmando que a selecao de setor continua sendo respeitada.

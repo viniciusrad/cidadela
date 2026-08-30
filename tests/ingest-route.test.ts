@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   authMock,
@@ -96,7 +96,7 @@ describe("POST /api/ingest", () => {
     prepareUploadedDocumentMock.mockResolvedValue({
       documentId: "doc-1",
       normalizedMarkdown:
-        "---\ntitle: Guia de atendimento\nowner: suporte@pfrm.local\nsensitivity: internal\neffective_from: 2026-05-04\n---\n# Guia\n\n1. Abrir ticket.\n2. Registrar evidencia.",
+        "---\ntitle: Guia de atendimento\nowner: suporte@cidadela.local\nsensitivity: internal\neffective_from: 2026-05-04\n---\n# Guia\n\n1. Abrir ticket.\n2. Registrar evidencia.",
       metadata: { title: "Guia de atendimento" },
       chunks: [
         {
@@ -143,7 +143,7 @@ describe("POST /api/ingest", () => {
     authMock.mockResolvedValue({
       user: {
         id: "user-1",
-        email: "suporte@pfrm.local",
+        email: "suporte@cidadela.local",
         name: "Suporte",
         role: "user",
         sector: "suporte",
@@ -217,7 +217,7 @@ describe("POST /api/ingest", () => {
     authMock.mockResolvedValue({
       user: {
         id: "user-2",
-        email: "dev@pfrm.local",
+        email: "dev@cidadela.local",
         name: "Dev",
         role: "user",
         sector: "desenvolvimento",
@@ -239,7 +239,7 @@ describe("POST /api/ingest", () => {
     authMock.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         name: "Admin",
         role: "admin",
         sector: "desenvolvimento",
@@ -273,7 +273,7 @@ describe("POST /api/ingest", () => {
     authMock.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         name: "Admin",
         role: "admin",
         sector: "desenvolvimento",

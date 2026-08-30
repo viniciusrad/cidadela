@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   auth: vi.fn(),
@@ -33,7 +33,7 @@ describe("GET /api/graph/documents", () => {
     mocks.auth.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         role: "admin",
         sector: "desenvolvimento",
       },

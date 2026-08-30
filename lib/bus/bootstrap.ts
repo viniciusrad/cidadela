@@ -1,4 +1,4 @@
-import { syncProtocols } from "@/lib/db/audit-repo";
+﻿import { syncProtocols } from "@/lib/db/audit-repo";
 import { PROTOCOLS } from "@/lib/agents/protocols";
 import { ensureAllSectorCollections } from "@/lib/qdrant";
 import { appConfig } from "@/lib/config";
@@ -12,7 +12,7 @@ import { createBusChannel } from "@/lib/bus/connection";
 import { ensureBusTopology } from "@/lib/bus/publisher";
 
 const globalForBootstrap = globalThis as typeof globalThis & {
-  __pfrmBusBootstrap?: Promise<void>;
+  __cidadelaBusBootstrap?: Promise<void>;
 };
 
 async function bootstrap() {
@@ -51,12 +51,12 @@ async function bootstrap() {
 }
 
 export async function ensureBusBootstrapped() {
-  if (!globalForBootstrap.__pfrmBusBootstrap) {
-    globalForBootstrap.__pfrmBusBootstrap = bootstrap().catch((error) => {
-      globalForBootstrap.__pfrmBusBootstrap = undefined;
+  if (!globalForBootstrap.__cidadelaBusBootstrap) {
+    globalForBootstrap.__cidadelaBusBootstrap = bootstrap().catch((error) => {
+      globalForBootstrap.__cidadelaBusBootstrap = undefined;
       throw error;
     });
   }
 
-  return globalForBootstrap.__pfrmBusBootstrap;
+  return globalForBootstrap.__cidadelaBusBootstrap;
 }

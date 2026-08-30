@@ -68,7 +68,7 @@ export default async function HomePage() {
     return (
       <SecureAppShell
         currentPage="dashboard"
-        description={`${salutation}, ${user.name}. Visao executiva do Secure Agents: cuidado com a base de conhecimento, qualidade das respostas e oportunidades de automacao.`}
+        description={`${salutation}, ${user.name}. Visao executiva da Cidadela: cuidado com a base de conhecimento, qualidade das respostas e oportunidades de automacao.`}
         title="Painel"
         user={user}
       >
@@ -127,7 +127,7 @@ export default async function HomePage() {
 
         <section className="mb-6">
           <h3 className="mb-3 text-sm font-black uppercase tracking-[0.22em] text-[var(--muted)]">
-            Os cinco pilares do Secure Agents
+            Os cinco pilares da Cidadela
           </h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <DashboardPillarCard
@@ -287,7 +287,7 @@ export default async function HomePage() {
   return (
     <SecureAppShell
       currentPage="dashboard"
-      description={`${salutation}, ${user.name}. Visao geral do que voce pode fazer no Secure Agents.`}
+      description={`${salutation}, ${user.name}. Visao geral do que voce pode fazer na Cidadela.`}
       title="Painel"
       user={user}
     >
@@ -360,7 +360,7 @@ export default async function HomePage() {
 
       <section className="mb-6">
         <h3 className="mb-3 text-sm font-black uppercase tracking-[0.22em] text-[var(--muted)]">
-          Mais sobre o Secure Agents
+          Mais sobre a Cidadela
         </h3>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <DashboardPillarCard

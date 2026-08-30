@@ -1,7 +1,7 @@
-import { appConfig } from "@/lib/config";
+﻿import { appConfig } from "@/lib/config";
 
 const MCP_PROTOCOL_VERSION = "2025-03-26";
-const CLIENT_NAME = "pfrm-secure-agents";
+const CLIENT_NAME = "cidadela-agents";
 const CLIENT_VERSION = "1.0.0";
 
 // MCP Streamable HTTP returns either a JSON body OR an SSE stream depending on

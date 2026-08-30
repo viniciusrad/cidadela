@@ -1,10 +1,10 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 
 test.describe("Fluxo Critico - Feedback de Curadoria", () => {
   // Configuração global para usar credenciais de teste (assumindo que existam no DB)
   // O ideal seria criar o usuário no setup do DB e usá-lo aqui.
   const TEST_USER = {
-    email: "admin@profarma.com.br",
+    email: "admin@cidadela.com.br",
     password: "admin", // Senha padrao
   };
 

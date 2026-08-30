@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 import { SECTORS, type Sector } from "@/lib/domain";
 
@@ -21,7 +21,7 @@ const envSchema = z.object({
   NEXTAUTH_URL: z.string().url().default("http://localhost:3030"),
   DATABASE_URL: z
     .string()
-    .default("postgresql://pfrm:pfrm@127.0.0.1:5544/pfrm_agents"),
+    .default("postgresql://cidadela:cidadela@127.0.0.1:5544/cidadela_agents"),
   QDRANT_URL: z.string().url().default("http://127.0.0.1:6433"),
   QDRANT_API_KEY: optionalString,
   QDRANT_COLLECTION_SECURITY: z.string().default("rag_security"),
@@ -62,7 +62,7 @@ const envSchema = z.object({
     .optional()
     .transform((value) => value === "true"),
   RERANKER_MODEL: z.string().default("bge-reranker-v2-m3"),
-  RABBITMQ_URL: z.string().default("amqp://pfrm:pfrm@127.0.0.1:5673"),
+  RABBITMQ_URL: z.string().default("amqp://cidadela:cidadela@127.0.0.1:5673"),
   RABBITMQ_MANAGEMENT_URL: z
     .string()
     .url()
@@ -141,6 +141,7 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(7 * 24 * 60 * 60 * 1000),
+  PERSON_EMAIL_DOMAIN: z.string().default("cidadela.com.br"),
   PILOT_USER_EMAILS: z.string().optional(),
   PILOT_SECTOR: z.string().optional(),
   PILOT_START_DATE: z.string().optional(),
@@ -233,6 +234,7 @@ export const appConfig = {
   notificationsEnabled: env.NOTIFICATIONS_ENABLED,
   notificationsIntervalMs: env.NOTIFICATIONS_INTERVAL_MS,
   weeklyDigestIntervalMs: env.WEEKLY_DIGEST_INTERVAL_MS,
+  personEmailDomain: env.PERSON_EMAIL_DOMAIN,
 };
 
 export function collectionForSector(sector: string) {

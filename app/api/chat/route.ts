@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+﻿import { randomUUID } from "node:crypto";
 
 import { auth } from "@/auth";
 import { runSectorAgent } from "@/lib/agents/base-agent";
@@ -44,7 +44,7 @@ import { createMessage } from "@/lib/db/messages-repo";
 import type { Sector } from "@/lib/domain";
 import {
   launchCervelloElectronicOrderTicket,
-  launchPfrmAutomationScript,
+  launchCidadelaAutomationScript,
   type CervelloTicketLaunchRequest,
   type HumanCaptchaAutomationLaunchResponse,
 } from "@/lib/integrations/human-captcha";
@@ -115,7 +115,7 @@ function resolveAutomationLaunchConfig(
       finalMessage: "Acionei a automacao de pesquisa de precos de medicamentos.",
       pendingMessage:
         "A execucao foi enfileirada; o relatorio sera registrado no dashboard do human-in-captcha.",
-      launch: (request) => launchPfrmAutomationScript(processKey, request),
+      launch: (request) => launchCidadelaAutomationScript(processKey, request),
     };
   }
 
@@ -129,7 +129,7 @@ function resolveAutomationLaunchConfig(
     finalMessage: "Acionei a automacao de coleta de indices e moedas.",
     pendingMessage:
       "A execucao foi enfileirada; os arquivos gerados serao registrados no dashboard do human-in-captcha.",
-    launch: (request) => launchPfrmAutomationScript(processKey, request),
+    launch: (request) => launchCidadelaAutomationScript(processKey, request),
   };
 }
 
@@ -206,7 +206,7 @@ async function launchAutomation(input: {
   approvalReason?: string;
 }) {
   return input.config.launch({
-    idempotencyKey: `pfrm-secure-agents:${input.idempotencySourceMessageId}:${input.config.idempotencySuffix}`,
+    idempotencyKey: `cidadela-agents:${input.idempotencySourceMessageId}:${input.config.idempotencySuffix}`,
     traceId: input.traceId,
     conversationId: input.conversationId,
     requestedBy: input.requestedBy,

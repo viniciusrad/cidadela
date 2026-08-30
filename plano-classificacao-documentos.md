@@ -1,8 +1,8 @@
-# Plano refinado - Classificacao, ingestao util e descoberta de automacoes
+﻿# Plano refinado - Classificacao, ingestao util e descoberta de automacoes
 
 Data da revisao original: 2026-05-05
 Ultima revisao de status: 2026-05-20
-Alvo: `pfrm-secure-agents`
+Alvo: `cidadela-agents`
 
 > **Status de execucao (2026-05-20)**
 >

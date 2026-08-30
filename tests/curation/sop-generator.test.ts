@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import { renderSopMarkdown } from "@/lib/sop-generator";
 
@@ -9,7 +9,7 @@ describe("renderSopMarkdown", () => {
         sourceDocumentId: "src-1",
         documentTitle: "Deploy do servico",
         sector: "desenvolvimento",
-        owner: "dev@pfrm.local",
+        owner: "dev@cidadela.local",
         effectiveFrom: new Date("2026-05-04"),
         supersedes: null,
         sensitivity: "internal",
@@ -46,7 +46,7 @@ describe("renderSopMarkdown", () => {
         sourceDocumentId: "src-1",
         documentTitle: "Deploy do servico",
         sector: "desenvolvimento",
-        owner: "dev@pfrm.local",
+        owner: "dev@cidadela.local",
         effectiveFrom: new Date("2026-05-04"),
         supersedes: null,
         sensitivity: null,
@@ -65,7 +65,7 @@ describe("renderSopMarkdown", () => {
         sourceDocumentId: "src-1",
         documentTitle: "Deploy do servico",
         sector: "desenvolvimento",
-        owner: "dev@pfrm.local",
+        owner: "dev@cidadela.local",
         effectiveFrom: new Date("2026-05-04"),
         supersedes: null,
         sensitivity: "internal",

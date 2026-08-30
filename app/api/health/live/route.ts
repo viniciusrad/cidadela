@@ -1,8 +1,8 @@
-export const runtime = "nodejs";
+﻿export const runtime = "nodejs";
 
 export async function GET() {
   return Response.json({
     status: "ok",
-    service: "pfrm-secure-agents",
+    service: "cidadela-agents",
   });
 }

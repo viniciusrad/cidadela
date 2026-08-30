@@ -1,6 +1,6 @@
-## PFRM Secure Agents
+﻿## Cidadela
 
-Continuacao de `pfrm-chat` em um componente irmao voltado a producao. Este app acrescenta autenticacao por credenciais, isolamento por setor, persistencia SQL, auditoria e delegacao entre agentes via RabbitMQ sem alterar o MVP original.
+Continuacao de `cidadela-chat` em um componente irmao voltado a producao. Este app acrescenta autenticacao por credenciais, isolamento por setor, persistencia SQL, auditoria e delegacao entre agentes via RabbitMQ sem alterar o MVP original.
 
 ### Stack
 
@@ -30,7 +30,7 @@ Continuacao de `pfrm-chat` em um componente irmao voltado a producao. Este app a
 6. Rode `npm run seed:sectors`.
 7. Rode `npm run dev`.
 
-O arquivo `docker-compose.local.yml` cria a rede local `pfrm-local-internal`
+O arquivo `docker-compose.local.yml` cria a rede local `cidadela-internal`
 usada pelas integracoes Docker locais. Para rodar tambem a aplicacao com hot
 reload dentro de container, ative o profile `container-app` e rode a migracao
 one-off do profile `ops` antes do primeiro uso.
@@ -124,11 +124,11 @@ Para parar o ambiente local sem remover volumes:
 docker compose -f docker-compose.local.yml --profile cpu --profile container-app down
 ```
 
-`pfrm-local-internal` e uma rede Docker externa compartilhada pelas integracoes
+`cidadela-internal` e uma rede Docker externa compartilhada pelas integracoes
 locais. Se ela ainda nao existir no host, crie uma vez antes da subida:
 
 ```bash
-docker network create pfrm-local-internal
+docker network create cidadela-internal
 ```
 
 ### Containers e homologacao
@@ -160,10 +160,10 @@ Para rodar usando o Ollama instalado na sua máquina (sem usar o container):
 
 ### Usuarios de referencia
 
-- `dev@pfrm.local` / `dev123`
-- `sec@pfrm.local` / `sec123`
-- `suporte@pfrm.local` / `sup123`
-- `admin@pfrm.local` / `admin123`
+- `dev@cidadela.local` / `dev123`
+- `sec@cidadela.local` / `sec123`
+- `suporte@cidadela.local` / `sup123`
+- `admin@cidadela.local` / `admin123`
 
 ### Smoke
 

@@ -1,7 +1,7 @@
-# Avaliação de UX e valor — PFRM Secure Agents
+﻿# Avaliação de UX e valor — Cidadela
 
 Data da análise: 2026-05-15
-Escopo: aplicação `pfrm-secure-agents` (Next.js MVP), todas as telas mapeadas em `app/**` e componentes em `components/**`.
+Escopo: aplicação `cidadela-agents` (Next.js MVP), todas as telas mapeadas em `app/**` e componentes em `components/**`.
 
 Objetivo desta análise: olhar o produto pelos olhos de um colaborador comum — alguém que **não** sabe o que é vetor, chunk, grafo, staging ou trace — e julgar se o que está construído entrega a promessa central: **transformar conhecimento tribal em ontologia viva da empresa, alimentando um chat útil e mapeando processos a partir dos documentos**.
 
@@ -141,7 +141,7 @@ Esta é a tela mais desalinhada com o resto.
 
 - Títulos em **inglês cru**: `Agent Calls`, `Audit Events`. Em um app em pt-BR, isso destoa muito.
 - Conteúdo dos cartões mostra `from -> to | intent`, `Trace XYZ | status` — o usuário não-técnico não tem chance.
-- Sugestão de reformulação: virar uma **linha do tempo legível**: "10:42 — Vinicius perguntou sobre X. Sentinela (Segurança) precisou consultar Forja (Desenvolvimento). Resposta entregue em 4,2s." Os IDs técnicos (`traceId`, `actorId`) ficam atrás de um "ver detalhes técnicos".
+- Sugestão de reformulação: virar uma **linha do tempo legível**: "10:42 — Daniel perguntou sobre X. Sentinela (Segurança) precisou consultar Forja (Desenvolvimento). Resposta entregue em 4,2s." Os IDs técnicos (`traceId`, `actorId`) ficam atrás de um "ver detalhes técnicos".
 
 ### 4.9 Agentes (`/admin/agents`)
 
@@ -152,7 +152,7 @@ Esta é a tela mais desalinhada com o resto.
 
 ### 4.10 Login (`/login`)
 
-- Sóbrio e funcional. Considerar um subtítulo sob o logo que **comece a contar a história**: "A inteligência operacional da Profarma. Cada setor com seu agente, todo conhecimento auditável." Pequeno gesto, grande sinalização.
+- Sóbrio e funcional. Considerar um subtítulo sob o logo que **comece a contar a história**: "A inteligência operacional da sua empresa. Cada setor com seu agente, todo conhecimento auditável." Pequeno gesto, grande sinalização.
 
 ---
 

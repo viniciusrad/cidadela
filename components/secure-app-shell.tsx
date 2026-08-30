@@ -11,11 +11,11 @@ import {
   GitMerge,
   LayoutDashboard,
   Network,
-  ShieldCheck,
   Users,
   Workflow,
 } from "lucide-react";
 
+import { CidadelaLogo } from "@/components/brand/cidadela-logo";
 import { LogoutButton } from "@/components/logout-button";
 import { PendenciesBadge } from "@/components/pendencies-badge";
 import { NotificationsBadge } from "@/components/notifications-badge";
@@ -205,14 +205,14 @@ export function SecureAppShell({
           href="/"
         >
           <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--accent)] text-white shadow-md shadow-[var(--accent-soft)]">
-            <ShieldCheck aria-hidden="true" className="h-6 w-6" />
+            <CidadelaLogo className="h-6 w-6" />
           </span>
           <span className="min-w-0">
             <span className="block text-[10px] font-black uppercase leading-none tracking-[0.28em] text-[var(--muted)]">
-              Profarma
+              Inteligência operacional
             </span>
             <span className="mt-1 block truncate text-lg font-black leading-tight text-[var(--foreground-strong)]">
-              Secure Agents
+              Cidadela
             </span>
           </span>
         </Link>
@@ -245,11 +245,11 @@ export function SecureAppShell({
         <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <Link className="flex min-w-0 items-center gap-3" href="/">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[var(--accent)] text-white">
-              <ShieldCheck aria-hidden="true" className="h-5 w-5" />
+              <CidadelaLogo className="h-5 w-5" />
             </span>
             <span className="min-w-0">
               <span className="block truncate text-sm font-black text-[var(--foreground-strong)]">
-                Secure Agents
+                Cidadela
               </span>
               <span className="block truncate text-[10px] font-bold uppercase tracking-[0.12em] text-[var(--muted)]">
                 {currentLink?.label ?? title}

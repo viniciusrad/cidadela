@@ -1,4 +1,4 @@
-import { sendTeamsCard } from "@/lib/notifications/teams";
+﻿import { sendTeamsCard } from "@/lib/notifications/teams";
 import { appConfig } from "@/lib/config";
 
 // Carregar variáveis de ambiente do .env.local
@@ -37,7 +37,7 @@ async function main() {
   }
 
   const result = await sendTeamsCard(webhookUrl, {
-    title: "🚀 Teste de Integração - Agentes PFRM",
+    title: "🚀 Teste de Integração - Agentes Cidadela",
     summary: "Verificando conectividade do Webhook do Microsoft Teams",
     themeColor: "10B981", // Verde (Sucesso)
     facts: [

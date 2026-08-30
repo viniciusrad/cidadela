@@ -1,10 +1,10 @@
-import { PrismaPg } from "@prisma/adapter-pg";
+﻿import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 import { appConfig } from "@/lib/config";
 
 const globalForPrisma = globalThis as typeof globalThis & {
-  __pfrmPrisma?: PrismaClient;
+  __cidadelaPrisma?: PrismaClient;
 };
 
 const adapter = new PrismaPg({
@@ -49,17 +49,17 @@ function disconnectQuietly(client: PrismaClient) {
 }
 
 function ensurePrismaClient() {
-  const cachedPrisma = globalForPrisma.__pfrmPrisma;
+  const cachedPrisma = globalForPrisma.__cidadelaPrisma;
 
   if (cachedPrisma && !hasRequiredDelegates(cachedPrisma)) {
     disconnectQuietly(cachedPrisma);
-    globalForPrisma.__pfrmPrisma = undefined;
+    globalForPrisma.__cidadelaPrisma = undefined;
   }
 
-  const nextClient = globalForPrisma.__pfrmPrisma ?? createPrismaClient();
+  const nextClient = globalForPrisma.__cidadelaPrisma ?? createPrismaClient();
 
   if (process.env.NODE_ENV !== "production") {
-    globalForPrisma.__pfrmPrisma = nextClient;
+    globalForPrisma.__cidadelaPrisma = nextClient;
   }
 
   return nextClient;

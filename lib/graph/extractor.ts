@@ -81,11 +81,22 @@ const NOISE_SECOND_WORDS = new Set([
 
 // ─── Regex helpers ────────────────────────────────────────────────────────────
 
-/** Regex para capturar e-mail profarma com nome extraível do localpart. */
-const PROFARMA_EMAIL_RE =
-  /\b([a-z][a-z]+)\.([a-z][a-z]+)(?:\.[a-z]+)?@profarma\.com\.br\b/gi;
+/**
+ * Regex para capturar e-mail corporativo com nome extraível do localpart
+ * (padrão "nome.sobrenome@dominio"). O domínio é configurável via
+ * `PERSON_EMAIL_DOMAIN` (default `cidadela.com.br`), permitindo adaptar a
+ * extração ao domínio corporativo de cada empresa.
+ */
+const PERSON_EMAIL_DOMAIN_RE = appConfig.personEmailDomain.replace(
+  /[.*+?^${}()|[\]\\]/g,
+  "\\$&",
+);
+const PERSON_EMAIL_RE = new RegExp(
+  `\\b([a-z][a-z]+)\\.([a-z][a-z]+)(?:\\.[a-z]+)?@${PERSON_EMAIL_DOMAIN_RE}\\b`,
+  "gi",
+);
 
-/** Regex para capturar e-mails externos genéricos (não-profarma), não utilizados diretamente. */
+/** Regex para capturar e-mails externos genéricos (outro domínio), não utilizados diretamente. */
 const EXTERNAL_EMAIL_RE = /[^\s]+@[^\s]+\.[^\s]+/g;
 
 /** Linha de papel: "Executor: Nome Sobrenome" ou "- Aprovador: Nome" */
@@ -153,7 +164,7 @@ function detectRole(line: string): PersonRole[] {
  * Não chama Ollama. Retorna nomes únicos, deduplicated.
  *
  * Padrões detectados:
- *   - E-mails @profarma.com.br (converte localpart em Nome Sobrenome)
+ *   - E-mails do domínio corporativo configurado (converte localpart em Nome Sobrenome)
  *   - Linhas de papel: "Executor: Nome Sobrenome"
  *   - Padrão wiki "Last updated by | Nome |"
  *   - "Nome Sobrenome - Cargo"
@@ -173,17 +184,17 @@ export function extractPersonsFromText(text: string): string[] {
     }
   }
 
-  // 1. E-mails @profarma.com.br
-  for (const match of text.matchAll(PROFARMA_EMAIL_RE)) {
+  // 1. E-mails do domínio corporativo configurado
+  for (const match of text.matchAll(PERSON_EMAIL_RE)) {
     add(capitalizeLocalPart(match[1], match[2]));
   }
 
   // 2. Linhas de papel: "Executor: Nome Sobrenome"
   for (const match of text.matchAll(ROLE_LINE_RE)) {
-    // O match[1] pode conter um e-mail @profarma — processar ambos
+    // O match[1] pode conter um e-mail corporativo — processar ambos
     const raw = match[1].trim();
-    const emailMatch = PROFARMA_EMAIL_RE.exec(raw);
-    PROFARMA_EMAIL_RE.lastIndex = 0;
+    const emailMatch = PERSON_EMAIL_RE.exec(raw);
+    PERSON_EMAIL_RE.lastIndex = 0;
     if (emailMatch) {
       add(capitalizeLocalPart(emailMatch[1], emailMatch[2]));
     } else {
@@ -240,8 +251,8 @@ export function extractPersonsWithRoles(text: string): PersonWithRole[] {
     }
   }
 
-  // E-mails @profarma
-  for (const match of text.matchAll(PROFARMA_EMAIL_RE)) {
+  // E-mails do domínio corporativo configurado
+  for (const match of text.matchAll(PERSON_EMAIL_RE)) {
     // Tenta inferir papel do contexto imediatamente antes do e-mail
     const before = text.slice(Math.max(0, match.index! - 40), match.index!);
     add(capitalizeLocalPart(match[1], match[2]), detectRole(before));
@@ -252,8 +263,8 @@ export function extractPersonsWithRoles(text: string): PersonWithRole[] {
     const line = match[0];
     const raw = match[1].trim();
     const roles = detectRole(line);
-    const emailMatch = PROFARMA_EMAIL_RE.exec(raw);
-    PROFARMA_EMAIL_RE.lastIndex = 0;
+    const emailMatch = PERSON_EMAIL_RE.exec(raw);
+    PERSON_EMAIL_RE.lastIndex = 0;
     if (emailMatch) {
       add(capitalizeLocalPart(emailMatch[1], emailMatch[2]), roles);
     } else {

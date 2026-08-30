@@ -1,9 +1,9 @@
-# Ontologia de Pessoas no Grafo — Plano de Ação
+﻿# Ontologia de Pessoas no Grafo — Plano de Ação
 
 > Documento de trabalho para ponderação. Nada aqui foi implementado ainda.
 > Arquivo solicitado como `person_relations_neo47.md`; criado como `person_relations_neo4j.md` (correção óbvia do typo `neo47`→`neo4j`). Renomeie se preferir o nome literal.
 >
-> Data: 2026-05-25 · Escopo: `pfrm-secure-agents` (Neo4j + Qdrant + Postgres)
+> Data: 2026-05-25 · Escopo: `cidadela-agents` (Neo4j + Qdrant + Postgres)
 
 ---
 
@@ -89,14 +89,14 @@ Princípios em cada aresta:
 ```text
 (:Person {
   name,                  // canônico já existente
-  email,                 // novo: chave estável quando houver @profarma.com.br
+  email,                 // novo: chave estável quando houver @cidadela.com.br
   primarySector,         // novo: setor de maior incidência (deriva BELONGS_TO principal)
   documentCount,         // novo: materializado para ranking rápido
   isKeyPerson            // novo (flag): único executor de ≥1 procedimento (fator-ônibus=1)
 })
 ```
 
-`email` é o ponto crítico de **identidade**: hoje a chave é `name`, o que funde homônimos e quebra com variações ("João Silva" vs "Joao Silva" vs e-mail). Onde houver e-mail `@profarma.com.br`, ele deve virar a chave de identidade preferencial. (Decisão aberta — ver §7.)
+`email` é o ponto crítico de **identidade**: hoje a chave é `name`, o que funde homônimos e quebra com variações ("João Silva" vs "Joao Silva" vs e-mail). Onde houver e-mail `@cidadela.com.br`, ele deve virar a chave de identidade preferencial. (Decisão aberta — ver §7.)
 
 ---
 
@@ -190,7 +190,7 @@ Segue a convenção de "ondas" do repo. Cada onda é entregável e verificável 
 | Risco | Mitigação |
 |---|---|
 | **Falsos positivos** (co-menção tratada como execução) | Tipagem por `confidence`; co-ocorrência fica visualmente "não validada"; curadoria humana promove. Nunca tratar `co_occurrence` como verdade no score. |
-| **Identidade de pessoa** (homônimos, variação de nome) | Chave por e-mail `@profarma` onde houver; merge guiado por humano para o resto. **Decisão §7.** |
+| **Identidade de pessoa** (homônimos, variação de nome) | Chave por e-mail `@cidadela` onde houver; merge guiado por humano para o resto. **Decisão §7.** |
 | **Qualidade da extração de papel** (regex limitada) | Onda 1 usa o que já existe; melhoria por LLM/relation-extraction fica para depois, medida contra baseline. |
 | **PII / sensibilidade** | Mapa de pessoas é dado sensível. Respeitar o gate: visível só a `role=admin`; nunca expor pessoa em retorno cross-sector. Confirmar política antes da UI (Onda 4). |
 | **Neo4j fora do ar** | Manter padrão "swallow + log" do `process-sync.ts`; backfill é re-rodável. |
@@ -199,7 +199,7 @@ Segue a convenção de "ondas" do repo. Cada onda é entregável e verificável 
 
 ## 7. Decisões em aberto (preciso da sua percepção)
 
-1. **Identidade da pessoa:** adotar e-mail `@profarma.com.br` como chave canônica (migrando de `name`)? Ou manter `name` e só anexar `email` como propriedade? Impacta de-duplicação de homônimos.
+1. **Identidade da pessoa:** adotar e-mail `@cidadela.com.br` como chave canônica (migrando de `name`)? Ou manter `name` e só anexar `email` como propriedade? Impacta de-duplicação de homônimos.
 2. **Fonte de verdade do setor:** `BELONGS_TO` deve ser **inferido** dos documentos (rápido, sujeito a ruído) ou existe um **cadastro autoritativo** de RH/org (e-mail→setor) que possamos importar? Se existir, é muito mais confiável.
 3. **Limiar de confiança:** a partir de quantos chunks/documentos uma co-ocorrência vira `PERFORMS` sugerido para validação? (proposta inicial: ≥1 com papel detectado, ≥2 sem papel.)
 4. **Reingestão — escopo:** confirma que **não** queremos re-embedding no Qdrant, só backfill de grafo? (minha recomendação forte: sim, só grafo.)

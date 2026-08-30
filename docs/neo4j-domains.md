@@ -1,4 +1,4 @@
-# Domínios e Relações no Neo4j (Knowledge Graph)
+﻿# Domínios e Relações no Neo4j (Knowledge Graph)
 
 > Última revisão: 2026-05-20. As tabelas e diagramas abaixo refletem o estado atual do código em `lib/graph/persistence.ts` e `lib/graph/extractor.ts`. As "Oportunidades" em §4 foram revistas: alguns itens foram implementados desde a versão original deste documento e estão marcados como tal.
 
@@ -15,7 +15,7 @@ O grafo é estruturado em torno de cinco domínios de entidade principais, mais 
 | **Procedure** | entidade | Processos operacionais, passos ou fluxos descritos nos documentos. | `Reset de senha`, `Abertura de chamado`, `Ingestão de dados` |
 | **System** | entidade | Ferramentas, plataformas, softwares ou APIs mencionadas. | `SAP`, `ServiceNow`, `Ollama`, `RabbitMQ` |
 | **Regulation** | entidade | Normas, políticas, leis ou regulamentações que regem o conteúdo. | `LGPD`, `ISO 27001`, `Política de Senhas v2` |
-| **Person** | entidade | Pessoas mencionadas no corpus (executor, aprovador, dono, autor). Extraídas por regex sobre padrões observados (e-mails Profarma, campos estruturados `Executor:` / `Aprovador:` / `owner:`, "Last updated by", etc.) porque o LLM `qwen3.5:4b` retornava lista vazia para o estilo do corpus. | `Fernanda Oliveira`, `Thiago Anacleto` |
+| **Person** | entidade | Pessoas mencionadas no corpus (executor, aprovador, dono, autor). Extraídas por regex sobre padrões observados (e-mails corporativos, campos estruturados `Executor:` / `Aprovador:` / `owner:`, "Last updated by", etc.) porque o LLM `qwen3.5:4b` retornava lista vazia para o estilo do corpus. | `Carla Mendes`, `Henrique Andrade` |
 | **RagChunk** | técnico | Reflete um ponto do Qdrant dentro do grafo, criando provenance bidirecional. Carrega `id` (`collection:pointId`), `pointId`, `collectionName`, `sector`, `documentId`, `sourceDocumentId`, `chunkIndex`, `headingPathText`, `contentHash`, `contentPreview`, `source`. | `rag_desenvolvimento:0a1f...` |
 
 ---

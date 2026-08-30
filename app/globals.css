@@ -1,37 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f0f1ee;
-  --background-elevated: #f8faf6;
-  --foreground: #15484c;
-  --foreground-strong: #0e3d41;
-  --foreground-soft: #4f6b6c;
-  --brand-primary: #007562;
-  --brand-secondary: #8dc63f;
+  /* Cidadela — tema fortaleza: azul-fortaleza + ouro */
+  --background: #f5f6f8;
+  --background-elevated: #ffffff;
+  --foreground: #16243b;
+  --foreground-strong: #0e1726;
+  --foreground-soft: #45526a;
+  --brand-primary: #1f3a5f;
+  --brand-secondary: #c9a227;
   --surface: rgba(255, 255, 255, 0.96);
-  --surface-strong: rgba(248, 250, 246, 0.98);
-  --surface-muted: rgba(229, 236, 230, 0.88);
+  --surface-strong: rgba(255, 255, 255, 0.98);
+  --surface-muted: rgba(232, 235, 240, 0.88);
   --surface-soft: rgba(255, 255, 255, 0.84);
-  --border: rgba(0, 117, 98, 0.16);
-  --border-strong: rgba(0, 117, 98, 0.32);
-  --muted: #758789;
-  --accent: #007562;
-  --accent-strong: #05594b;
-  --accent-soft: rgba(0, 117, 98, 0.1);
+  --border: rgba(31, 58, 95, 0.16);
+  --border-strong: rgba(31, 58, 95, 0.32);
+  --muted: #6b7689;
+  --accent: #1f3a5f;
+  --accent-strong: #16294a;
+  --accent-soft: rgba(31, 58, 95, 0.1);
   --accent-contrast: #ffffff;
-  --accent-lime: #8dc63f;
-  --danger: #bb4d5c;
-  --warn: #ad7c09;
-  --sector-dev: #007562;
-  --sector-security: #0e5b65;
-  --sector-support: #4d7c0f;
+  --accent-lime: #c9a227;
+  --danger: #c0455a;
+  --warn: #b8860b;
+  --sector-dev: #1f3a5f;
+  --sector-security: #6e4fa8;
+  --sector-support: #b8860b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-roboto);
-  --font-mono: var(--font-roboto-mono);
+  --font-sans: var(--font-sans-brand);
+  --font-mono: var(--font-mono-brand);
 }
 
 * {
@@ -46,11 +47,11 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(141, 198, 63, 0.18), transparent 24rem),
-    radial-gradient(circle at 86% 10%, rgba(0, 117, 98, 0.12), transparent 22rem),
-    linear-gradient(180deg, #f6f8f3 0%, #eef2ed 48%, #edf1ec 100%);
+    radial-gradient(circle at top left, rgba(201, 162, 39, 0.14), transparent 24rem),
+    radial-gradient(circle at 86% 10%, rgba(31, 58, 95, 0.12), transparent 22rem),
+    linear-gradient(180deg, #f7f8fa 0%, #eef1f5 48%, #edf0f4 100%);
   color: var(--foreground);
-  font-family: var(--font-roboto), sans-serif;
+  font-family: var(--font-sans-brand), sans-serif;
 }
 
 a,
@@ -70,28 +71,28 @@ textarea {
   background: linear-gradient(180deg, var(--surface), var(--surface-strong));
   border: 1px solid var(--border);
   box-shadow:
-    0 18px 42px rgba(0, 74, 66, 0.09),
+    0 18px 42px rgba(14, 23, 38, 0.10),
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .brand-topbar {
   background: rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(0, 117, 98, 0.12);
-  box-shadow: 0 10px 28px rgba(0, 74, 66, 0.07);
+  border-bottom: 1px solid rgba(31, 58, 95, 0.12);
+  box-shadow: 0 10px 28px rgba(14, 23, 38, 0.08);
   backdrop-filter: blur(12px);
 }
 
 .brand-sidebar {
   background: rgba(255, 255, 255, 0.92);
-  border-right: 1px solid rgba(0, 117, 98, 0.12);
-  box-shadow: 10px 0 28px rgba(0, 74, 66, 0.06);
+  border-right: 1px solid rgba(31, 58, 95, 0.12);
+  box-shadow: 10px 0 28px rgba(14, 23, 38, 0.07);
   backdrop-filter: blur(12px);
 }
 
 .brand-mobilebar {
   background: rgba(255, 255, 255, 0.92);
-  border-bottom: 1px solid rgba(0, 117, 98, 0.12);
-  box-shadow: 0 10px 28px rgba(0, 74, 66, 0.07);
+  border-bottom: 1px solid rgba(31, 58, 95, 0.12);
+  box-shadow: 0 10px 28px rgba(14, 23, 38, 0.08);
   backdrop-filter: blur(12px);
 }
 
@@ -138,16 +139,16 @@ textarea {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(219, 228, 221, 0.72);
+  background: rgba(222, 226, 232, 0.72);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 117, 98, 0.28);
+  background: rgba(31, 58, 95, 0.28);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 117, 98, 0.48);
+  background: rgba(31, 58, 95, 0.48);
 }
 
 /* ── Citation Cards ── */
@@ -162,12 +163,12 @@ textarea {
 
 .citation-card:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 4px 16px rgba(0, 74, 66, 0.08);
+  box-shadow: 0 4px 16px rgba(14, 23, 38, 0.08);
 }
 
 .citation-card--highlighted {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-soft), 0 6px 20px rgba(0, 74, 66, 0.12);
+  box-shadow: 0 0 0 2px var(--accent-soft), 0 6px 20px rgba(14, 23, 38, 0.12);
 }
 
 .citation-header {

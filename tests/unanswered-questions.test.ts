@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock, createAuditEventMock, authMock } = vi.hoisted(() => ({
   prismaMock: {
@@ -125,7 +125,7 @@ describe("notifyAskersOnPromotion", () => {
 describe("POST /api/admin/curation/unanswered/[id]/dismiss", () => {
   beforeEach(() => {
     authMock.mockResolvedValue({
-      user: { id: "admin-1", email: "admin@pfrm.local", name: "Admin", role: "admin", sector: "desenvolvimento" },
+      user: { id: "admin-1", email: "admin@cidadela.local", name: "Admin", role: "admin", sector: "desenvolvimento" },
     });
   });
 
@@ -169,7 +169,7 @@ describe("POST /api/admin/curation/unanswered/[id]/dismiss", () => {
 
   it("blocks non-admins", async () => {
     authMock.mockResolvedValue({
-      user: { id: "u1", email: "u@pfrm.local", name: "User", role: "user", sector: "suporte" },
+      user: { id: "u1", email: "u@cidadela.local", name: "User", role: "user", sector: "suporte" },
     });
 
     const response = await dismiss(

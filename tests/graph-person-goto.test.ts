@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   runQuery: vi.fn(async () => [] as unknown[]),
@@ -27,7 +27,7 @@ describe("upsertPersonGoToRelations", () => {
         { when: "Incidentes no servidor legado", tags: ["infra", "prod"] },
         { when: "Configuracao de SSH", tags: ["acesso"] },
       ],
-      confirmedBy: "admin@pfrm.local",
+      confirmedBy: "admin@cidadela.local",
       sector: "desenvolvimento",
     });
 
@@ -47,7 +47,7 @@ describe("upsertPersonGoToRelations", () => {
     const count = await upsertPersonGoToRelations({
       personName: "Carlos Melo",
       situations: [{ when: "Problemas com pagamentos via pix", tags: [] }],
-      confirmedBy: "admin@pfrm.local",
+      confirmedBy: "admin@cidadela.local",
       sector: "financeiro",
     });
 
@@ -61,7 +61,7 @@ describe("upsertPersonGoToRelations", () => {
     const count = await upsertPersonGoToRelations({
       personName: "Maria",
       situations: [],
-      confirmedBy: "admin@pfrm.local",
+      confirmedBy: "admin@cidadela.local",
       sector: "suporte",
     });
 
@@ -98,7 +98,7 @@ describe("listGoToPersonsByDomain", () => {
 
   it("queries IS_GO_TO_FOR by domain and maps rows", async () => {
     mocks.runQuery.mockResolvedValueOnce([
-      { personName: "Ana Lima", email: "ana@pfrm.local", situation: "Incidentes no servidor legado", topicLabel: "infra", strength: 3 },
+      { personName: "Ana Lima", email: "ana@cidadela.local", situation: "Incidentes no servidor legado", topicLabel: "infra", strength: 3 },
     ]);
 
     const result = await listGoToPersonsByDomain("infra");
@@ -124,7 +124,7 @@ describe("getBusFactorRisk", () => {
   it("maps riskLevel high for uniqueProcedures >= 2", async () => {
     mocks.runQuery.mockResolvedValueOnce([
       { personName: "Ana Lima", email: null, uniqueProcedures: 3 },
-      { personName: "Carlos", email: "c@pfrm.local", uniqueProcedures: 1 },
+      { personName: "Carlos", email: "c@cidadela.local", uniqueProcedures: 1 },
     ]);
 
     const result = await getBusFactorRisk("desenvolvimento");

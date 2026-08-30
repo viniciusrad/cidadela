@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   authMock,
@@ -50,7 +50,7 @@ describe("POST /api/curation/[documentId]/discard", () => {
     authMock.mockResolvedValue({
       user: {
         id: "admin-1",
-        email: "admin@pfrm.local",
+        email: "admin@cidadela.local",
         name: "Admin",
         role: "admin",
         sector: "desenvolvimento",

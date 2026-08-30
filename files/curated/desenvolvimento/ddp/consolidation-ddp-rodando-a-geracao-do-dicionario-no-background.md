@@ -1,9 +1,9 @@
----
+﻿---
 curated_id: consolidation-ddp-rodando-a-geracao-do-dicionario-no-background
 document_type: ddp
 source_type: process_description
 sector: desenvolvimento
-owner: vinicius.souza@profarma.com.br
+owner: anderson.souza@cidadela.com.br
 topic: Rodando a geração do dicionario no background:
 authority_level: draft
 effective_from: null
@@ -41,7 +41,7 @@ lineage_source_documents: desenvolvimento:60685568e3a03627121b394c51d2be35c757c4
 Gerar automaticamente os dicionários MasterFarma e Associadas para garantir a disponibilidade dos dados estruturados necessários.
 
 ## 2. Gatilhos e contexto
-Ocorre no setor de desenvolvimento, sendo executado periodicamente (diariamente às 06:00 e 06:30) e envolve scripts PHP específicos localizados em /opt/edi_profarma/dic/.
+Ocorre no setor de desenvolvimento, sendo executado periodicamente (diariamente às 06:00 e 06:30) e envolve scripts PHP específicos localizados em /opt/edi_sistema/dic/.
 
 - Agendamento via cron (0 6 * * * e 30 6 * * *)
 - Execução manual via nohup
@@ -52,8 +52,8 @@ Ocorre no setor de desenvolvimento, sendo executado periodicamente (diariamente 
 
 ## 4. Sistemas e dependencias
 - /usr/bin/php
-- /opt/edi_profarma/dic/gera_dic_masterfarma.php
-- /opt/edi_profarma/dic/gera_dic_associadas.php
+- /opt/edi_sistema/dic/gera_dic_masterfarma.php
+- /opt/edi_sistema/dic/gera_dic_associadas.php
 - Sistema de monitoramento (ps -ef)
 
 ## 5. Entradas

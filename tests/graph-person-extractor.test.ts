@@ -3,65 +3,65 @@ import { describe, expect, it } from "vitest";
 import { extractPersonsFromText } from "@/lib/graph/extractor";
 
 describe("extractPersonsFromText", () => {
-  it("extracts name from profarma email address", () => {
-    const text = "owner: vinicius.souza@profarma.com.br";
-    expect(extractPersonsFromText(text)).toContain("Vinicius Souza");
+  it("extracts name from corporate email address", () => {
+    const text = "owner: anderson.souza@cidadela.com.br";
+    expect(extractPersonsFromText(text)).toContain("Anderson Souza");
   });
 
-  it("extracts multiple profarma emails", () => {
+  it("extracts multiple corporate emails", () => {
     const text = `
-tamara.santos@profarma.com.br
-thiago.anacleto@profarma.com.br
-fernanda.silva@profarma.com.br
+lucia.pereira@cidadela.com.br
+henrique.andrade@cidadela.com.br
+carla.mendes@cidadela.com.br
     `;
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Tamara Santos");
-    expect(result).toContain("Thiago Anacleto");
-    expect(result).toContain("Fernanda Silva");
+    expect(result).toContain("Lucia Pereira");
+    expect(result).toContain("Henrique Andrade");
+    expect(result).toContain("Carla Mendes");
   });
 
   it("extracts executor and aprovador role assignments", () => {
     const text = `
 ## Responsaveis
-- Executor: Vinicius Ribeiro
-- Aprovador: Vinicius Ribeiro
-- Dono do conhecimento: vinicius.souza@profarma.com.br
+- Executor: Daniel Moraes
+- Aprovador: Daniel Moraes
+- Dono do conhecimento: anderson.souza@cidadela.com.br
     `;
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Vinicius Ribeiro");
-    expect(result).toContain("Vinicius Souza");
+    expect(result).toContain("Daniel Moraes");
+    expect(result).toContain("Anderson Souza");
   });
 
   it("extracts name from wiki 'Last updated by' header", () => {
-    const text = "Last updated by | Vinicius Ribeiro de Souza | 13 de jan. de 2026";
+    const text = "Last updated by | Daniel Moraes de Souza | 13 de jan. de 2026";
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Vinicius Ribeiro de Souza");
+    expect(result).toContain("Daniel Moraes de Souza");
   });
 
   it("extracts team members in Name - Role format", () => {
     const text = `
 **Equipe(s) Envolvida(s):**
 
-Fernanda Oliveira - Canais Digitais
-Adriano Boldi e Vinícius Ribeiro - Squad Web (TI)
-Teresa Galvão (Stakeholder)
+Carla Mendes - Canais Digitais
+Rodrigo Bastos e Daniel Moraes - Squad Web (TI)
+Renata Castro (Stakeholder)
     `;
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Fernanda Oliveira");
-    expect(result).toContain("Teresa Galvão");
+    expect(result).toContain("Carla Mendes");
+    expect(result).toContain("Renata Castro");
   });
 
   it("extracts two names joined by 'e'", () => {
-    const text = "Thiago Anacleto e Fernanda Oliveira (Canais Digitais)";
+    const text = "Henrique Andrade e Carla Mendes (Canais Digitais)";
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Thiago Anacleto");
-    expect(result).toContain("Fernanda Oliveira");
+    expect(result).toContain("Henrique Andrade");
+    expect(result).toContain("Carla Mendes");
   });
 
   it("extracts name before parenthesised external email", () => {
-    const text = "Tatiane Costa (t0028491@ems.com.br) do time de dados.";
+    const text = "Aline Faria (contato@parceiro.com.br) do time de dados.";
     const result = extractPersonsFromText(text);
-    expect(result).toContain("Tatiane Costa");
+    expect(result).toContain("Aline Faria");
   });
 
   it("returns empty array when no person patterns match", () => {
@@ -76,11 +76,11 @@ ZSD167 Cockpit Dicionário de dados
 
   it("deduplicates the same person mentioned multiple times", () => {
     const text = `
-Executor: Vinicius Ribeiro
-Aprovador: Vinicius Ribeiro
+Executor: Daniel Moraes
+Aprovador: Daniel Moraes
     `;
     const result = extractPersonsFromText(text);
-    expect(result.filter((p) => p === "Vinicius Ribeiro")).toHaveLength(1);
+    expect(result.filter((p) => p === "Daniel Moraes")).toHaveLength(1);
   });
 
   it("ignores noise phrases that match the name pattern", () => {

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import { parseCurationFrontmatter } from "@/lib/frontmatter";
 
@@ -10,7 +10,7 @@ describe("parseCurationFrontmatter", () => {
         'title: "Procedimento de Deploy"',
         "sector: desenvolvimento",
         "topic: deploy",
-        "owner: dev@pfrm.local",
+        "owner: dev@cidadela.local",
         "sensitivity: internal",
         "effective_from: 2026-05-04",
         "tags: [deploy, ci-cd]",
@@ -24,7 +24,7 @@ describe("parseCurationFrontmatter", () => {
       title: "Procedimento de Deploy",
       sector: "desenvolvimento",
       topic: "deploy",
-      owner: "dev@pfrm.local",
+      owner: "dev@cidadela.local",
       sensitivity: "internal",
       tags: ["deploy", "ci-cd"],
     });

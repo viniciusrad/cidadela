@@ -1,6 +1,6 @@
-services:
+﻿services:
   app:
-    image: ${APP_IMAGE:-pfrm-secure-agents:homolog}
+    image: ${APP_IMAGE:-cidadela-agents:homolog}
     build:
       context: .
       dockerfile: Dockerfile
@@ -95,7 +95,7 @@ services:
 
   migrate:
     profiles: ["ops"]
-    image: ${MIGRATOR_IMAGE:-pfrm-secure-agents-migrator:homolog}
+    image: ${MIGRATOR_IMAGE:-cidadela-agents-migrator:homolog}
     build:
       context: .
       dockerfile: Dockerfile

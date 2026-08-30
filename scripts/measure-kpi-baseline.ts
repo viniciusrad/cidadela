@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+﻿import { randomUUID } from "node:crypto";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -384,7 +384,7 @@ function renderMarkdown(input: {
     "## Observacoes",
     "",
     "- O modo engine mede o motor local sem criar mensagens/conversas; use o modo http com cookie de admin para medir exatamente `/api/chat` autenticado.",
-    "- Para modo http, defina `PFRM_BASELINE_AUTH_COOKIE` com o cookie de sessao do navegador e rode a aplicacao em `NEXTAUTH_URL`.",
+    "- Para modo http, defina `CIDADELA_BASELINE_AUTH_COOKIE` com o cookie de sessao do navegador e rode a aplicacao em `NEXTAUTH_URL`.",
   );
 
   return `${lines.join("\n")}\n`;
@@ -408,11 +408,11 @@ async function main() {
   }
 
   const appUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3030";
-  const cookie = process.env.PFRM_BASELINE_AUTH_COOKIE;
+  const cookie = process.env.CIDADELA_BASELINE_AUTH_COOKIE;
 
   if (mode === "http" && !cookie) {
     throw new Error(
-      "Modo http exige PFRM_BASELINE_AUTH_COOKIE com uma sessao autenticada. Use cookie de admin para medir todos os setores.",
+      "Modo http exige CIDADELA_BASELINE_AUTH_COOKIE com uma sessao autenticada. Use cookie de admin para medir todos os setores.",
     );
   }
 

@@ -30,7 +30,7 @@ export function DashboardHero({
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--foreground-soft)]">
             Voce esta no setor <strong className="text-[var(--foreground-strong)]">{sectorLabel}</strong>.{" "}
             Fale com <strong className="text-[var(--foreground-strong)]">{persona}</strong>, o agente da sua area,
-            ou explore o que mais o Secure Agents oferece logo abaixo.
+            ou explore o que mais a Cidadela oferece logo abaixo.
           </p>
         </div>
 

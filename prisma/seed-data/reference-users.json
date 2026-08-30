@@ -1,29 +1,29 @@
 [
   {
-    "email": "sec@pfrm.local",
+    "email": "sec@cidadela.local",
     "password": "sec123",
     "name": "Sentinela de Seguranca",
     "sector": "seguranca",
     "role": "user"
   },
   {
-    "email": "suporte@pfrm.local",
+    "email": "suporte@cidadela.local",
     "password": "sup123",
     "name": "Helpdesk de Suporte",
     "sector": "suporte",
     "role": "user"
   },
   {
-    "email": "dev@pfrm.local",
+    "email": "dev@cidadela.local",
     "password": "dev123",
     "name": "Forja de Desenvolvimento",
     "sector": "desenvolvimento",
     "role": "user"
   },
   {
-    "email": "admin@pfrm.local",
+    "email": "admin@cidadela.local",
     "password": "admin123",
-    "name": "Administrador Profarma",
+    "name": "Administrador Cidadela",
     "sector": "desenvolvimento",
     "role": "admin"
   }
