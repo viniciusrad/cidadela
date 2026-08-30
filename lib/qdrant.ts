@@ -771,6 +771,11 @@ export async function checkQdrantHealth() {
   return true;
 }
 
+export async function listQdrantCollections(): Promise<string[]> {
+  const { collections } = await client.getCollections();
+  return collections.map((collection) => collection.name).sort();
+}
+
 async function countCollectionPoints(collectionName: string): Promise<number> {
   try {
     const info = await client.getCollection(collectionName);

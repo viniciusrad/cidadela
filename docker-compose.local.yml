@@ -162,7 +162,11 @@
       start_period: 15s
 
   qdrant:
-    image: qdrant/qdrant:latest
+    # Pinado: com `latest` o servidor sobe a frente do @qdrant/js-client-rest
+    # (1.17) e o client emite "incompatible with server version" a cada chamada.
+    # O client tolera diferenca de ate 1 minor, entao v1.18.0 e o teto seguro
+    # enquanto o codigo usar a API `client.search` (removida no client 1.19).
+    image: qdrant/qdrant:v1.18.0
     restart: unless-stopped
     ports:
       - "${LOCAL_QDRANT_HTTP_PORT:-6433}:6333"

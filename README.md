@@ -18,17 +18,50 @@ Continuacao de `cidadela-chat` em um componente irmao voltado a producao. Este a
 - Qdrant: `6433`
 - RabbitMQ AMQP: `5673`
 - RabbitMQ UI: `15673`
-- Ollama: `11500`
+- Neo4j HTTP / Bolt: `7475` / `7688`
+- Ollama: `11500` (container) ou `11434` (nativo do host, com `OLLAMA_HOST_MODE=true`)
 
 ### Setup
 
-1. Copie `.env.local.example` para `.env.local`.
-2. Suba a infraestrutura local com `docker compose -f docker-compose.local.yml --profile cpu up -d`.
-3. Rode `npm install`.
-4. Rode `npx prisma migrate dev --name init`.
-5. Rode `npm run seed`.
-6. Rode `npm run seed:sectors`.
-7. Rode `npm run dev`.
+```bash
+# 1. Variaveis de ambiente. Sao dois arquivos com o mesmo conteudo: o Next le
+#    .env.local, e o Prisma CLI/scripts leem .env.local com fallback para .env.
+cp .env.local.example .env.local
+cp .env.local.example .env
+#    Depois edite AUTH_SECRET (use algo aleatorio) e, se for usar o Ollama
+#    nativo do host, defina OLLAMA_HOST_MODE=true.
+
+# 2. Rede externa compartilhada pelas integracoes locais (uma vez por host).
+docker network create cidadela-internal
+
+# 3. Infraestrutura: Postgres, Qdrant, RabbitMQ e Neo4j.
+#    Acrescente `--profile cpu` para subir tambem o Ollama em container.
+docker compose -f docker-compose.local.yml up -d
+
+# 4. Dependencias e Prisma Client.
+npm install
+npx prisma generate
+
+# 5. Banco e dados de referencia.
+npx prisma migrate deploy
+npm run seed
+npm run seed:sectors
+
+# 6. Modelos do Ollama (bge-m3 para embeddings, chat model para respostas).
+powershell -ExecutionPolicy Bypass -File scripts/bootstrap-models.ps1 -HostMode  # nativo
+# powershell -ExecutionPolicy Bypass -File scripts/bootstrap-models.ps1          # container
+
+# 7. Checagem de ambiente antes de subir a app.
+npm run doctor
+
+# 8. Aplicacao.
+npm run dev
+```
+
+`npm run doctor` valida env, Postgres (incluindo migrations pendentes), Qdrant,
+RabbitMQ, Neo4j e Ollama (inclusive se os modelos configurados estao instalados
+e se a dimensao do embedding bate com `QDRANT_VECTOR_SIZE`). Sai com codigo 1 se
+algo essencial estiver faltando.
 
 O arquivo `docker-compose.local.yml` cria a rede local `cidadela-internal`
 usada pelas integracoes Docker locais. Para rodar tambem a aplicacao com hot
