@@ -1,8 +1,0 @@
-
-> pfrm-secure-agents@0.1.0 start
-> cross-env NODE_ENV=production next start -p 3030
-
-▲ Next.js 16.2.2
-- Local:         http://localhost:3030
-- Network:       http://192.168.0.175:3030
-✓ Ready in 224ms
