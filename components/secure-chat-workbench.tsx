@@ -538,14 +538,25 @@ export function SecureChatWorkbench({
           signal: controller.signal,
           cache: "no-store",
         });
-        const payload = (await response.json()) as {
+
+        if (!response.ok) {
+          const payload = (await response.json().catch(() => ({}))) as {
+            message?: string;
+          };
+          throw new Error(
+            payload.message ??
+              `Falha ao carregar a conversa (${response.status}).`,
+          );
+        }
+
+        const payload = (await response.json().catch(() => null)) as {
           conversation?: { id: string; title: string; sector: Sector };
           messages?: MessageItem[];
           message?: string;
-        };
+        } | null;
 
-        if (!response.ok) {
-          throw new Error(payload.message ?? "Falha ao carregar a conversa.");
+        if (!payload) {
+          throw new Error("Resposta inválida do servidor ao carregar conversa.");
         }
 
         setMessages(payload.messages ?? []);
@@ -603,13 +614,20 @@ export function SecureChatWorkbench({
       body: JSON.stringify({ title: "Nova conversa" }),
     });
 
-    const payload = (await response.json()) as {
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
+      throw new Error(payload.message ?? `Nao foi possivel abrir uma conversa (${response.status}).`);
+    }
+
+    const payload = (await response.json().catch(() => null)) as {
       conversation?: ConversationSummary;
       message?: string;
-    };
+    } | null;
 
-    if (!response.ok || !payload.conversation) {
-      throw new Error(payload.message ?? "Nao foi possivel abrir uma conversa.");
+    if (!payload?.conversation) {
+      throw new Error(payload?.message ?? "Nao foi possivel abrir uma conversa.");
     }
 
     startTransition(() => {
@@ -669,6 +687,24 @@ export function SecureChatWorkbench({
         }),
       });
 
+      if (!response.ok) {
+        let errorMsg = "Falha ao consultar o agente.";
+        try {
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const errPayload = await response.json().catch(() => ({}));
+            if (errPayload && typeof errPayload.message === "string") {
+              errorMsg = errPayload.message;
+            }
+          } else {
+            errorMsg = `Erro no servidor (${response.status}). Tente novamente mais tarde.`;
+          }
+        } catch {
+          errorMsg = `Erro no servidor (${response.status}).`;
+        }
+        throw new Error(errorMsg);
+      }
+
       if (!response.body) {
         throw new Error("O servidor nao retornou stream.");
       }
@@ -691,7 +727,14 @@ export function SecureChatWorkbench({
           buffer = buffer.slice(newlineIndex + 1);
 
           if (line) {
-            const event = JSON.parse(line) as ChatEvent;
+            let event: ChatEvent;
+            try {
+              event = JSON.parse(line) as ChatEvent;
+            } catch {
+              // Se a linha não for JSON (ex: HTML de erro/timeout), ignora em vez de quebrar a tela
+              newlineIndex = buffer.indexOf("\n");
+              continue;
+            }
 
             if (event.type === "status") {
               setStatusText(event.data.message);
@@ -759,19 +802,25 @@ export function SecureChatWorkbench({
       setStreamingAnswer("");
 
       const visibleCount = Math.max(conversations.length, CONVERSATIONS_PAGE_SIZE);
-      const conversationsResponse = await fetch(
-        `/api/conversations?take=${visibleCount}`,
-        { cache: "no-store" },
-      );
-      const conversationsPayload = (await conversationsResponse.json()) as {
-        conversations?: ConversationSummary[];
-        total?: number;
-      };
-      if (conversationsPayload.conversations) {
-        setConversations(conversationsPayload.conversations);
-      }
-      if (typeof conversationsPayload.total === "number") {
-        setTotalConversations(conversationsPayload.total);
+      try {
+        const conversationsResponse = await fetch(
+          `/api/conversations?take=${visibleCount}`,
+          { cache: "no-store" },
+        );
+        if (conversationsResponse.ok) {
+          const conversationsPayload = (await conversationsResponse.json().catch(() => null)) as {
+            conversations?: ConversationSummary[];
+            total?: number;
+          } | null;
+          if (conversationsPayload?.conversations) {
+            setConversations(conversationsPayload.conversations);
+          }
+          if (typeof conversationsPayload?.total === "number") {
+            setTotalConversations(conversationsPayload.total);
+          }
+        }
+      } catch {
+        // silencioso
       }
     } catch (sendError) {
       setError(
@@ -855,15 +904,17 @@ export function SecureChatWorkbench({
                     `/api/conversations?take=${CONVERSATIONS_PAGE_SIZE}&skip=${conversations.length}`,
                     { cache: "no-store" },
                   );
-                  const payload = (await res.json()) as {
-                    conversations?: ConversationSummary[];
-                    total?: number;
-                  };
-                  if (payload.conversations?.length) {
-                    setConversations((prev) => [...prev, ...payload.conversations!]);
-                  }
-                  if (typeof payload.total === "number") {
-                    setTotalConversations(payload.total);
+                  if (res.ok) {
+                    const payload = (await res.json().catch(() => null)) as {
+                      conversations?: ConversationSummary[];
+                      total?: number;
+                    } | null;
+                    if (payload?.conversations?.length) {
+                      setConversations((prev) => [...prev, ...payload.conversations!]);
+                    }
+                    if (typeof payload?.total === "number") {
+                      setTotalConversations(payload.total);
+                    }
                   }
                 } catch {
                   // silently ignore

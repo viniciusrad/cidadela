@@ -6,7 +6,6 @@ import {
   canAdministerCurationDocument,
   canApproveAsOwner,
   findCurationDocumentForActor,
-  hasOpenCorrelationBlockersForDocument,
   hasRequiredApprovals,
 } from "@/lib/curation/documents";
 import { createAuditEvent } from "@/lib/db/audit-repo";
@@ -55,13 +54,6 @@ export async function POST(request: Request, context: RouteContext) {
 
   if (document.status === "PROMOTED" || document.status === "REJECTED") {
     return jsonError("Documento nao aceita novas aprovacoes neste status.", 409);
-  }
-
-  if (hasOpenCorrelationBlockersForDocument(document)) {
-    return jsonError(
-      "Aprovacao bloqueada: execute a correlacao e resolva achados high/critical antes de aprovar.",
-      409,
-    );
   }
 
   if (approverRole === "admin") {

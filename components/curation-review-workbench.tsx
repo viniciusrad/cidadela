@@ -120,7 +120,7 @@ type CorrelationGate = {
   createdAt?: string;
   summary?: string | null;
   findings: CorrelationFinding[];
-  blockingFindings: CorrelationFinding[];
+  openFindings: CorrelationFinding[];
   canApprove: boolean;
 };
 
@@ -397,16 +397,13 @@ export function CurationReviewWorkbench({
   const readiness = readinessPercent(
     detail?.document.curationReadinessScore ?? detail?.document.sopReadinessScore,
   );
-  const correlationAllowsApproval = detail?.correlationGate.canApprove === true;
   const canApprove =
-    correlationAllowsApproval &&
     detail?.document.status !== "PROMOTED" &&
     detail?.document.status !== "REJECTED";
   const isPromoted = detail?.document.status === "PROMOTED";
   const canEditAnswers = detail?.document.status !== "PROMOTED";
   const approvalGate = detail?.approvalGate;
   const canPromote =
-    correlationAllowsApproval &&
     detail?.document.status === "APPROVED" &&
     approvalGate?.canPromote === true;
   const canApproveMissingAndPromote =
@@ -417,11 +414,7 @@ export function CurationReviewWorkbench({
   const promoteBlocker =
     isPromoted
       ? "Documento ja publicado no chat."
-      : detail?.correlationGate.canApprove === false
-        ? detail.correlationGate.status === "NOT_RUN"
-          ? "Compare com o conteudo ja publicado antes de aprovar."
-          : "Resolva achados high/critical da correlacao antes de aprovar."
-        : detail?.document.status !== "APPROVED"
+      : detail?.document.status !== "APPROVED"
           ? "Promote exige status APPROVED. Registre as aprovacoes pendentes primeiro."
           : approvalGate?.canPromote === false
             ? "Falta uma aprovacao do dono ou de um admin."
@@ -583,9 +576,9 @@ export function CurationReviewWorkbench({
           ),
         );
         setMessage(
-          correlationGate.blockingFindings.length > 0
-            ? "Correlacao concluida com achados obrigatorios para validacao."
-            : "Correlacao concluida sem bloqueios high/critical.",
+          correlationGate.openFindings.length > 0
+            ? "Correlacao concluida com alertas para acompanhamento. A aprovacao continua disponivel."
+            : "Correlacao concluida sem alertas pendentes.",
         );
       } catch (error) {
         setErrorMessage(normalizeError(error, "Falha ao executar correlacao."));
@@ -1101,6 +1094,24 @@ export function CurationReviewWorkbench({
         body: JSON.stringify({ sources: selectedSources }),
       });
 
+      if (!response.ok) {
+        let errorMsg = "Falha ao gerar melhoria.";
+        try {
+          const contentType = response.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const errPayload = await response.json().catch(() => ({}));
+            if (errPayload && typeof errPayload.message === "string") {
+              errorMsg = errPayload.message;
+            }
+          } else {
+            errorMsg = `Erro no servidor (${response.status}).`;
+          }
+        } catch {
+          errorMsg = `Erro no servidor (${response.status}).`;
+        }
+        throw new Error(errorMsg);
+      }
+
       if (!response.body) {
         throw new Error("Servidor nao retornou stream.");
       }
@@ -1119,7 +1130,14 @@ export function CurationReviewWorkbench({
           buffer = buffer.slice(nl + 1);
 
           if (line) {
-            const event = JSON.parse(line) as ImprovementEvent;
+            let event: ImprovementEvent;
+            try {
+              event = JSON.parse(line) as ImprovementEvent;
+            } catch {
+              nl = buffer.indexOf("\n");
+              continue;
+            }
+
             if (event.type === "chunk") {
               assembled += event.data.text;
               setImprovementSuggestion(assembled);
@@ -1654,12 +1672,9 @@ export function CurationReviewWorkbench({
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
                   <span
-                    className={`rounded px-3 py-2 text-xs font-bold uppercase tracking-wider ${detail.correlationGate.canApprove
-                      ? "bg-emerald-400/15 text-emerald-700"
-                      : "bg-amber-400/20 text-amber-800"
-                      }`}
+                    className="rounded bg-emerald-400/15 px-3 py-2 text-xs font-bold uppercase tracking-wider text-emerald-700"
                   >
-                    {detail.correlationGate.status}
+                    {detail.correlationGate.status === "NOT_RUN" ? "NAO EXECUTADA" : "CONCLUIDA"}
                   </span>
                   <button
                     className="inline-flex items-center gap-2 rounded-2xl border border-[var(--border)] bg-white px-4 py-3 text-sm font-bold text-[var(--foreground-strong)] transition-colors hover:border-[var(--accent)] disabled:opacity-50"
@@ -1679,11 +1694,10 @@ export function CurationReviewWorkbench({
                 </div>
               </div>
 
-              {detail.correlationGate.blockingFindings.length > 0 ? (
+              {detail.correlationGate.openFindings.length > 0 ? (
                 <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                  Aprovacao bloqueada ate resolver{" "}
-                  {detail.correlationGate.blockingFindings.length} achado(s)
-                  high/critical.
+                  {detail.correlationGate.openFindings.length} alerta(s) de correlacao em aberto.
+                  Eles ficam registrados para acompanhamento e nao impedem aprovacao ou publicacao.
                 </div>
               ) : null}
 

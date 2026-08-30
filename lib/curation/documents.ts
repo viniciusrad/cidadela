@@ -1,7 +1,6 @@
 import type { DocumentStatus, Prisma, Sector, UserRole } from "@prisma/client";
 
 import { appConfig, isSector } from "@/lib/config";
-import { correlationGateFromRun } from "@/lib/curation/correlation";
 import {
   calculateCurationReadiness,
   requiredCurationQuestions,
@@ -138,13 +137,6 @@ export function latestCorrelationRun(
   document: { correlationRuns?: CurationDocumentWithRelations["correlationRuns"] },
 ) {
   return document.correlationRuns?.[0] ?? null;
-}
-
-export function hasOpenCorrelationBlockersForDocument(
-  document: { correlationRuns?: CurationDocumentWithRelations["correlationRuns"] },
-) {
-  const gate = correlationGateFromRun(latestCorrelationRun(document));
-  return !gate.canApprove;
 }
 
 export function canEditCurationDocument(

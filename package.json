@@ -12,6 +12,7 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "doctor": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/doctor.ts",
+    "check:corpus": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/check-demo-corpus.ts",
     "seed": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env prisma/seed.ts",
     "seed:sectors": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/seed-sectors.ts",
     "sync:knowledge-capabilities": "tsx --env-file-if-exists=.env.local --env-file-if-exists=.env scripts/sync-knowledge-capabilities.ts",

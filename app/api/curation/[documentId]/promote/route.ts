@@ -5,7 +5,6 @@ import { jsonError } from "@/lib/api";
 import {
   canAdministerCurationDocument,
   findCurationDocumentForActor,
-  hasOpenCorrelationBlockersForDocument,
   hasRequiredApprovals,
   questionsFromReview,
 } from "@/lib/curation/documents";
@@ -52,13 +51,6 @@ export async function POST(_request: Request, context: RouteContext) {
 
   if (document.status !== "APPROVED") {
     return jsonError("Documento precisa estar APPROVED antes do promote.", 409);
-  }
-
-  if (hasOpenCorrelationBlockersForDocument(document)) {
-    return jsonError(
-      "Promote bloqueado: execute a correlacao e resolva achados high/critical antes de promover.",
-      409,
-    );
   }
 
   if (!hasRequiredApprovals(document.approvals)) {

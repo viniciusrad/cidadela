@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   correlationGateFromRun,
-  hasOpenCorrelationBlockers,
+  hasOpenCorrelationFindings,
   type CorrelationFinding,
 } from "@/lib/curation/correlation";
 
@@ -33,35 +33,35 @@ function finding(
 }
 
 describe("correlationGateFromRun", () => {
-  it("bloqueia aprovacao quando nao ha rodada de correlacao", () => {
+  it("permite aprovacao quando nao ha rodada de correlacao", () => {
     expect(correlationGateFromRun(null)).toMatchObject({
       status: "NOT_RUN",
-      canApprove: false,
+      canApprove: true,
     });
   });
 
-  it("bloqueia achados high e critical abertos", () => {
+  it("expoe achados abertos como alertas sem bloquear a aprovacao", () => {
     const findings = [finding("medium"), finding("high")];
 
-    expect(hasOpenCorrelationBlockers(findings)).toBe(true);
+    expect(hasOpenCorrelationFindings(findings)).toHaveLength(2);
     expect(
       correlationGateFromRun({
         id: "run-1",
-        status: "BLOCKED",
+        status: "PASSED",
         createdAt: new Date("2026-05-04T12:00:00Z"),
         summary: "Achados encontrados.",
         findings,
       }),
     ).toMatchObject({
-      canApprove: false,
-      blockingFindings: [expect.objectContaining({ severity: "high" })],
+      canApprove: true,
+      openFindings: [expect.objectContaining({ severity: "medium" }), expect.objectContaining({ severity: "high" })],
     });
   });
 
-  it("libera aprovacao quando achados bloqueantes foram resolvidos", () => {
+  it("mantem somente os achados ainda abertos para acompanhamento", () => {
     const findings = [finding("critical", "resolved"), finding("medium")];
 
-    expect(hasOpenCorrelationBlockers(findings)).toBe(false);
+    expect(hasOpenCorrelationFindings(findings)).toEqual([findings[1]]);
     expect(
       correlationGateFromRun({
         id: "run-2",
@@ -72,7 +72,7 @@ describe("correlationGateFromRun", () => {
       }),
     ).toMatchObject({
       canApprove: true,
-      blockingFindings: [],
+      openFindings: [expect.objectContaining({ severity: "medium" })],
     });
   });
 });

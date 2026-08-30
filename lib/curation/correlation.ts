@@ -85,7 +85,6 @@ type Candidate = {
 const TOP_K_PER_STAGED_CHUNK = 5;
 const MAX_MODEL_CANDIDATES = 24;
 const MIN_CORRELATION_SCORE = 0.52;
-const BLOCKING_SEVERITIES = new Set<CorrelationSeverity>(["high", "critical"]);
 const FINDING_TYPES = new Set<CorrelationFindingType>([
   "duplicate",
   "contradiction",
@@ -152,13 +151,10 @@ function questionFromFinding(finding: CorrelationFinding) {
     id: `correlation_${finding.id}`,
     findingId: finding.id,
     type: "correlation",
-    required: BLOCKING_SEVERITIES.has(finding.severity),
+    // Correlation findings guide the reviewer; they must never hold up approval.
+    required: false,
     prompt: finding.question,
   };
-}
-
-function correlationStatus(findings: CorrelationFinding[]) {
-  return hasOpenCorrelationBlockers(findings) ? "BLOCKED" : "PASSED";
 }
 
 function rowPreview(row: AdminChunkRow) {
@@ -261,21 +257,15 @@ export function findingsFromCorrelationRun(
   return asFindings(run?.findings);
 }
 
-export function hasOpenCorrelationBlockers(findings: CorrelationFinding[]) {
-  return findings.some(
-    (finding) =>
-      finding.status === "open" && BLOCKING_SEVERITIES.has(finding.severity),
-  );
+export function hasOpenCorrelationFindings(findings: CorrelationFinding[]) {
+  return findings.filter((finding) => finding.status === "open");
 }
 
 export function correlationGateFromRun(
   run?: Pick<DocumentCorrelationRun, "id" | "status" | "createdAt" | "summary" | "findings"> | null,
 ) {
   const findings = findingsFromCorrelationRun(run);
-  const blockingFindings = findings.filter(
-    (finding) =>
-      finding.status === "open" && BLOCKING_SEVERITIES.has(finding.severity),
-  );
+  const openFindings = hasOpenCorrelationFindings(findings);
 
   return {
     runId: run?.id,
@@ -283,8 +273,10 @@ export function correlationGateFromRun(
     createdAt: run?.createdAt,
     summary: run?.summary,
     findings,
-    blockingFindings,
-    canApprove: Boolean(run) && blockingFindings.length === 0,
+    openFindings,
+    // A correlation is advisory. Documents can be approved or promoted before
+    // it runs and while its findings are still open.
+    canApprove: true,
   };
 }
 
@@ -364,7 +356,7 @@ export async function runDocumentCorrelation(input: {
     candidates,
   });
   const questions = findings.map(questionFromFinding);
-  const status = correlationStatus(findings);
+  const status = "PASSED";
 
   const run = await prisma.documentCorrelationRun.create({
     data: {
@@ -379,7 +371,7 @@ export async function runDocumentCorrelation(input: {
           : "Correlacao sem inconformidades relevantes."),
       findings: asJsonInput(findings),
       questions: asJsonInput(questions),
-      resolvedAt: hasOpenCorrelationBlockers(findings) ? undefined : new Date(),
+      resolvedAt: new Date(),
     },
   });
 
@@ -395,9 +387,7 @@ export async function runDocumentCorrelation(input: {
       runId: run.id,
       status,
       findings: findings.length,
-      blockingFindings: findings.filter((finding) =>
-        BLOCKING_SEVERITIES.has(finding.severity),
-      ).length,
+      openFindings: hasOpenCorrelationFindings(findings).length,
     },
   });
 
@@ -570,14 +560,14 @@ export async function resolveCorrelationFinding(input: {
         }
       : item,
   );
-  const nextStatus = correlationStatus(nextFindings);
+  const nextStatus = "PASSED";
   const nextRun = await prisma.documentCorrelationRun.update({
     where: { id: input.run.id },
     data: {
       status: nextStatus,
       findings: asJsonInput(nextFindings),
       questions: asJsonInput(nextFindings.map(questionFromFinding)),
-      resolvedAt: hasOpenCorrelationBlockers(nextFindings) ? null : new Date(),
+      resolvedAt: new Date(),
     },
   });
 
